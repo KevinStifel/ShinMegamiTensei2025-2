@@ -5,25 +5,24 @@ namespace Shin_Megami_Tensei;
 public class Game
 {
     private readonly BattleManager _battleManager;
+    private readonly TeamValidator _teamValidator;
+    private readonly List<TeamUnitRaw> _playerOneRawTeam;
+    private readonly List<TeamUnitRaw> _playerTwoRawTeam;
 
     public Game(View view, string teamsFolder)
     {
         // Inicializamos variables para el contexto del juego
         var fileSelector = new FileSelector(view, teamsFolder);
         var teamFileLoader = new TeamFileLoader();
-        var teamValidator = new TeamValidator(view);
+        _teamValidator = new TeamValidator(view);
         var repository = new UnitRepository();
         var teamFactory = new TeamFactory(repository);
 
         var selectedTeamFilePath = fileSelector.SelectTeamFilePath();
-        var (playerOneRawTeam, playerTwoRawTeam) = teamFileLoader.LoadRawTeams(selectedTeamFilePath);
+        (_playerOneRawTeam, _playerTwoRawTeam) = teamFileLoader.LoadRawTeams(selectedTeamFilePath);
 
-        if (!teamValidator.ValidateRawTeams(playerOneRawTeam, playerTwoRawTeam)) return;
-        //DebugPrinter.PrintTeam("Player 1 Team", playerOneUnits);
-        //DebugPrinter.PrintTeam("Player 2 Team", playerTwoUnits);
-
-        var playerOneUnitList = teamFactory.BuildTeam(playerOneRawTeam);
-        var playerTwoUnitList = teamFactory.BuildTeam(playerTwoRawTeam);
+        var playerOneUnitList = teamFactory.BuildTeam(_playerOneRawTeam);
+        var playerTwoUnitList = teamFactory.BuildTeam(_playerTwoRawTeam);
 
         var board = new Board(playerOneUnitList, playerTwoUnitList);
         _battleManager = new BattleManager(board, playerOneUnitList, playerTwoUnitList, view);
@@ -31,6 +30,7 @@ public class Game
 
     public void Play()
     {
+        if (!_teamValidator.ValidateRawTeams(_playerOneRawTeam, _playerTwoRawTeam)) return;
         _battleManager.StartBattle();
     }
 }

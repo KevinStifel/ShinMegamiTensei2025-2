@@ -88,3 +88,4 @@ C:\Users\pc\Desktop\Detallado 2025-2\Proyecto\Entrega 0 - Actual\Shin-Megami-Ten
 C:\Users\pc\Desktop\Detallado 2025-2\Proyecto\Entrega 0 - Actual\Shin-Megami-Tensei-Controller\obj\Debug\net8.0\Shin-Megami-Tensei-Controller.pdb
 C:\Users\pc\Desktop\Detallado 2025-2\Proyecto\Entrega 0 - Actual\Shin-Megami-Tensei-Controller\obj\Debug\net8.0\Shin-Megami-Tensei-Controller.genruntimeconfig.cache
 C:\Users\pc\Desktop\Detallado 2025-2\Proyecto\Entrega 0 - Actual\Shin-Megami-Tensei-Controller\obj\Debug\net8.0\ref\Shin-Megami-Tensei-Controller.dll
+C:\Users\pc\Desktop\Detallado 2025-2\Proyecto\Entrega 0 - Actual\Shin-Megami-Tensei-Controller\obj\Debug\net8.0\Shin-Megami-Tensei-Controller.sourcelink.json
