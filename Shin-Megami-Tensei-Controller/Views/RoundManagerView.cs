@@ -11,17 +11,16 @@ public class RoundManagerView
         _view = view;
     }
 
-    public void ShowRound(int playerId, string samuraiName, Board board)
+    public void ShowRound(int playerId, UnitBase teamLeaderUnit, Board board)
     {
         ShowSeparator();
-        _view.WriteLine($"Ronda de {samuraiName} (J{playerId})");
+        _view.WriteLine($"Ronda de {teamLeaderUnit.Name} (J{playerId})");
         ShowSeparator();
 
         PrintPlayerBoard(board, playerId: 1, samuraiName: GetLeaderName(board, 1));
         PrintPlayerBoard(board, playerId: 2, samuraiName: GetLeaderName(board, 2));
     }
-
-    // 🔹 Encabezado correcto: Equipo de {Samurai} (J{n})
+    
     private void PrintPlayerBoard(Board board, int playerId, string samuraiName)
     {
         _view.WriteLine($"Equipo de {samuraiName} (J{playerId})");
@@ -36,7 +35,6 @@ public class RoundManagerView
     private string GetLeaderName(Board board, int playerId)
     {
         var playerBoard = board.GetBoardForPlayer(playerId);
-
         var leaderPosition = GameConstants.BoardPositions[0]; // "A"
         var leader = playerBoard[leaderPosition];
         return leader!.Name;
@@ -62,6 +60,25 @@ public class RoundManagerView
             $"{position}-{unit.Name} HP:{unit.Stats.HP}/{unit.Stats.MaxHP} MP:{unit.Stats.MP}/{unit.Stats.MaxMP}"
         );
     }
+    public void ShowTurnStatus(int full, int blinking)
+    {
+        ShowSeparator();
+        _view.WriteLine($"Full Turns: {full}");
+        _view.WriteLine($"Blinking Turns: {blinking}");
+    }
+    
+    public void ShowAttackOrder( IReadOnlyList<UnitBase> attackOrder)
+    {
+        ShowSeparator();
+        _view.WriteLine("Orden:");
+
+        for (int i = 0; i < attackOrder.Count; i++)
+        {
+            var unit = attackOrder[i];
+            _view.WriteLine($"{i + 1}-{unit.Name}");
+        }
+    }
+
 
     private void ShowSeparator()
     {

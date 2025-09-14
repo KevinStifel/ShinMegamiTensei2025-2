@@ -27,7 +27,7 @@ public class BattleManager
             _roundManager.StartNewRound(currentPlayerId, _board);
 
             // lógica de cambio de jugador
-            currentPlayerId = 2;
+            currentPlayerId = currentPlayerId == 1 ? 2 : 1;
 
             // chequeo de fin de combate se agregará después
             break; // placeholder

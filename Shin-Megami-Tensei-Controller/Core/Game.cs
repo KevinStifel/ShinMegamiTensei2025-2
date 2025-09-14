@@ -14,9 +14,9 @@ public class Game
         // Inicializamos variables para el contexto del juego
         var fileSelector = new FileSelector(view, teamsFolder);
         var teamFileLoader = new TeamFileLoader();
-        _teamValidator = new TeamValidator(view);
         var repository = new UnitRepository();
         var teamFactory = new TeamFactory(repository);
+        _teamValidator = new TeamValidator(view);
 
         var selectedTeamFilePath = fileSelector.SelectTeamFilePath();
         (_playerOneRawTeam, _playerTwoRawTeam) = teamFileLoader.LoadRawTeams(selectedTeamFilePath);

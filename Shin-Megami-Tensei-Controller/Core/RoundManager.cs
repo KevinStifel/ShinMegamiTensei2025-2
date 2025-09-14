@@ -15,11 +15,17 @@ public class RoundManager
 
     public void StartNewRound(int playerId, Board board)
     {
-        _turnManager.StartNewRound();
+        var activeUnits = board.GetAliveUnits(playerId);
+        _turnManager.StartNewRound(activeUnits);
 
-        var samurai = (Samurai)board.GetBoardForPlayer(playerId)[GameConstants.BoardPositions[0]]!;
-        _roundView.ShowRound(playerId, samurai.Name, board);
+        var teamLeaderUnit = board.GetTeamLeaderUnit(playerId);
+        ShowRoundResume(playerId, teamLeaderUnit, board);
+    }
 
-        // 🔹 Aquí después se integrará el ciclo de turnos y acciones
+    private void ShowRoundResume(int playerId, UnitBase teamLeaderUnit, Board board)
+    {
+        _roundView.ShowRound(playerId, teamLeaderUnit, board);
+        _roundView.ShowTurnStatus(_turnManager.FullTurns, _turnManager.BlinkingTurns);
+        _roundView.ShowAttackOrder(_turnManager.AttackOrder);
     }
 }

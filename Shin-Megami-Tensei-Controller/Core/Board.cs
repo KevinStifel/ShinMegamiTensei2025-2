@@ -44,8 +44,22 @@ public class Board
         return playerId == 1 ? _playerOneBoard : _playerTwoBoard;
     }
 
+    public UnitBase GetTeamLeaderUnit(int playerId)
+    {
+        return GetBoardForPlayer(playerId)[GameConstants.BoardPositions[0]]!;
+    }
+
     public List<UnitBase> GetReserveForPlayer(int playerId)
     {
         return playerId == 1 ? _playerOneReserve : _playerTwoReserve;
     }
+    public List<UnitBase> GetAliveUnits(int playerId)
+    {
+        return GetBoardForPlayer(playerId)
+            .Values
+            .Where(unit => unit != null && unit.Stats.HP > 0)
+            .Cast<UnitBase>()
+            .ToList();
+    }
+
 }
