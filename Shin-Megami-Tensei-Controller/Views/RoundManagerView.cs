@@ -2,29 +2,26 @@
 
 namespace Shin_Megami_Tensei;
 
-public class RoundManagerView
+public class RoundManagerView : AbstractView
 {
-    private readonly View _view;
+    public RoundManagerView(View view) : base(view) { }
 
-    public RoundManagerView(View view)
-    {
-        _view = view;
-    }
-
-    public void ShowRound(int playerId, UnitBase teamLeaderUnit, Board board)
+    public void ShowRoundHeader(int playerId, UnitBase teamLeaderUnit)
     {
         ShowSeparator();
-        _view.WriteLine($"Ronda de {teamLeaderUnit.Name} (J{playerId})");
-        ShowSeparator();
-
-        PrintPlayerBoard(board, playerId: 1, samuraiName: GetLeaderName(board, 1));
-        PrintPlayerBoard(board, playerId: 2, samuraiName: GetLeaderName(board, 2));
+        View.WriteLine($"Ronda de {teamLeaderUnit.Name} (J{playerId})");
     }
-    
+
+    public void ShowBothTeams(Board board)
+    {
+        ShowSeparator();
+        PrintPlayerBoard(board, 1, GetLeaderName(board, 1));
+        PrintPlayerBoard(board, 2, GetLeaderName(board, 2));
+    }
+
     private void PrintPlayerBoard(Board board, int playerId, string samuraiName)
     {
-        _view.WriteLine($"Equipo de {samuraiName} (J{playerId})");
-
+        View.WriteLine($"Equipo de {samuraiName} (J{playerId})");
         foreach (var position in GameConstants.BoardPositions)
         {
             var unit = board.GetBoardForPlayer(playerId)[position];
@@ -40,7 +37,6 @@ public class RoundManagerView
         return leader!.Name;
     }
 
-
     private void PrintUnitAtPosition(string position, UnitBase? unit)
     {
         if (unit == null)
@@ -50,38 +46,46 @@ public class RoundManagerView
     }
 
     private void PrintEmptyPosition(string position)
-    {
-        _view.WriteLine($"{position}-");
-    }
+        => View.WriteLine($"{position}-");
 
     private void PrintOccupiedPosition(string position, UnitBase unit)
-    {
-        _view.WriteLine(
-            $"{position}-{unit.Name} HP:{unit.Stats.HP}/{unit.Stats.MaxHP} MP:{unit.Stats.MP}/{unit.Stats.MaxMP}"
-        );
-    }
+        => View.WriteLine($"{position}-{unit.Name} HP:{unit.Stats.HP}/{unit.Stats.MaxHP} MP:{unit.Stats.MP}/{unit.Stats.MaxMP}");
+
     public void ShowTurnStatus(int full, int blinking)
     {
         ShowSeparator();
-        _view.WriteLine($"Full Turns: {full}");
-        _view.WriteLine($"Blinking Turns: {blinking}");
+        View.WriteLine($"Full Turns: {full}");
+        View.WriteLine($"Blinking Turns: {blinking}");
     }
-    
-    public void ShowAttackOrder( IReadOnlyList<UnitBase> attackOrder)
+
+    public void ShowAttackOrder(IReadOnlyList<UnitBase> attackOrder)
     {
         ShowSeparator();
-        _view.WriteLine("Orden:");
-
+        View.WriteLine("Orden:");
         for (int i = 0; i < attackOrder.Count; i++)
-        {
-            var unit = attackOrder[i];
-            _view.WriteLine($"{i + 1}-{unit.Name}");
-        }
+            View.WriteLine($"{i + 1}-{attackOrder[i].Name}");
     }
-
+    public void ShowAvailableActionsForSamurai(UnitBase unit)
+    {
+        ShowSeparator();
+        View.WriteLine($"Seleccione una acción para {unit.Name}");
+        View.WriteLine("1: Atacar");
+        View.WriteLine("2: Disparar");
+        View.WriteLine("3: Usar Habilidad");
+        View.WriteLine("4: Invocar");
+        View.WriteLine("5: Pasar Turno");
+        View.WriteLine("6: Rendirse");
+    }
+    public void ShowAvailableActionsForMonster(UnitBase unit)
+    {
+        ShowSeparator();
+        View.WriteLine($"Seleccione una acción para {unit.Name}");
+        View.WriteLine("1: Atacar");
+        View.WriteLine("2: Usar Habilidad");
+        View.WriteLine("3: Invocar");
+        View.WriteLine("4: Pasar Turno");
+    }
 
     private void ShowSeparator()
-    {
-        _view.WriteLine("----------------------------------------");
-    }
+        => View.WriteLine("----------------------------------------");
 }

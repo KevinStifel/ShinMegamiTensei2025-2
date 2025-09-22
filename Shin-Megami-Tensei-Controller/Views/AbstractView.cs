@@ -4,5 +4,7 @@ namespace Shin_Megami_Tensei;
 
 public abstract class AbstractView(View view)
 {
-    protected readonly View _view = view;
+    protected readonly View View = view;
+    public string ReadUserSelection() =>
+        View.ReadLine();
 }

@@ -15,12 +15,12 @@ public class Board
 
     private Dictionary<string, UnitBase?> InitializeBoard(List<UnitBase> teamUnits, out List<UnitBase> reserveUnits)
     {
-        var board = AssignActiveUnits(teamUnits);
-        reserveUnits = ExtractReserveUnits(teamUnits);
+        var board = AssignActiveUnitsToBoard(teamUnits);
+        reserveUnits = ExtractReserveUnitsFromTeam(teamUnits);
         return board;
     }
 
-    private Dictionary<string, UnitBase?> AssignActiveUnits(List<UnitBase> teamUnits)
+    private Dictionary<string, UnitBase?> AssignActiveUnitsToBoard(List<UnitBase> teamUnits)
     {
         var board = new Dictionary<string, UnitBase?>();
 
@@ -32,7 +32,7 @@ public class Board
         return board;
     }
 
-    private List<UnitBase> ExtractReserveUnits(List<UnitBase> teamUnits)
+    private List<UnitBase> ExtractReserveUnitsFromTeam(List<UnitBase> teamUnits)
     {
         return teamUnits.Count > GameConstants.BoardPositions.Length
             ? teamUnits.Skip(GameConstants.BoardPositions.Length).ToList()

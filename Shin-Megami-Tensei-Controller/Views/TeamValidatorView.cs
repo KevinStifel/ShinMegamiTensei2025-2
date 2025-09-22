@@ -6,5 +6,5 @@ public class TeamValidatorView : AbstractView
     public TeamValidatorView(View view) : base(view) { }
 
     public void ShowInvalidTeams() =>
-        _view.WriteLine("Archivo de equipos inválido");
+        View.WriteLine("Archivo de equipos inválido");
 }
