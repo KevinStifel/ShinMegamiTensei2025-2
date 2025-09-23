@@ -15,8 +15,8 @@ namespace Shin_Megami_Tensei
         {
             return choice switch
             {
-                "attack" => new AttackAction(_view), // ⚔️ Atacar
-                // "shoot"  => new ShootAction(_view),
+                "attack" => new AttackAction(_view),
+                "shoot"  => new ShootAction(_view),
                 // "skill"  => new UseSkillAction(_view),
                 _ => throw new ArgumentException("Opción de acción no válida")
             };

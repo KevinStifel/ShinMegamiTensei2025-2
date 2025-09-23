@@ -33,6 +33,15 @@ public class CombatActionView : AbstractView
         View.WriteLine($"{target.Name} recibe {damage} de daño");
         View.WriteLine($"{target.Name} termina con HP:{target.Stats.HP}/{target.Stats.MaxHP}");
     }
+    
+    public void ShowShootResult(UnitBase shooter, UnitBase target, int damage)
+    {
+        View.WriteLine("----------------------------------------");
+        View.WriteLine($"{shooter.Name} dispara a {target.Name}");
+        View.WriteLine($"{target.Name} recibe {damage} de daño");
+        View.WriteLine($"{target.Name} termina con HP:{target.Stats.HP}/{target.Stats.MaxHP}");
+    }
+
     public void ShowTurnConsumption(int consumedFull, int consumedBlinking, int gainedBlinking)
     {
         View.WriteLine("----------------------------------------");

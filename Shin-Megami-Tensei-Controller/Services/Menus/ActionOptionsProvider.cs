@@ -24,7 +24,7 @@ namespace Shin_Megami_Tensei
                 { "4", "pass" }
             };
 
-        public static ActionOptions CreateFor(UnitBase unit)
+        public static ActionOptions CreateMenuOptions(UnitBase unit)
             => unit is Samurai ? new ActionOptions(SamuraiMap)
                 : new ActionOptions(MonsterMap);
     }

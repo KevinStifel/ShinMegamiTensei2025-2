@@ -9,6 +9,6 @@
             Map = map;
         }
 
-        public string GetActionKeyFor(string menuSelection) => Map[menuSelection]; // asumimos válido
+        public string GetSelectedOption(string menuSelection) => Map[menuSelection];
     }
 }

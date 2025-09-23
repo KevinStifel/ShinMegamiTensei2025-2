@@ -23,8 +23,6 @@ namespace Shin_Megami_Tensei
 
         public void StartNewRound(int currentPlayerId, Board board)
         {
-            if (board == null) throw new ArgumentNullException(nameof(board));
-
             var activeUnits = board.GetAliveUnits(currentPlayerId);
             _turnManager.StartNewRound(activeUnits);
 
@@ -34,7 +32,7 @@ namespace Shin_Megami_Tensei
             while (_turnManager.HasAvailableTurns())
             {
                 ShowRoundResume(board);
-                ProcessPlayerTurn(currentPlayerId, board);
+                ProcessPlayerAttackTurn(currentPlayerId, board);
             }
         }
 
@@ -45,22 +43,22 @@ namespace Shin_Megami_Tensei
             _roundView.ShowAttackOrder(_turnManager.AttackOrder);
         }
 
-        private void ProcessPlayerTurn(int currentPlayerId, Board board)
+        private void ProcessPlayerAttackTurn(int currentPlayerId, Board board)
         {
             var turnActor = _turnManager.AttackOrder.First();
             ShowActionsMenu(turnActor);
 
-            string selectedActionKey = ReadActionKeyFromMenuFor(turnActor);
+            string selectedActionKey = ReadActionKeyFromMenu(turnActor);
 
             var selectedAction = _actionFactory.CreateAction(selectedActionKey);
-            selectedAction.Execute(currentPlayerId, board, _turnManager);
+            selectedAction.ExecuteAction(currentPlayerId, board, _turnManager);
         }
 
-        private string ReadActionKeyFromMenuFor(UnitBase unit)
+        private string ReadActionKeyFromMenu(UnitBase unit)
         {
-            var options = ActionOptionsProvider.CreateFor(unit);
-            string menuSelection = _view.ReadLine();
-            return options.GetActionKeyFor(menuSelection);
+            var options = ActionOptionsProvider.CreateMenuOptions(unit);
+            var menuSelection = _view.ReadLine();
+            return options.GetSelectedOption(menuSelection);
         }
 
         private void ShowActionsMenu(UnitBase unit)

@@ -51,6 +51,11 @@ public class TurnManager
         }
         RotateAttackOrder();
     }
+    
+    public UnitBase GetAttackerOnTurn()
+    {
+        return _attackOrder[0];
+    }
 
     public void ConsumeBlinkingTurn()
     {
