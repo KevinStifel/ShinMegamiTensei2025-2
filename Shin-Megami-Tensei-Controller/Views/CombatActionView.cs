@@ -21,8 +21,11 @@ public class CombatActionView : AbstractView
     public int ReadEnemyTargetIndex(UnitBase attacker, List<UnitBase> aliveEnemies)
     {
         ShowAvailableTargets(attacker, aliveEnemies);
-        string menuSelection = ReadUserSelection();
-        int index = int.Parse(menuSelection) - 1;
+        var menuSelection = ReadUserSelection();
+        var index = int.Parse(menuSelection) - 1;
+        var totalAliveEnemiesCount = aliveEnemies.Count;
+        
+        if (IsCancelOption(index, totalAliveEnemiesCount)) return -1;
         return index;
     }
 
@@ -47,5 +50,37 @@ public class CombatActionView : AbstractView
         View.WriteLine("----------------------------------------");
         View.WriteLine($"Se han consumido {consumedFull} Full Turn(s) y {consumedBlinking} Blinking Turn(s)");
         View.WriteLine($"Se han obtenido {gainedBlinking} Blinking Turn(s)");
+    }
+    
+    public void ShowAvailableSkills(UnitBase caster, IReadOnlyList<Skill> skills)
+    {
+        View.WriteLine("----------------------------------------");
+        View.WriteLine($"Seleccione una habilidad para que {caster.Name} use");
+        for (var i = 0; i < skills.Count; i++)
+        {
+            var s = skills[i];
+            View.WriteLine($"{i + 1}-{s.Name} MP:{s.Cost}");
+        }
+        View.WriteLine($"{skills.Count + 1}-Cancelar");
+    }
+
+    public int ReadSkillIndex(UnitBase caster, IReadOnlyList<Skill> skills)
+    {
+        ShowAvailableSkills(caster, skills);
+
+        var userInput = ReadUserSelection();
+        var selectedOptionIndex = int.Parse(userInput) - 1;
+        var totalSkillsCount = skills.Count;
+
+        if (IsCancelOption(selectedOptionIndex, totalSkillsCount))
+            return -1;
+
+        return selectedOptionIndex;
+    }
+    
+    public void ShowSurrender(UnitBase teamLeader, int playerId)
+    {
+        View.WriteLine("----------------------------------------");
+        View.WriteLine($"{teamLeader.Name} (J{playerId}) se rinde");
     }
 }

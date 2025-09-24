@@ -12,21 +12,21 @@ namespace Shin_Megami_Tensei
             _actionView = new CombatActionView(view);
         }
 
-        public abstract void ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager);
+        public abstract ActionExecutionResult  ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager);
         
         protected static int GetEnemyPlayerId(int currentPlayerId) => currentPlayerId == 1 ? 2 : 1;
-
-        protected UnitBase SelectEnemyTeamUnit(UnitBase attackerOnTurn, Board board, int enemyPlayerId)
+        
+        protected static bool WasCanceledSelection(int selectedIndex) => selectedIndex < 0;
+        
+        protected int SelectEnemyTeamUnitIndex(UnitBase attackerOnTurn, List<UnitBase> enemyTeamAliveUnits)
         {
-            List<UnitBase> enemyTeamAliveUnits = board.GetAliveUnits(enemyPlayerId);
-            int selectedIndex = _actionView.ReadEnemyTargetIndex(attackerOnTurn, enemyTeamAliveUnits);
-            return enemyTeamAliveUnits[selectedIndex];
+            var selectedIndex = _actionView.ReadEnemyTargetIndex(attackerOnTurn, enemyTeamAliveUnits);
+            return selectedIndex;
         }
 
-        protected static int ApplyDamage(UnitBase target, int damage)
+        protected static void ApplyDamage(UnitBase target, int damage)
         {
             target.Stats.TakeDamage(damage);
-            return damage;
         }
 
         protected static void HandleDeathIfNeeded(Board board, int enemyPlayerId, UnitBase target)

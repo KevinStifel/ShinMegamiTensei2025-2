@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei
@@ -21,7 +20,7 @@ namespace Shin_Megami_Tensei
             _optionsProvider = new ActionOptionsProvider();
         }
 
-        public void StartNewRound(int currentPlayerId, Board board)
+        public RoundResult StartNewRound(int currentPlayerId, Board board)
         {
             var activeUnits = board.GetAliveUnits(currentPlayerId);
             _turnManager.StartNewRound(activeUnits);
@@ -32,8 +31,13 @@ namespace Shin_Megami_Tensei
             while (_turnManager.HasAvailableTurns())
             {
                 ShowRoundResume(board);
-                ProcessPlayerAttackTurn(currentPlayerId, board);
+
+                var roundResult = ProcessPlayerAttackTurn(currentPlayerId, board);
+                if (roundResult.DidBattleEnd)
+                    return roundResult;
             }
+
+            return RoundResult.Ongoing();
         }
 
         private void ShowRoundResume(Board board)
@@ -43,15 +47,41 @@ namespace Shin_Megami_Tensei
             _roundView.ShowAttackOrder(_turnManager.AttackOrder);
         }
 
-        private void ProcessPlayerAttackTurn(int currentPlayerId, Board board)
+        private RoundResult ProcessPlayerAttackTurn(int currentPlayerId, Board board)
         {
             var turnActor = _turnManager.AttackOrder.First();
-            ShowActionsMenu(turnActor);
 
-            string selectedActionKey = ReadActionKeyFromMenu(turnActor);
+            while (true)
+            {
+                ShowActionsMenu(turnActor);
 
-            var selectedAction = _actionFactory.CreateAction(selectedActionKey);
-            selectedAction.ExecuteAction(currentPlayerId, board, _turnManager);
+                string selectedActionKey = ReadActionKeyFromMenu(turnActor);
+                var selectedAction = _actionFactory.CreateAction(selectedActionKey);
+
+                ActionExecutionResult actionResult =
+                    selectedAction.ExecuteAction(currentPlayerId, board, _turnManager);
+
+                if (!actionResult.DidAdvanceTurn)
+                    continue;
+
+                if (TryGetWinnerId(board, out int winnerId))
+                    return RoundResult.BattleEnded(winnerId);
+
+                return RoundResult.Ongoing();
+            }
+        }
+
+        private bool TryGetWinnerId(Board board, out int winnerId)
+        {
+            bool p1Alive = board.GetAliveUnits(1).Any();
+            bool p2Alive = board.GetAliveUnits(2).Any();
+
+            if (!p1Alive && !p2Alive) { winnerId = 0; return true; }
+            if (!p1Alive)             { winnerId = 2; return true; }
+            if (!p2Alive)             { winnerId = 1; return true; }
+
+            winnerId = -1;
+            return false;
         }
 
         private string ReadActionKeyFromMenu(UnitBase unit)
