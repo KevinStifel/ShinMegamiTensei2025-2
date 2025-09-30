@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Shin_Megami_Tensei_View;
+﻿using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
@@ -18,20 +17,14 @@ public class BattleManager
 
     public void StartBattle()
     {
-        if (TryAnnounceAndExitIfGameOver())
-            return;
-
         int currentPlayerId = 1;
 
         while (true)
         {
-            RoundResult result = _roundManager.StartNewRound(currentPlayerId, _board);
+            _roundManager.StartNewRound(currentPlayerId, _board);
 
-            if (result.DidBattleEnd)
-            {
-                _battleView.ShowWinner(result.WinnerId, _board);
+            if (IsGameOver())
                 return;
-            }
 
             currentPlayerId = SwitchPlayer(currentPlayerId);
         }
@@ -44,9 +37,12 @@ public class BattleManager
     {
         int winnerId = GetWinnerId();
         if (winnerId == -1) return false;
-
-        _battleView.ShowWinner(winnerId, _board);
         return true;
+    }
+
+    private bool IsGameOver()
+    {
+        return GetWinnerId() != -1;
     }
 
     private int GetWinnerId()

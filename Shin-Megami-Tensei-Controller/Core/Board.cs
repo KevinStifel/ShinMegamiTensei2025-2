@@ -53,7 +53,7 @@
         {
             return GetBoardForPlayer(playerId)
                 .Values
-                .Where(u => u != null && u.Stats.HP > 0)
+                .Where(unit => unit is { Stats.HP: > 0 })
                 .Cast<UnitBase>()
                 .ToList();
         }

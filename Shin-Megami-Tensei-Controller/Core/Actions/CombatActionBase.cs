@@ -12,7 +12,7 @@ namespace Shin_Megami_Tensei
             _actionView = new CombatActionView(view);
         }
 
-        public abstract ActionExecutionResult  ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager);
+        public abstract void ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager);
         
         protected static int GetEnemyPlayerId(int currentPlayerId) => currentPlayerId == 1 ? 2 : 1;
         

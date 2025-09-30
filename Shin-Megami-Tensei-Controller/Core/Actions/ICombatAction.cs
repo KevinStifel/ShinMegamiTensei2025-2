@@ -2,6 +2,6 @@
 {
     public interface ICombatAction
     {
-        ActionExecutionResult ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager);
+        void  ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager);
     }
 }

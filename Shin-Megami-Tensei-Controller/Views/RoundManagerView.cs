@@ -85,6 +85,20 @@ public class RoundManagerView : AbstractView
         View.WriteLine("3: Invocar");
         View.WriteLine("4: Pasar Turno");
     }
+    
+    public void ShowWinner(int winnerId, Board board)
+    {
+        View.WriteLine("----------------------------------------");
+
+        if (winnerId == 0)
+        {
+            View.WriteLine("Empate: ambos equipos fueron derrotados.");
+            return;
+        }
+
+        var leader = board.GetTeamLeaderUnit(winnerId);
+        View.WriteLine($"Ganador: {leader.Name} (J{winnerId})");
+    }
 
     private void ShowSeparator()
         => View.WriteLine("----------------------------------------");

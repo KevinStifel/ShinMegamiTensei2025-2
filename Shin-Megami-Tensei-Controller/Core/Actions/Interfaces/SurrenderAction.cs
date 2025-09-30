@@ -1,40 +1,25 @@
-﻿// Actions/SurrenderAction.cs
-using System.Collections.Generic;
-using Shin_Megami_Tensei_View;
+﻿using Shin_Megami_Tensei_View;
+using Shin_Megami_Tensei;
 
-namespace Shin_Megami_Tensei
+public sealed class SurrenderAction : CombatActionBase
 {
-    public sealed class SurrenderAction : CombatActionBase
+    public SurrenderAction(View view) : base(view) { }
+
+    public override void ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager)
     {
-        public SurrenderAction(View view) : base(view) { }
+        var teamLeader = board.GetTeamLeaderUnit(currentPlayerId);
+        _actionView.ShowSurrender(teamLeader, currentPlayerId);
 
-        public override ActionExecutionResult ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager)
+        foreach (var unit in board.GetBoardForPlayer(currentPlayerId).Values)
         {
-            var teamLeader = board.GetTeamLeaderUnit(currentPlayerId);
+            if (unit is null) continue;
+            if (unit.Stats.HP > 0)
+                unit.Stats.TakeDamage(unit.Stats.HP);
+        }
 
-            _actionView.ShowSurrender(teamLeader, currentPlayerId);
-
-            IReadOnlyDictionary<string, UnitBase?> playerBoard = board.GetBoardForPlayer(currentPlayerId);
-            foreach (var unit in playerBoard.Values)
-            {
-                if (unit is null) continue;
-                if (unit.Stats.HP > 0)
-                {
-                    unit.Stats.TakeDamage(unit.Stats.HP);
-                }
-            }
-
-            // Consumir turnos restantes de la ronda
-            if (turnManager.FullTurns > 0 || turnManager.BlinkingTurns > 0)
-            {
-                turnManager.ApplyTurnDelta(
-                    consumeFull:     turnManager.FullTurns,
-                    consumeBlinking: turnManager.BlinkingTurns,
-                    gainBlinking:    0
-                );
-            }
-
-            return ActionExecutionResult.AdvanceTurn();
+        if (turnManager.FullTurns > 0 || turnManager.BlinkingTurns > 0)
+        {
+            turnManager.ApplyTurnDelta(turnManager.FullTurns, turnManager.BlinkingTurns, 0);
         }
     }
 }

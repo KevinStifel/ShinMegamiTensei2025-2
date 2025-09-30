@@ -9,7 +9,7 @@ public class TeamFactory
         _repository = repository;
     }
 
-    public Samurai BuildSamurai(TeamUnitRaw rawUnit)
+    private Samurai BuildSamurai(TeamUnitRaw rawUnit)
     {
         var samuraiDto = _repository.GetSamurai(rawUnit.Name);
         var skills = BuildSkills(rawUnit.SkillNames);
@@ -23,10 +23,11 @@ public class TeamFactory
     }
 
 
-    public Monster BuildMonster(TeamUnitRaw rawUnit)
+    private Monster BuildMonster(TeamUnitRaw rawUnit)
     {
         var monsterDto = _repository.GetMonster(rawUnit.Name);
         var skills = BuildSkills(monsterDto.Skills);
+        
         return new Monster(
             monsterDto.Name,
             MapStats(monsterDto.Stats),

@@ -20,4 +20,9 @@ public class Skill
         Hits = hits;
         Effect = effect;
     }
+
+    public void ApplyEffect()
+    {
+        
+    }
 }
