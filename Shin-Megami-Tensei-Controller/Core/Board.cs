@@ -1,4 +1,6 @@
-﻿namespace Shin_Megami_Tensei
+﻿using System.Linq;
+
+namespace Shin_Megami_Tensei
 {
     public class Board
     {
@@ -13,8 +15,8 @@
 
         public Board(List<UnitBase> playerOneUnits, List<UnitBase> playerTwoUnits)
         {
-            _playerOneRoster = new List<UnitBase>(playerOneUnits); // E2
-            _playerTwoRoster = new List<UnitBase>(playerTwoUnits); // E2
+            _playerOneRoster = new List<UnitBase>(playerOneUnits);
+            _playerTwoRoster = new List<UnitBase>(playerTwoUnits);
 
             _playerOneBoard = InitializeBoard(playerOneUnits, out _playerOneReserve);
             _playerTwoBoard = InitializeBoard(playerTwoUnits, out _playerTwoReserve);
@@ -41,7 +43,6 @@
 
         public IReadOnlyDictionary<string, UnitBase?> GetBoardForPlayer(int playerId)
             => SelectMutableBoard(playerId);
-        
 
         public UnitBase GetTeamLeaderUnit(int playerId)
             => GetBoardForPlayer(playerId)[GameConstants.BoardPositions[0]]!;
@@ -58,10 +59,9 @@
                 .ToList();
         }
 
-        // E2: útil para construir menús en orden de archivo (revivir, invitation, sabbatma)
+        // E2: útil para construir menús en orden de archivo (revivir, invocar)
         public IReadOnlyList<UnitBase> GetRoster(int playerId)
             => playerId == 1 ? _playerOneRoster : _playerTwoRoster;
-        
 
         public void HandleUnitDeath(int currentPlayerId, UnitBase unit)
         {
@@ -94,28 +94,62 @@
 
         private static bool IsAbsentFromReserve(List<UnitBase> reserve, UnitBase monster)
             => !reserve.Contains(monster);
+
+        public bool HasWinner()
+        {
+            return GetWinner() != BattleOutcome.Ongoing;
+        }
+        
+        public BattleOutcome GetWinner()
+        {
+            if (IsDraw()) return BattleOutcome.Draw;
+            if (HasPlayerTwoLost()) return BattleOutcome.PlayerOneWins;
+            if (HasPlayerOneLost()) return BattleOutcome.PlayerTwoWins;
+
+            return BattleOutcome.Ongoing;
+        }
+
+        private bool IsDraw()
+        {
+            return !IsPlayerAlive(1) && !IsPlayerAlive(2);
+        }
+
+        private bool HasPlayerOneLost()
+        {
+            return !IsPlayerAlive(1) && IsPlayerAlive(2);
+        }
+
+        private bool HasPlayerTwoLost()
+        {
+            return IsPlayerAlive(1) && !IsPlayerAlive(2);
+        }
+
+        private bool IsPlayerAlive(int playerId)
+        {
+            return GetAliveUnits(playerId).Count > 0;
+        }
+
     }
 }
 
+/*
+   // (Útil si luego necesitas saber posición actual de una unidad)
+   public bool TryGetPositionOfUnit(int playerId, UnitBase unit, out string position)
+   {
+       var board = GetBoardForPlayer(playerId);
+       foreach (var kvp in board)
+       {
+           if (ReferenceEquals(kvp.Value, unit))
+           {
+               position = kvp.Key;
+               return true;
+           }
+       }
+       position = string.Empty;
+       return false;
+   }
 
-    /*
-    // (Útil si luego necesitas saber posición actual de una unidad)
-    public bool TryGetPositionOfUnit(int playerId, UnitBase unit, out string position)
-    {
-        var board = GetBoardForPlayer(playerId);
-        foreach (var kvp in board)
-        {
-            if (ReferenceEquals(kvp.Value, unit))
-            {
-                position = kvp.Key;
-                return true;
-            }
-        }
-        position = string.Empty;
-        return false;
-    }
-
-    // (Opcional, útil E2) roster para menús que piden orden del archivo
-    public IReadOnlyList<UnitBase> GetRoster(int playerId)
-        => playerId == 1 ? _playerOneRoster : _playerTwoRoster;
-    */
+   // (Opcional, útil E2) roster para menús que piden orden del archivo
+   public IReadOnlyList<UnitBase> GetRoster(int playerId)
+       => playerId == 1 ? _playerOneRoster : _playerTwoRoster;
+   */

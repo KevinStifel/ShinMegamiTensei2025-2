@@ -20,13 +20,6 @@ namespace Shin_Megami_Tensei
 
         public void StartNewRound(int currentPlayerId, Board board)
         {
-            // 👇 Revisar si ya hay un ganador antes de empezar
-            int? winnerId = CheckForWinner(board);
-            if (winnerId.HasValue)
-            {
-                _roundView.ShowWinner(winnerId.Value, board);
-                return;            }
-
             var activeUnits = board.GetAliveUnits(currentPlayerId);
             _turnManager.StartNewRound(activeUnits);
 
@@ -38,12 +31,11 @@ namespace Shin_Megami_Tensei
                 ShowRoundResume(board);
                 ProcessPlayerAttackTurn(currentPlayerId, board);
 
-                // 👇 Revisar ganador después de cada acción
-                winnerId = CheckForWinner(board);
-                if (winnerId.HasValue)
+                if (board.HasWinner())
                 {
-                    _roundView.ShowWinner(winnerId.Value, board);
-                    return;                }
+                    _roundView.ShowWinner(board.GetWinner(), board);
+                    EndBattle();
+                }
             }
         }
 
@@ -68,29 +60,15 @@ namespace Shin_Megami_Tensei
                 try
                 {
                     selectedAction.ExecuteAction(currentPlayerId, board, _turnManager);
-
-                    int? winnerId = CheckForWinner(board);
-                    if (winnerId.HasValue)
-                    {
-                        return;
-                    }
                     return;
                 }
                 catch (ActionCanceledException) { }
             }
         }
 
-        
-        private int? CheckForWinner(Board board)
+        private void EndBattle()
         {
-            bool p1Alive = board.GetAliveUnits(1).Any();
-            bool p2Alive = board.GetAliveUnits(2).Any();
-
-            if (!p1Alive && !p2Alive) return 0;
-            if (!p1Alive) return 2;
-            if (!p2Alive) return 1;
-
-            return null; 
+            throw new BattleEndedException();
         }
 
         private string ReadActionKeyFromMenu(UnitBase unit)

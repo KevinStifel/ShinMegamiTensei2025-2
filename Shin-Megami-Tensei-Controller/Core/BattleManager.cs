@@ -8,51 +8,29 @@ public class BattleManager
     private readonly RoundManager _roundManager;
     private readonly BattleManagerView _battleView;
 
-    public BattleManager(Board board, List<UnitBase> playerOneUnitList, List<UnitBase> playerTwoUnitList, View view)
+    public BattleManager(Board board, View view)
     {
         _board = board;
         _roundManager = new RoundManager(view);
         _battleView = new BattleManagerView(view);
     }
-
     public void StartBattle()
     {
         int currentPlayerId = 1;
 
         while (true)
         {
-            _roundManager.StartNewRound(currentPlayerId, _board);
-
-            if (IsGameOver())
+            try
+            {
+                _roundManager.StartNewRound(currentPlayerId, _board);
+                currentPlayerId = SwitchCurrentPlayer(currentPlayerId);
+            }
+            catch (BattleEndedException)
+            {
                 return;
-
-            currentPlayerId = SwitchPlayer(currentPlayerId);
+            }
         }
     }
-
-    private static int SwitchPlayer(int currentPlayerId)
+    private static int SwitchCurrentPlayer(int currentPlayerId)
         => currentPlayerId == 1 ? 2 : 1;
-
-    private bool TryAnnounceAndExitIfGameOver()
-    {
-        int winnerId = GetWinnerId();
-        if (winnerId == -1) return false;
-        return true;
-    }
-
-    private bool IsGameOver()
-    {
-        return GetWinnerId() != -1;
-    }
-
-    private int GetWinnerId()
-    {
-        bool playerOneAlive = _board.GetAliveUnits(1).Any();
-        bool playerTwoAlive = _board.GetAliveUnits(2).Any();
-
-        if (!playerOneAlive && !playerTwoAlive) return 0;
-        if (!playerOneAlive) return 2;
-        if (!playerTwoAlive) return 1;
-        return -1;
-    }
 }

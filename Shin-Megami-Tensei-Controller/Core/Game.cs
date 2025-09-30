@@ -25,7 +25,7 @@ public class Game
         var playerTwoUnitList = teamFactory.BuildTeam(_playerTwoRawTeam);
 
         var board = new Board(playerOneUnitList, playerTwoUnitList);
-        _battleManager = new BattleManager(board, playerOneUnitList, playerTwoUnitList, view);
+        _battleManager = new BattleManager(board, view);
     }
 
     public void Play()
