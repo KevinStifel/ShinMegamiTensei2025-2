@@ -19,6 +19,8 @@ namespace Shin_Megami_Tensei
                 "shoot"  => new ShootAction(_view),
                 "skill"  => new UseSkillAction(_view),
                 "surrender" => new SurrenderAction(_view),
+                "pass" => new PassTurnAction(_view),
+                "summon" => new SummonAction(_view),
                 _ => throw new ArgumentException("Opción de acción no válida")
             };
         }

@@ -1,15 +1,11 @@
-﻿using System.Linq;
-
-namespace Shin_Megami_Tensei
+﻿namespace Shin_Megami_Tensei
 {
     public class Board
     {
         private readonly Dictionary<string, UnitBase?> _playerOneBoard;
         private readonly Dictionary<string, UnitBase?> _playerTwoBoard;
-        private readonly List<UnitBase> _playerOneReserve;
-        private readonly List<UnitBase> _playerTwoReserve;
 
-        // E2: se usa para menús/órdenes en el mismo orden del archivo original (revivir, invocar)
+        // Roster original (orden exacto del archivo)
         private readonly List<UnitBase> _playerOneRoster;
         private readonly List<UnitBase> _playerTwoRoster;
 
@@ -18,27 +14,23 @@ namespace Shin_Megami_Tensei
             _playerOneRoster = new List<UnitBase>(playerOneUnits);
             _playerTwoRoster = new List<UnitBase>(playerTwoUnits);
 
-            _playerOneBoard = InitializeBoard(playerOneUnits, out _playerOneReserve);
-            _playerTwoBoard = InitializeBoard(playerTwoUnits, out _playerTwoReserve);
+            _playerOneBoard = InitializeBoard(playerOneUnits);
+            _playerTwoBoard = InitializeBoard(playerTwoUnits);
         }
 
-        private Dictionary<string, UnitBase?> InitializeBoard(List<UnitBase> teamUnits, out List<UnitBase> reserveUnits)
+        private static Dictionary<string, UnitBase?> InitializeBoard(List<UnitBase> teamUnits)
         {
             var board = new Dictionary<string, UnitBase?>(GameConstants.BoardPositions.Length);
-            for (int i = 0; i < GameConstants.BoardPositions.Length; i++)
+            for (var i = 0; i < GameConstants.BoardPositions.Length; i++)
             {
-                string pos = GameConstants.BoardPositions[i];
-                board[pos] = i < teamUnits.Count ? teamUnits[i] : null;
+                var position = GameConstants.BoardPositions[i];
+                board[position] = i < teamUnits.Count ? teamUnits[i] : null;
             }
-
-            reserveUnits = teamUnits.Count > GameConstants.BoardPositions.Length
-                ? teamUnits.Skip(GameConstants.BoardPositions.Length).ToList()
-                : new List<UnitBase>();
-
             return board;
         }
 
-        private Dictionary<string, UnitBase?> SelectMutableBoard(int playerId)
+        // Board mutable por jugador
+        public Dictionary<string, UnitBase?> SelectMutableBoard(int playerId)
             => playerId == 1 ? _playerOneBoard : _playerTwoBoard;
 
         public IReadOnlyDictionary<string, UnitBase?> GetBoardForPlayer(int playerId)
@@ -47,9 +39,15 @@ namespace Shin_Megami_Tensei
         public UnitBase GetTeamLeaderUnit(int playerId)
             => GetBoardForPlayer(playerId)[GameConstants.BoardPositions[0]]!;
 
-        private List<UnitBase> GetReserveForPlayer(int playerId)
-            => playerId == 1 ? _playerOneReserve : _playerTwoReserve;
+        // 🔹 Calcula la reserva dinámicamente: roster – board
+        public List<UnitBase> GetReserveUnitsForPlayer(int playerId)
+        {
+            var roster = GetRoster(playerId);
+            var boardUnits = GetBoardForPlayer(playerId).Values.Where(u => u != null).ToHashSet();
+            return roster.Where(unit => !boardUnits.Contains(unit)).ToList();
+        }
 
+        // Unidades vivas en tablero
         public List<UnitBase> GetAliveUnits(int playerId)
         {
             return GetBoardForPlayer(playerId)
@@ -59,42 +57,38 @@ namespace Shin_Megami_Tensei
                 .ToList();
         }
 
-        // E2: útil para construir menús en orden de archivo (revivir, invocar)
+        // Roster original
         public IReadOnlyList<UnitBase> GetRoster(int playerId)
             => playerId == 1 ? _playerOneRoster : _playerTwoRoster;
 
+        // Manejo de muertes (quitar del board, vuelve implícitamente a la reserva)
         public void HandleUnitDeath(int currentPlayerId, UnitBase unit)
         {
             if (unit is Samurai) return;
-            RemoveMonsterFromBoardToReserve(currentPlayerId, unit);
+            RemoveMonsterFromBoard(currentPlayerId, unit);
         }
 
-        private void RemoveMonsterFromBoardToReserve(int playerId, UnitBase monster)
+        private void RemoveMonsterFromBoard(int playerId, UnitBase monster)
         {
             var board = SelectMutableBoard(playerId);
 
             foreach (var pos in GameConstants.BoardPositions)
             {
-                if (IsMonsterAtPosition(board, pos, monster))
+                if (ReferenceEquals(board[pos], monster))
                 {
                     board[pos] = null;
                     break;
                 }
             }
-
-            var reserve = GetReserveForPlayer(playerId);
-            if (IsAbsentFromReserve(reserve, monster))
-            {
-                reserve.Add(monster);
-            }
+            // No hay que tocar reservas: al no estar en el board,
+            // automáticamente aparece en GetReserveUnitsForPlayer()
         }
 
+        // Helpers
         private static bool IsMonsterAtPosition(Dictionary<string, UnitBase?> board, string pos, UnitBase monster)
             => ReferenceEquals(board[pos], monster);
 
-        private static bool IsAbsentFromReserve(List<UnitBase> reserve, UnitBase monster)
-            => !reserve.Contains(monster);
-
+        // Estado de la partida
         public bool HasWinner()
         {
             return GetWinner() != BattleOutcome.Ongoing;
@@ -104,9 +98,7 @@ namespace Shin_Megami_Tensei
         {
             if (IsDraw()) return BattleOutcome.Draw;
             if (HasPlayerTwoLost()) return BattleOutcome.PlayerOneWins;
-            if (HasPlayerOneLost()) return BattleOutcome.PlayerTwoWins;
-
-            return BattleOutcome.Ongoing;
+            return HasPlayerOneLost() ? BattleOutcome.PlayerTwoWins : BattleOutcome.Ongoing;
         }
 
         private bool IsDraw()
@@ -128,28 +120,5 @@ namespace Shin_Megami_Tensei
         {
             return GetAliveUnits(playerId).Count > 0;
         }
-
     }
 }
-
-/*
-   // (Útil si luego necesitas saber posición actual de una unidad)
-   public bool TryGetPositionOfUnit(int playerId, UnitBase unit, out string position)
-   {
-       var board = GetBoardForPlayer(playerId);
-       foreach (var kvp in board)
-       {
-           if (ReferenceEquals(kvp.Value, unit))
-           {
-               position = kvp.Key;
-               return true;
-           }
-       }
-       position = string.Empty;
-       return false;
-   }
-
-   // (Opcional, útil E2) roster para menús que piden orden del archivo
-   public IReadOnlyList<UnitBase> GetRoster(int playerId)
-       => playerId == 1 ? _playerOneRoster : _playerTwoRoster;
-   */

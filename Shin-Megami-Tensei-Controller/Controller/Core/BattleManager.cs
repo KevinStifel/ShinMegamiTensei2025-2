@@ -6,13 +6,13 @@ public class BattleManager
 {
     private readonly Board _board;
     private readonly RoundManager _roundManager;
-    private readonly BattleManagerView _battleView;
+    //private readonly BattleManagerView _battleView;
 
     public BattleManager(Board board, View view)
     {
         _board = board;
         _roundManager = new RoundManager(view);
-        _battleView = new BattleManagerView(view);
+        //_battleView = new BattleManagerView(view);
     }
     public void StartBattle()
     {

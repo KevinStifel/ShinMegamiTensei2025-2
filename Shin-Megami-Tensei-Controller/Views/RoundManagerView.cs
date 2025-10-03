@@ -88,8 +88,7 @@ public class RoundManagerView : AbstractView
     
     public void ShowWinner(BattleOutcome outcome, Board board)
     {
-        View.WriteLine("----------------------------------------");
-        
+        ShowSeparator();
         int winnerId = (int)outcome;
         var leader = board.GetTeamLeaderUnit(winnerId);
         View.WriteLine($"Ganador: {leader.Name} (J{winnerId})");

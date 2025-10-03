@@ -32,12 +32,7 @@ public class Stats
         Spd = spd;
         Lck = lck;
     }
-
-    public Stats Clone()
-    {
-        var clone = new Stats(MaxHP, MaxMP, Str, Skl, Mag, Spd, Lck);
-        return clone;
-    }
+    
     public void TakeDamage(int amount)
     {
         HP = Math.Max(0, HP - amount);
