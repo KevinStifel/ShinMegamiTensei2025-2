@@ -19,4 +19,10 @@ public static class GameConstants
 
     // ===== Tablero =====
     public static readonly string[] BoardPositions = ["A", "B", "C", "D"];
+    
+    // Damages
+    public const int PhysicalDamageModifier = 54;
+    public const int GunDamageModifier = 80;
+    public const double BaseDamageModifier = 0.0114;
+    
 }

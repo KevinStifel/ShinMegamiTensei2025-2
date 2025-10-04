@@ -12,14 +12,14 @@ public class RoundManagerView : AbstractView
         View.WriteLine($"Ronda de {teamLeaderUnit.Name} (J{playerId})");
     }
 
-    public void ShowBothTeams(Board board)
+    public void ShowBothTeams(BoardManager board)
     {
         ShowSeparator();
         PrintPlayerBoard(board, 1, GetLeaderName(board, 1));
         PrintPlayerBoard(board, 2, GetLeaderName(board, 2));
     }
 
-    private void PrintPlayerBoard(Board board, int playerId, string samuraiName)
+    private void PrintPlayerBoard(BoardManager board, int playerId, string samuraiName)
     {
         View.WriteLine($"Equipo de {samuraiName} (J{playerId})");
         foreach (var position in GameConstants.BoardPositions)
@@ -29,7 +29,7 @@ public class RoundManagerView : AbstractView
         }
     }
 
-    private string GetLeaderName(Board board, int playerId)
+    private string GetLeaderName(BoardManager board, int playerId)
     {
         var playerBoard = board.GetBoardForPlayer(playerId);
         var leaderPosition = GameConstants.BoardPositions[0]; // "A"
@@ -86,7 +86,7 @@ public class RoundManagerView : AbstractView
         View.WriteLine("4: Pasar Turno");
     }
     
-    public void ShowWinner(BattleOutcome outcome, Board board)
+    public void ShowWinner(BattleOutcome outcome, BoardManager board)
     {
         ShowSeparator();
         int winnerId = (int)outcome;

@@ -4,15 +4,13 @@ namespace Shin_Megami_Tensei;
 
 public class BattleManager
 {
-    private readonly Board _board;
     private readonly RoundManager _roundManager;
-    //private readonly BattleManagerView _battleView;
+    private BoardManager _boardManager;
 
     public BattleManager(Board board, View view)
     {
-        _board = board;
+        _boardManager = new BoardManager(board);
         _roundManager = new RoundManager(view);
-        //_battleView = new BattleManagerView(view);
     }
     public void StartBattle()
     {
@@ -22,7 +20,7 @@ public class BattleManager
         {
             try
             {
-                _roundManager.StartNewRound(currentPlayerId, _board);
+                _roundManager.StartNewRound(currentPlayerId, _boardManager);
                 currentPlayerId = SwitchCurrentPlayer(currentPlayerId);
             }
             catch (BattleEndedException)

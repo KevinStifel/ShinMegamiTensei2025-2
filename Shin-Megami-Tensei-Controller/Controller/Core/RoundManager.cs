@@ -18,7 +18,7 @@ namespace Shin_Megami_Tensei
             _actionFactory = new CombatActionFactory(_view);
         }
 
-        public void StartNewRound(int currentPlayerId, Board board)
+        public void StartNewRound(int currentPlayerId, BoardManager board)
         {
             var activeUnits = board.GetAliveUnits(currentPlayerId);
             _turnManager.StartNewRound(activeUnits);
@@ -39,14 +39,14 @@ namespace Shin_Megami_Tensei
             }
         }
 
-        private void ShowRoundResume(Board board)
+        private void ShowRoundResume(BoardManager board)
         {
             _roundView.ShowBothTeams(board);
             _roundView.ShowTurnStatus(_turnManager.FullTurns, _turnManager.BlinkingTurns);
             _roundView.ShowAttackOrder(_turnManager.AttackOrder);
         }
 
-        private void ProcessPlayerAttackTurn(int currentPlayerId, Board board)
+        private void ProcessPlayerAttackTurn(int currentPlayerId, BoardManager board)
         {
             var turnActor = _turnManager.AttackOrder.First();
 

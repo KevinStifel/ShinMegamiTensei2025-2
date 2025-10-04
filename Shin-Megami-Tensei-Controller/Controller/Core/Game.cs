@@ -11,7 +11,6 @@ public class Game
 
     public Game(View view, string teamsFolder)
     {
-        // Inicializamos variables para el contexto del juego
         var fileSelector = new FileSelector(view, teamsFolder);
         var teamFileLoader = new TeamFileLoader();
         var repository = new UnitRepository();

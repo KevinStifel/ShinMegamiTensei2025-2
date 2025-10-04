@@ -7,7 +7,7 @@ namespace Shin_Megami_Tensei
     {
         public AttackAction(View view) : base(view) { }
 
-        public override void ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager)
+        public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
         {
             var attackerOnTurn = turnManager.GetAttackerOnTurn();
             int enemyPlayerId = GetEnemyPlayerId(currentPlayerId);
@@ -29,9 +29,6 @@ namespace Shin_Megami_Tensei
             _actionView.ShowAttackResult(attackerOnTurn, selectedEnemyTeamUnit, damage);
 
             var delta = turnManager.ConsumeActionTurn();
-            Console.WriteLine(turnManager.FullTurns);
-            Console.WriteLine(turnManager.BlinkingTurns);
-            
             _actionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
         }
     }

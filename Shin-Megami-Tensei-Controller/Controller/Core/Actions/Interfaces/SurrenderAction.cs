@@ -5,7 +5,7 @@ public sealed class SurrenderAction : CombatActionBase
 {
     public SurrenderAction(View view) : base(view) { }
 
-    public override void ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager)
+    public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
     {
         var teamLeader = board.GetTeamLeaderUnit(currentPlayerId);
         _actionView.ShowSurrender(teamLeader, currentPlayerId);

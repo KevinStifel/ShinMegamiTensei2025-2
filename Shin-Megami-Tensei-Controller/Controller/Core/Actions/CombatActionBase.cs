@@ -12,7 +12,7 @@ namespace Shin_Megami_Tensei
             _actionView = new CombatActionView(view);
         }
 
-        public abstract void ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager);
+        public abstract void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager);
         
         protected static int GetEnemyPlayerId(int currentPlayerId) => currentPlayerId == 1 ? 2 : 1;
         
@@ -29,7 +29,7 @@ namespace Shin_Megami_Tensei
             target.Stats.TakeDamage(damage);
         }
 
-        protected static void HandleDeathIfNeeded(Board board, int enemyPlayerId, UnitBase target)
+        protected static void HandleDeathIfNeeded(BoardManager board, int enemyPlayerId, UnitBase target)
         {
             if (target.Stats.HP == 0)
             {

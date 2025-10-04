@@ -5,7 +5,7 @@ public sealed class SummonAction : CombatActionBase
 {
     public SummonAction(View view) : base(view) { }
 
-    public override void ExecuteAction(int currentPlayerId, Board board, TurnManager turnManager)
+    public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
     {
         var summoner = turnManager.GetAttackerOnTurn();
         var reserveUnits = board.GetReserveUnitsForPlayer(currentPlayerId);
@@ -45,9 +45,7 @@ public sealed class SummonAction : CombatActionBase
         return reserveUnits[selectedIndex];
     }
 
-    // 🔹 Flujo Samurai: puede poner en slot vacío o reemplazar monstruo
-    // 🔹 Flujo Samurai: puede poner en slot vacío o reemplazar monstruo
-    private UnitBase? SummonBySamurai(Board board, int currentPlayerId, List<UnitBase> reserveUnits, UnitBase monsterToSummon)
+    private UnitBase? SummonBySamurai(BoardManager board, int currentPlayerId, List<UnitBase> reserveUnits, UnitBase monsterToSummon)
     {
         var playerBoard = board.SelectMutableBoard(currentPlayerId);
 
@@ -74,7 +72,7 @@ public sealed class SummonAction : CombatActionBase
     }
 
 // 🔹 Flujo Monstruo: se reemplaza a sí mismo
-    private UnitBase SummonByMonster(Board board, int currentPlayerId, List<UnitBase> reserveUnits, UnitBase summoner, UnitBase monsterToSummon)
+    private UnitBase SummonByMonster(BoardManager board, int currentPlayerId, List<UnitBase> reserveUnits, UnitBase summoner, UnitBase monsterToSummon)
     {
         var playerBoard = board.SelectMutableBoard(currentPlayerId);
         var summonerPosition = playerBoard.First(kvp => ReferenceEquals(kvp.Value, summoner)).Key;

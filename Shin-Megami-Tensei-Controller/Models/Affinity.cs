@@ -6,7 +6,6 @@ public class Affinity
 
     public Affinity(Dictionary<string, string> affinities)
     {
-        // Creo un nuevo diccionario con la información
         _affinities = new Dictionary<string, string>(affinities);
     }
 
