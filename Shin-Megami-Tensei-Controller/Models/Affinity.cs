@@ -9,12 +9,29 @@ public class Affinity
         _affinities = new Dictionary<string, string>(affinities);
     }
 
-    public string GetReaction(string attackType)
-    {
-        return _affinities.ContainsKey(attackType)
-            ? _affinities[attackType]
-            : "-"; // Neutral si no está definido
-    }
+    public string GetReaction(AffinityElement element)
+        {
+            string key = element switch
+            {
+                AffinityElement.Physical => "Phys",
+                AffinityElement.Gun => "Gun",
+                AffinityElement.Fire => "Fire",
+                AffinityElement.Ice => "Ice",
+                AffinityElement.Elec => "Elec",
+                AffinityElement.Force => "Force",
+                AffinityElement.Light => "Light",
+                AffinityElement.Dark => "Dark",
+                AffinityElement.Bind => "Bind",
+                AffinityElement.Sleep => "Sleep",
+                AffinityElement.Sick => "Sick",
+                AffinityElement.Panic => "Panic",
+                AffinityElement.Poison => "Poison",
+                _ => "-"
+            };
+
+            return _affinities.TryGetValue(key, out string value) ? value : "-";
+        }
+
 
     public override string ToString()
     {

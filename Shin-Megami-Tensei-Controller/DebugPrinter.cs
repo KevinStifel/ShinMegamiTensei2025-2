@@ -12,7 +12,7 @@ public static class DebugPrinter
         }
     }
 
-    private static void PrintUnit(UnitBase unit)
+    public static void PrintUnit(UnitBase unit)
     {
         Console.WriteLine($"Nombre: {unit.Name}");
         Console.WriteLine($"HP: {unit.Stats.HP}, MP: {unit.Stats.MP}");

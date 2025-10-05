@@ -29,12 +29,33 @@ namespace Shin_Megami_Tensei
             target.Stats.TakeDamage(damage);
         }
 
+        protected static void Heal(UnitBase target, int heal)
+        {
+            target.Stats.Heal(heal);
+        }
+
         protected static void HandleDeathIfNeeded(BoardManager board, int enemyPlayerId, UnitBase target)
         {
             if (target.Stats.HP == 0)
             {
                 board.HandleUnitDeath(enemyPlayerId, target);
             }
+        }
+
+        protected string GetElementalMessage(AffinityElement element)
+        {
+            return element switch
+            {
+                AffinityElement.Physical => "ataca",
+                AffinityElement.Gun => "dispara",
+                AffinityElement.Fire => "lanza fuego",
+                AffinityElement.Ice => "lanza hielo",
+                AffinityElement.Elec => "lanza electricidad",
+                AffinityElement.Force => "lanza viento",
+                AffinityElement.Light => "ataca con luz",
+                AffinityElement.Dark => "ataca con oscuridad",
+                _ => "ataca"
+            };
         }
     }
 }

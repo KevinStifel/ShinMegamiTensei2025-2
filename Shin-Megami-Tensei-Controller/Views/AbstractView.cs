@@ -9,4 +9,7 @@ public abstract class AbstractView(View view)
         View.ReadLine();
     protected static bool IsCancelOption(int zeroBasedIndex, int itemsCount)
         => zeroBasedIndex == itemsCount;
+
+    protected void ShowSeparator()
+        => View.WriteLine("----------------------------------------");
 }

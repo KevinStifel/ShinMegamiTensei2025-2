@@ -8,22 +8,24 @@ public sealed class SummonAction : CombatActionBase
     public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
     {
         var summoner = turnManager.GetAttackerOnTurn();
-        var reserveUnits = board.GetReserveUnitsForPlayer(currentPlayerId);
+        var reserveUnits = board.GetAliveReserveUnitsForPlayer(currentPlayerId);
 
         // 1️ Seleccionar monstruo de la reserva
         var monsterToSummon = SelectMonsterFromReserve(reserveUnits);
         if (monsterToSummon == null)
             throw new ActionCanceledException();
 
+        
         // 2️ Ejecutar flujo según invocador
+        var playerBoard = board.SelectMutableBoard(currentPlayerId);
         if (summoner is Samurai)
         {
-            var replacedUnit = SummonBySamurai(board, currentPlayerId, reserveUnits, monsterToSummon);
+            var replacedUnit = SummonBySamurai(playerBoard, reserveUnits, monsterToSummon);
             turnManager.UpdateOrderAfterSummon(summoner, monsterToSummon, replacedUnit);
         }
         else
         {
-            var replacedUnit = SummonByMonster(board, currentPlayerId, reserveUnits, summoner, monsterToSummon);
+            var replacedUnit = SummonByMonster(playerBoard, reserveUnits, summoner, monsterToSummon);
             turnManager.UpdateOrderAfterSummon(summoner, monsterToSummon, replacedUnit);
         }
 
@@ -45,10 +47,8 @@ public sealed class SummonAction : CombatActionBase
         return reserveUnits[selectedIndex];
     }
 
-    private UnitBase? SummonBySamurai(BoardManager board, int currentPlayerId, List<UnitBase> reserveUnits, UnitBase monsterToSummon)
+    private UnitBase? SummonBySamurai(Dictionary<string, UnitBase?> playerBoard, List<UnitBase> reserveUnits, UnitBase monsterToSummon)
     {
-        var playerBoard = board.SelectMutableBoard(currentPlayerId);
-
         var summonOptions = GameConstants.BoardPositions
             .Skip(1) // no incluir al Samurai
             .Select(pos => (Position: pos, Occupant: playerBoard[pos]))
@@ -72,9 +72,8 @@ public sealed class SummonAction : CombatActionBase
     }
 
 // 🔹 Flujo Monstruo: se reemplaza a sí mismo
-    private UnitBase SummonByMonster(BoardManager board, int currentPlayerId, List<UnitBase> reserveUnits, UnitBase summoner, UnitBase monsterToSummon)
+    private UnitBase SummonByMonster(Dictionary<string, UnitBase?> playerBoard, List<UnitBase> reserveUnits, UnitBase summoner, UnitBase monsterToSummon)
     {
-        var playerBoard = board.SelectMutableBoard(currentPlayerId);
         var summonerPosition = playerBoard.First(kvp => ReferenceEquals(kvp.Value, summoner)).Key;
 
         // reemplazar directamente

@@ -94,6 +94,4 @@ public class RoundManagerView : AbstractView
         View.WriteLine($"Ganador: {leader.Name} (J{winnerId})");
     }
 
-    private void ShowSeparator()
-        => View.WriteLine("----------------------------------------");
 }

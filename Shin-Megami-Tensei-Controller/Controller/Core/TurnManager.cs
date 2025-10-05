@@ -35,23 +35,6 @@ public class TurnManager
     {
         return _fullTurns > 0 || _blinkingTurns > 0;
     }
-
-    public void ApplyTurnDelta(int consumeFull, int consumeBlinking, int gainBlinking)
-    {
-        if (consumeBlinking > 0)
-        {
-            _blinkingTurns = Math.Max(0, _blinkingTurns - consumeBlinking);
-        }
-        if (consumeFull > 0)
-        {
-            _fullTurns = Math.Max(0, _fullTurns - consumeFull);
-        }
-        if (gainBlinking > 0)
-        {
-            _blinkingTurns += gainBlinking;
-        }
-        RotateAttackOrder();
-    }
     
     public UnitBase GetAttackerOnTurn()
     {
@@ -77,6 +60,23 @@ public class TurnManager
 
         ApplyTurnDelta(1, 0, 0); // si no hay blinking → consume un full
         return new TurnDelta(1, 0, 0);
+    }
+    
+    public void ApplyTurnDelta(int consumeFull, int consumeBlinking, int gainBlinking)
+    {
+        if (consumeBlinking > 0)
+        {
+            _blinkingTurns = Math.Max(0, _blinkingTurns - consumeBlinking);
+        }
+        if (consumeFull > 0)
+        {
+            _fullTurns = Math.Max(0, _fullTurns - consumeFull);
+        }
+        if (gainBlinking > 0)
+        {
+            _blinkingTurns += gainBlinking;
+        }
+        RotateAttackOrder();
     }
 
     public void UpdateOrderAfterSummon(
@@ -135,6 +135,47 @@ public class TurnManager
         ApplyTurnDelta(1, 0, 1); // consume full (no gana blinking)
         return new TurnDelta(1, 0, 1);
     }
+    
+    // Para afinidades:
+    public TurnDelta ApplyAffinityTurnEffect(AffinityBehavior affinity)
+    {
+        var effect = affinity.CalculateTurnEffect();
 
+        // lógica centralizada de consumo
+        int consumedFull = 0;
+        int consumedBlinking = 0;
+        int gainedBlinking = 0;
 
+        if (effect.ConsumedBlinking > 0)
+        {
+            if (_blinkingTurns >= effect.ConsumedBlinking)
+            {
+                consumedBlinking = effect.ConsumedBlinking;
+                _blinkingTurns -= effect.ConsumedBlinking;
+            }
+            else
+            {
+                int remaining = effect.ConsumedBlinking - _blinkingTurns;
+                consumedBlinking = _blinkingTurns;
+                _blinkingTurns = 0;
+                consumedFull = remaining;
+                _fullTurns = Math.Max(0, _fullTurns - remaining);
+            }
+        }
+
+        if (effect.ConsumedFull > 0)
+        {
+            consumedFull += effect.ConsumedFull;
+            _fullTurns = Math.Max(0, _fullTurns - effect.ConsumedFull);
+        }
+
+        if (effect.GainedBlinking > 0)
+        {
+            gainedBlinking = effect.GainedBlinking;
+            _blinkingTurns += effect.GainedBlinking;
+        }
+
+        RotateAttackOrder();
+        return new TurnDelta(consumedFull, consumedBlinking, gainedBlinking);
+    }
 }

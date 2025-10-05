@@ -29,20 +29,40 @@ public class CombatActionView : AbstractView
         return index;
     }
 
-    public void ShowAttackResult(UnitBase attacker, UnitBase target, int damage)
+    public void ShowAttackIntro(UnitBase attacker, UnitBase target, string actionVerb, string affinityReaction)
     {
-        View.WriteLine("----------------------------------------");
-        View.WriteLine($"{attacker.Name} ataca a {target.Name}");
+        ShowSeparator();
+        View.WriteLine($"{attacker.Name} {actionVerb} a {target.Name}");
+        ShowAffinityReaction(attacker, target, affinityReaction);
+    }
+
+    public void ShowAttackOutcome(UnitBase target, int damage)
+    {
         View.WriteLine($"{target.Name} recibe {damage} de daño");
         View.WriteLine($"{target.Name} termina con HP:{target.Stats.HP}/{target.Stats.MaxHP}");
     }
+
     
-    public void ShowShootResult(UnitBase shooter, UnitBase target, int damage)
+    public void ShowAffinityReaction(UnitBase attacker, UnitBase target, string affinityReaction)
     {
-        View.WriteLine("----------------------------------------");
-        View.WriteLine($"{shooter.Name} dispara a {target.Name}");
-        View.WriteLine($"{target.Name} recibe {damage} de daño");
-        View.WriteLine($"{target.Name} termina con HP:{target.Stats.HP}/{target.Stats.MaxHP}");
+        switch (affinityReaction)
+        {
+            case "Wk":
+                View.WriteLine($"{target.Name} es débil contra el ataque de {attacker.Name}");
+                break;
+            case "Rs":
+                View.WriteLine($"{target.Name} es resistente el ataque de {attacker.Name}");
+                break;
+            case "Nu":
+                View.WriteLine($"{target.Name} bloquea el ataque de {attacker.Name}");
+                break;
+            case "Rp":
+                View.WriteLine($"{target.Name} devuelve el ataque de {attacker.Name}");
+                break;
+            case "Dr":
+                View.WriteLine($"{target.Name} absorbe el ataque de {attacker.Name}");
+                break;
+        }
     }
 
     public void ShowTurnConsumption(int consumedFull, int consumedBlinking, int gainedBlinking)
@@ -91,13 +111,22 @@ public class CombatActionView : AbstractView
     {
         View.WriteLine("----------------------------------------");
         View.WriteLine("Seleccione un monstruo para invocar");
-        for (int i = 0; i < reserveUnits.Count; i++)
+
+        List<UnitBase> aliveUnits = reserveUnits
+            .Where(unit => unit.Stats.HP > 0)
+            .ToList();
+
+        for (int i = 0; i < aliveUnits.Count; i++)
         {
-            var unit = reserveUnits[i];
-            View.WriteLine($"{i + 1}-{unit.Name} HP:{unit.Stats.HP}/{unit.Stats.MaxHP} MP:{unit.Stats.MP}/{unit.Stats.MaxMP}");
+            var unit = aliveUnits[i];
+            View.WriteLine(
+                $"{i + 1}-{unit.Name} " +
+                $"HP:{unit.Stats.HP}/{unit.Stats.MaxHP} " +
+                $"MP:{unit.Stats.MP}/{unit.Stats.MaxMP}");
         }
-        View.WriteLine($"{reserveUnits.Count + 1}-Cancelar");
+        View.WriteLine($"{aliveUnits.Count + 1}-Cancelar");
     }
+
     private void ShowSummonPositionMenu(List<(string Position, UnitBase? UnitToReplace)> summonOptions)
     {
         View.WriteLine("----------------------------------------");
@@ -109,7 +138,7 @@ public class CombatActionView : AbstractView
             int displayIndex = optionIndex + 1; // se imprime desde 1, no desde 0
             int humanSlot = optionIndex + 2;   // el "puesto" comienza desde 2 (porque A es el samurái fijo en 1)
 
-            if (unitToReplace == null)
+            if (unitToReplace == null )
             {
                 View.WriteLine($"{displayIndex}-Vacío (Puesto {humanSlot})");
             }

@@ -9,25 +9,47 @@ namespace Shin_Megami_Tensei
 
         public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
         {
-            var attackerOnTurn = turnManager.GetAttackerOnTurn();
+            var attacker = turnManager.GetAttackerOnTurn();
             int enemyPlayerId = GetEnemyPlayerId(currentPlayerId);
 
+            // 1️⃣ Seleccionar objetivo enemigo
             List<UnitBase> enemyTeamAliveUnits = board.GetAliveUnits(enemyPlayerId);
-            int selectedEnemyIndex = SelectEnemyTeamUnitIndex(attackerOnTurn, enemyTeamAliveUnits);
+            int selectedTargetIndex = SelectEnemyTeamUnitIndex(attacker, enemyTeamAliveUnits);
 
-            if (WasCanceledSelection(selectedEnemyIndex))
+            if (WasCanceledSelection(selectedTargetIndex))
                 throw new ActionCanceledException();
 
-            var selectedEnemyTeamUnit = enemyTeamAliveUnits[selectedEnemyIndex];
+            var targetTeamUnit = enemyTeamAliveUnits[selectedTargetIndex];
 
-            int damage = DamageCalculator.CalculateGunDamage(attackerOnTurn);
-            ApplyDamage(selectedEnemyTeamUnit, damage);
-            HandleDeathIfNeeded(board, enemyPlayerId, selectedEnemyTeamUnit);
+            // 2️⃣ Obtener afinidad del objetivo respecto al ataque tipo "Gun"
+            var affinityReaction = targetTeamUnit.Affinity.GetReaction(AffinityElement.Gun);
+            var affinityBehavior = AffinityBehaviorFactory.Create(affinityReaction);
 
-            _actionView.ShowShootResult(attackerOnTurn, selectedEnemyTeamUnit, damage);
+            // 3️⃣ Calcular daño final (daño base físico + efecto de afinidad)
+            int finalDamage = DamageCalculator.CalculateFinalDamage(attacker, affinityBehavior, AffinityElement.Gun);
 
-            var delta = turnManager.ConsumeActionTurn();
+            // 4️⃣ Aplicar daño (o curación si el daño es negativo)
+            if (finalDamage < 0)
+                targetTeamUnit.Stats.Heal(-finalDamage); // daño negativo → cura
+            else
+                targetTeamUnit.Stats.TakeDamage(finalDamage);
+
+            string actionVerb = GetElementalMessage(AffinityElement.Gun);
+            
+            // Mostrar encabezado del ataque y afinidad
+            _actionView.ShowAttackIntro(attacker, targetTeamUnit, actionVerb, affinityReaction);
+
+            // Mostrar resultado del ataque
+            _actionView.ShowAttackOutcome(targetTeamUnit, finalDamage);
+
+
+
+            // 6️⃣ Aplicar efecto en turnos según la afinidad
+            var delta = turnManager.ApplyAffinityTurnEffect(affinityBehavior);
             _actionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
+
+            // 7️⃣ Verificar si el objetivo murió
+            HandleDeathIfNeeded(board, enemyPlayerId, targetTeamUnit);
         }
     }
 }

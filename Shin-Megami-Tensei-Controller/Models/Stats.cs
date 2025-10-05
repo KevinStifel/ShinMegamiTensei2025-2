@@ -37,4 +37,9 @@ public class Stats
     {
         HP = Math.Max(0, HP - amount);
     }
+
+    public void Heal(int amount)
+    {
+        HP = Math.Min(MaxHP, HP + amount);
+    }
 }

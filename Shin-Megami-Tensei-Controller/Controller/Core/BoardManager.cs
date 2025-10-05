@@ -24,6 +24,13 @@
             var boardUnits = GetBoardForPlayer(playerId).Values.Where(u => u != null).ToHashSet();
             return roster.Where(unit => !boardUnits.Contains(unit)).ToList();
         }
+        public List<UnitBase> GetAliveReserveUnitsForPlayer(int playerId)
+        {
+            return GetReserveUnitsForPlayer(playerId)
+                .Where(unit => unit.Stats.HP > 0)
+                .ToList();
+        }
+
 
         public List<UnitBase> GetAliveUnits(int playerId)
         {
