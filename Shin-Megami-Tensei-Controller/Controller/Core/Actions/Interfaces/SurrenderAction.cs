@@ -8,7 +8,7 @@ public sealed class SurrenderAction : CombatActionBase
     public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
     {
         var teamLeader = board.GetTeamLeaderUnit(currentPlayerId);
-        _actionView.ShowSurrender(teamLeader, currentPlayerId);
+        ActionView.ShowSurrender(teamLeader, currentPlayerId);
 
         foreach (var unit in board.GetBoardForPlayer(currentPlayerId).Values)
         {

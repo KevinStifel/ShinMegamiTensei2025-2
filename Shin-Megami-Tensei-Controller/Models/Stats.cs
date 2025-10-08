@@ -4,21 +4,24 @@ namespace Shin_Megami_Tensei;
 
 public class Stats
 {
-    // Valores actuales
+    // ----------------------------
+    // Propiedades principales
+    // ----------------------------
     public int HP { get; private set; }
     public int MP { get; private set; }
 
-    // Valores máximos
     public int MaxHP { get; }
     public int MaxMP { get; }
 
-    // Stats de combate
     public int Str { get; }
     public int Skl { get; }
     public int Mag { get; }
     public int Spd { get; }
     public int Lck { get; }
 
+    // ----------------------------
+    // Constructor
+    // ----------------------------
     [JsonConstructor]
     public Stats(int hp, int mp, int str, int skl, int mag, int spd, int lck)
     {
@@ -32,7 +35,26 @@ public class Stats
         Spd = spd;
         Lck = lck;
     }
-    
+
+    // ----------------------------
+    // Métodos de dominio
+    // ----------------------------
+
+    public bool HasEnoughMP(int cost)
+    {
+        return MP >= cost;
+    }
+
+    public void UseMP(int cost)
+    {
+        MP = Math.Max(0, MP - cost);
+    }
+
+    public void RestoreMP(int amount)
+    {
+        MP = Math.Min(MaxMP, MP + amount);
+    }
+
     public void TakeDamage(int amount)
     {
         HP = Math.Max(0, HP - amount);
@@ -41,5 +63,9 @@ public class Stats
     public void Heal(int amount)
     {
         HP = Math.Min(MaxHP, HP + amount);
+    }
+    public override string ToString()
+    {
+        return $"HP:{HP}/{MaxHP} MP:{MP}/{MaxMP}";
     }
 }

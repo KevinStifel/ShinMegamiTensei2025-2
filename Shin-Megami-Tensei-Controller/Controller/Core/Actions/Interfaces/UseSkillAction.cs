@@ -2,30 +2,67 @@
 using System.Linq;
 using Shin_Megami_Tensei_View;
 
-namespace Shin_Megami_Tensei
+namespace Shin_Megami_Tensei;
+
+public sealed class UseSkillAction : CombatActionBase
 {
-    public class UseSkillAction : CombatActionBase
+    public UseSkillAction(View view) : base(view) { }
+
+    public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
     {
-        public UseSkillAction(View view) : base(view) { }
+        var caster = turnManager.GetAttackerOnTurn();
+        var selectedSkill = PromptSkillSelection(caster);
+        Console.WriteLine(selectedSkill);
 
-        public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
-        {
-            var casterOnTurn = turnManager.GetAttackerOnTurn();
+        if (selectedSkill == null)
+            throw new ActionCanceledException();
 
-            IReadOnlyList<Skill> selectableSkills = GetSelectableSkills(casterOnTurn);
-            int selectedSkillIndex = _actionView.ReadSkillIndex(casterOnTurn, selectableSkills);
+        if (caster.Stats.MP < selectedSkill.Cost)
+            throw new ActionCanceledException();
 
-            if (WasCanceledSelection(selectedSkillIndex))
-                throw new ActionCanceledException();
+        int enemyPlayerId = GetEnemyPlayerId(currentPlayerId);
+        var target = SelectTarget(caster, board, enemyPlayerId);
+        if (target == null)
+            throw new ActionCanceledException();
 
-            // E1: aún no ejecutamos habilidades → por ahora no consume turnos
-            throw new ActionCanceledException(); // seguimos en el menú
-        }
+        UnitStatsManager.ConsumeMP(caster, selectedSkill.Cost);
 
-        private static IReadOnlyList<Skill> GetSelectableSkills(UnitBase caster)
-        {
-            var allSkills = caster is Samurai s ? s.Skills : ((Monster)caster).Skills;
-            return allSkills.Where(sk => sk.Cost <= caster.Stats.MP).ToList();
-        }
+        var element = AffinityMapper.Parse(selectedSkill.Type);
+        var reaction = target.Affinity.GetAffinityReaction(element);
+        var behavior = AffinityBehaviorFactory.Create(reaction);
+        
+        // Llamar a una factory para devolver vista asociada a la affinity
+        var skillInstance = SkillFactory.Create(selectedSkill, behavior, View);
+
+        string verb = GetElementalMessage(element);
+        ActionView.ShowAttackIntro(caster, target, verb, reaction);
+
+        skillInstance.Apply(caster, target, currentPlayerId);
+        
+        var delta = turnManager.ApplyAffinityTurnEffect(behavior);
+        ActionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
+
+        HandleDeathIfNeeded(board, enemyPlayerId, target);
+    }
+    private SkillData? PromptSkillSelection(UnitBase caster)
+    {
+        var available = GetUsableSkills(caster);
+        ActionView.ShowAvailableSkills(caster, available);
+
+        int index = ActionView.ReadSkillIndexFromInput(available);
+        return WasCanceledSelection(index) ? null : available[index];
+    }
+
+    private static IReadOnlyList<SkillData> GetUsableSkills(UnitBase caster)
+    {
+        var allSkills = caster is Samurai s ? s.Skills : ((Monster)caster).Skills;
+        return allSkills.Where(skill => skill.Cost <= caster.Stats.MP).ToList();
+    }
+
+    private UnitBase? SelectTarget(UnitBase caster, BoardManager board, int enemyPlayerId)
+    {
+        var enemies = board.GetAliveUnits(enemyPlayerId);
+        int index = SelectEnemyTeamUnitIndex(caster, enemies);
+        return WasCanceledSelection(index) ? null : enemies[index];
     }
 }

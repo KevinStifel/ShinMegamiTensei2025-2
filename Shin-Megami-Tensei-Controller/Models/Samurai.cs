@@ -2,9 +2,9 @@
 
 public class Samurai : UnitBase
 {
-    public List<Skill> Skills { get; }
+    public List<SkillData> Skills { get; }
 
-    public Samurai(string name, Stats stats, Affinity affinity, List<Skill> skills)
+    public Samurai(string name, Stats stats, Affinity affinity, List<SkillData> skills)
         : base(name, stats, affinity)
     {
         Skills = skills;

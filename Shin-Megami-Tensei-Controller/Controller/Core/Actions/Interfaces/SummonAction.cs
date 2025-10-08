@@ -10,13 +10,10 @@ public sealed class SummonAction : CombatActionBase
         var summoner = turnManager.GetAttackerOnTurn();
         var reserveUnits = board.GetAliveReserveUnitsForPlayer(currentPlayerId);
 
-        // 1️ Seleccionar monstruo de la reserva
         var monsterToSummon = SelectMonsterFromReserve(reserveUnits);
         if (monsterToSummon == null)
             throw new ActionCanceledException();
 
-        
-        // 2️ Ejecutar flujo según invocador
         var playerBoard = board.SelectMutableBoard(currentPlayerId);
         if (summoner is Samurai)
         {
@@ -28,19 +25,14 @@ public sealed class SummonAction : CombatActionBase
             var replacedUnit = SummonByMonster(playerBoard, reserveUnits, summoner, monsterToSummon);
             turnManager.UpdateOrderAfterSummon(summoner, monsterToSummon, replacedUnit);
         }
+        ActionView.ShowSummonResult(monsterToSummon);
 
-        // 3️ Mostrar resultado
-        _actionView.ShowSummonResult(monsterToSummon);
-
-        // 4️ Consumir turnos según reglas
         var delta = turnManager.ConsumeSummonTurn();
-        _actionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
+        ActionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
     }
-
-    // Seleccionar monstruo desde la reserva
     private UnitBase? SelectMonsterFromReserve(List<UnitBase> reserveUnits)
     {
-        int selectedIndex = _actionView.ReadSummonIndex(reserveUnits);
+        int selectedIndex = ActionView.ReadSummonIndex(reserveUnits);
         if (WasCanceledSelection(selectedIndex))
             return null;
 
@@ -54,7 +46,7 @@ public sealed class SummonAction : CombatActionBase
             .Select(pos => (Position: pos, Occupant: playerBoard[pos]))
             .ToList();
 
-        int chosenIndex = _actionView.ReadSummonPositionIndex(summonOptions);
+        int chosenIndex = ActionView.ReadSummonPositionIndex(summonOptions);
         if (WasCanceledSelection(chosenIndex))
             throw new ActionCanceledException();
 

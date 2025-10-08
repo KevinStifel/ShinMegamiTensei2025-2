@@ -6,16 +6,12 @@ public static class GameConstants
     public const string SamuraiFilePath = "data/samurai.json";
     public const string MonsterFilePath = "data/monsters.json";
     public const string SkillsFilePath  = "data/skills.json";
-
-    // ===== Mensajes de Error =====
-    public const string InvalidTeamsMessage = "Archivo de equipos inválido";
-
+    
     // ===== Límites de Reglas =====
     public const int MaxUnitsPerTeam = 8;
     public const int MaxSkillsPerSamurai = 8;
 
     // ===== Prefijos de TXT =====
-    public const string SamuraiPrefix = "[Samurai]";
 
     // ===== Tablero =====
     public static readonly string[] BoardPositions = ["A", "B", "C", "D"];

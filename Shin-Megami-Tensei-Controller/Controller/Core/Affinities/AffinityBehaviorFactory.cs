@@ -4,9 +4,6 @@ public static class AffinityBehaviorFactory
 {
     public static AffinityBehavior Create(string reaction)
     {
-        if (string.IsNullOrWhiteSpace(reaction))
-            return new NeutralAffinityBehavior();
-
         string normalized = reaction.Trim().ToLower();
 
         return normalized switch

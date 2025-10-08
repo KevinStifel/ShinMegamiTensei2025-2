@@ -2,9 +2,9 @@
 
 public class Monster : UnitBase
 {
-    public List<Skill> Skills { get; }
+    public List<SkillData> Skills { get; }
 
-    public Monster(string name, Stats stats, Affinity affinity, List<Skill> skills)
+    public Monster(string name, Stats stats, Affinity affinity, List<SkillData> skills)
         : base(name, stats, affinity)
     {
         Skills = skills;

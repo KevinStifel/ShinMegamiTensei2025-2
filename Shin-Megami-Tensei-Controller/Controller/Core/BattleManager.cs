@@ -11,6 +11,8 @@ public class BattleManager
     {
         _boardManager = new BoardManager(board);
         _roundManager = new RoundManager(view);
+        PlayerRegistry.RegisterPlayer(1);
+        PlayerRegistry.RegisterPlayer(2);
     }
     public void StartBattle()
     {

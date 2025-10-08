@@ -5,11 +5,13 @@ namespace Shin_Megami_Tensei
 {
     public abstract class CombatActionBase : ICombatAction
     {
-        protected readonly CombatActionView _actionView;
+        protected readonly CombatActionView ActionView;
+        protected readonly View View;
 
         protected CombatActionBase(View view)
         {
-            _actionView = new CombatActionView(view);
+            ActionView = new CombatActionView(view);
+            View = view;
         }
 
         public abstract void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager);
@@ -18,12 +20,6 @@ namespace Shin_Megami_Tensei
         
         protected static bool WasCanceledSelection(int selectedIndex) => selectedIndex < 0;
         
-        protected int SelectEnemyTeamUnitIndex(UnitBase attackerOnTurn, List<UnitBase> enemyTeamAliveUnits)
-        {
-            var selectedIndex = _actionView.ReadEnemyTargetIndex(attackerOnTurn, enemyTeamAliveUnits);
-            return selectedIndex;
-        }
-
         protected static void ApplyDamage(UnitBase target, int damage)
         {
             target.Stats.TakeDamage(damage);
@@ -33,6 +29,19 @@ namespace Shin_Megami_Tensei
         {
             target.Stats.Heal(heal);
         }
+        
+        protected int SelectEnemyTeamUnitIndex(UnitBase attacker, List<UnitBase> enemyUnits)
+        {
+            ActionView.ShowAvailableTargets(attacker, enemyUnits);
+
+            var input = ActionView.ReadUserSelection();
+            if (!int.TryParse(input, out int index))
+                return -1;
+
+            index -= 1;
+            return index >= 0 && index < enemyUnits.Count ? index : -1;
+        }
+
 
         protected static void HandleDeathIfNeeded(BoardManager board, int enemyPlayerId, UnitBase target)
         {
@@ -54,7 +63,7 @@ namespace Shin_Megami_Tensei
                 AffinityElement.Force => "lanza viento",
                 AffinityElement.Light => "ataca con luz",
                 AffinityElement.Dark => "ataca con oscuridad",
-                _ => "ataca"
+                _ => "usa una habilidad"
             };
         }
     }

@@ -21,35 +21,25 @@ namespace Shin_Megami_Tensei
             var targetTeamUnit = enemyUnits[selectedIndex];
 
             // 1️⃣ Determinar afinidad
-            var affinityReaction = targetTeamUnit.Affinity.GetReaction(AffinityElement.Physical);
+            var affinityReaction = targetTeamUnit.Affinity.GetAffinityReaction(AffinityElement.Physical);
             var affinityBehavior = AffinityBehaviorFactory.Create(affinityReaction);
+            
+            string verb = GetElementalMessage(AffinityElement.Physical);
+            ActionView.ShowAttackIntro(attacker, targetTeamUnit, verb, affinityReaction);
 
-            // 2️⃣ Calcular daño
             int finalDamage = DamageCalculator.CalculateFinalDamage(attacker, affinityBehavior, AffinityElement.Physical);
 
-            // 3️⃣ Aplicar daño o curación
-            if (finalDamage < 0)
-                targetTeamUnit.Stats.Heal(-finalDamage);
-            else
-                targetTeamUnit.Stats.TakeDamage(finalDamage);
+            var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View);
+
             
-            // 4️⃣ Mostrar resultado visual
-            string actionVerb = GetElementalMessage(AffinityElement.Physical);
-            // Mostrar encabezado del ataque y afinidad
-            _actionView.ShowAttackIntro(attacker, targetTeamUnit, actionVerb, affinityReaction);
-
-            // Mostrar resultado del ataque
-            _actionView.ShowAttackOutcome(targetTeamUnit, finalDamage);
-
-
-
-            // 6️⃣ Aplicar turnos según afinidad
+            affinityBehavior.ApplyEffect(attacker, targetTeamUnit, finalDamage);
+            affinityView.ShowAffinityReaction(attacker, targetTeamUnit, finalDamage);
+            
             var delta = turnManager.ApplyAffinityTurnEffect(affinityBehavior);
-            _actionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
+            ActionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
 
             // 7️⃣ Revisar muerte
             HandleDeathIfNeeded(board, enemyPlayerId, targetTeamUnit);
         }
-        
     }
 }

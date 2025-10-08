@@ -4,9 +4,17 @@ public sealed class RepelAffinityBehavior : AffinityBehavior
 {
     public override AffinityType Type => AffinityType.Repel;
 
-    public override int ModifyDamage(int baseDamage) => baseDamage; 
-    // Se devuelve al atacante en otro paso
+    public override double ModifyDamage(double baseDamage) => baseDamage;
+    
+    public override void ApplyEffect(UnitBase caster, UnitBase target, int damage)
+    {
+        // Refleja el daño al atacante
+        caster.Stats.TakeDamage(damage);
+    }
 
-    public override (int, int, int) CalculateTurnEffect() => (99, 99, 0);
-    // Consume todos los turnos (Full Turn)
+    // Consume todos los turnos disponibles (Full + Blinking)
+    public override TurnManager.TurnDelta CalculateTurnEffect(int fullTurns, int blinkingTurns)
+    {
+        return new TurnManager.TurnDelta(fullTurns, blinkingTurns, 0);
+    }
 }

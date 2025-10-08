@@ -6,7 +6,7 @@ public class CombatActionView : AbstractView
 {
     public CombatActionView(View view) : base(view) { }
 
-    private void ShowAvailableTargets(UnitBase attacker, List<UnitBase> enemies)
+    public void ShowAvailableTargets(UnitBase attacker, List<UnitBase> enemies)
     {
         View.WriteLine("----------------------------------------");
         View.WriteLine($"Seleccione un objetivo para {attacker.Name}");
@@ -18,53 +18,11 @@ public class CombatActionView : AbstractView
         View.WriteLine($"{enemies.Count + 1}-Cancelar");
     }
     
-    public int ReadEnemyTargetIndex(UnitBase attacker, List<UnitBase> aliveEnemies)
-    {
-        ShowAvailableTargets(attacker, aliveEnemies);
-        var menuSelection = ReadUserSelection();
-        var index = int.Parse(menuSelection) - 1;
-        var totalAliveEnemiesCount = aliveEnemies.Count;
-        
-        if (IsCancelOption(index, totalAliveEnemiesCount)) return -1;
-        return index;
-    }
-
     public void ShowAttackIntro(UnitBase attacker, UnitBase target, string actionVerb, string affinityReaction)
     {
         ShowSeparator();
         View.WriteLine($"{attacker.Name} {actionVerb} a {target.Name}");
-        ShowAffinityReaction(attacker, target, affinityReaction);
     }
-
-    public void ShowAttackOutcome(UnitBase target, int damage)
-    {
-        View.WriteLine($"{target.Name} recibe {damage} de daño");
-        View.WriteLine($"{target.Name} termina con HP:{target.Stats.HP}/{target.Stats.MaxHP}");
-    }
-
-    
-    public void ShowAffinityReaction(UnitBase attacker, UnitBase target, string affinityReaction)
-    {
-        switch (affinityReaction)
-        {
-            case "Wk":
-                View.WriteLine($"{target.Name} es débil contra el ataque de {attacker.Name}");
-                break;
-            case "Rs":
-                View.WriteLine($"{target.Name} es resistente el ataque de {attacker.Name}");
-                break;
-            case "Nu":
-                View.WriteLine($"{target.Name} bloquea el ataque de {attacker.Name}");
-                break;
-            case "Rp":
-                View.WriteLine($"{target.Name} devuelve el ataque de {attacker.Name}");
-                break;
-            case "Dr":
-                View.WriteLine($"{target.Name} absorbe el ataque de {attacker.Name}");
-                break;
-        }
-    }
-
     public void ShowTurnConsumption(int consumedFull, int consumedBlinking, int gainedBlinking)
     {
         View.WriteLine("----------------------------------------");
@@ -73,7 +31,7 @@ public class CombatActionView : AbstractView
     }
     
     // Skills:
-    private void ShowAvailableSkills(UnitBase caster, IReadOnlyList<Skill> skills)
+    public void ShowAvailableSkills(UnitBase caster, IReadOnlyList<SkillData> skills)
     {
         View.WriteLine("----------------------------------------");
         View.WriteLine($"Seleccione una habilidad para que {caster.Name} use");
@@ -85,10 +43,8 @@ public class CombatActionView : AbstractView
         View.WriteLine($"{skills.Count + 1}-Cancelar");
     }
 
-    public int ReadSkillIndex(UnitBase caster, IReadOnlyList<Skill> skills)
+    public int ReadSkillIndexFromInput(IReadOnlyList<SkillData> skills)
     {
-        ShowAvailableSkills(caster, skills);
-
         var userInput = ReadUserSelection();
         var selectedOptionIndex = int.Parse(userInput) - 1;
         var totalSkillsCount = skills.Count;

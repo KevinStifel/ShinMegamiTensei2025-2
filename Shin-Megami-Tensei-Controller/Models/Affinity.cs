@@ -9,7 +9,7 @@ public class Affinity
         _affinities = new Dictionary<string, string>(affinities);
     }
 
-    public string GetReaction(AffinityElement element)
+    public string GetAffinityReaction(AffinityElement element)
         {
             string key = element switch
             {
@@ -29,9 +29,8 @@ public class Affinity
                 _ => "-"
             };
 
-            return _affinities.TryGetValue(key, out string value) ? value : "-";
+            return _affinities.GetValueOrDefault(key, "-");
         }
-
 
     public override string ToString()
     {

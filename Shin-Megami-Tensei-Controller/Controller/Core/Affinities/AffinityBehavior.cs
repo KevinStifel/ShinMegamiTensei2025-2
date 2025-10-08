@@ -3,12 +3,9 @@
 public abstract class AffinityBehavior
 {
     public abstract AffinityType Type { get; }
+    public abstract double ModifyDamage(double baseDamage);
+    
+    public abstract void ApplyEffect(UnitBase caster, UnitBase target, int damage);
 
-    // Nuevo método abstracto para modificar el daño
-    public abstract int ModifyDamage(int baseDamage);
-
-    // Ya existente: calcular efecto sobre los turnos
-    public abstract (int ConsumedFull, int ConsumedBlinking, int GainedBlinking) CalculateTurnEffect();
-
-    public virtual string GetAffinityReactionText() => Type.ToString().ToUpper();
+    public abstract TurnManager.TurnDelta CalculateTurnEffect(int fullTurns, int blinkingTurns);
 }
