@@ -1,29 +1,24 @@
-﻿using Shin_Megami_Tensei_View;
+﻿using System.Collections.Generic;
+using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
 public abstract class TargetSelectorBase
 {
-    protected readonly View View;
+    protected readonly TargetSelectorViewBase SelectorView;
     protected readonly BoardManager Board;
 
-    protected TargetSelectorBase(View view, BoardManager board)
+    protected TargetSelectorBase(TargetSelectorViewBase selectorView, BoardManager board)
     {
-        View = view;
+        SelectorView = selectorView;
         Board = board;
     }
 
-    public UnitBase? SelectTarget(UnitBase caster, int currentPlayerId)
-    {
-        var candidates = GetCandidates(caster, currentPlayerId);
+    public abstract UnitBase? SelectTarget(UnitBase caster, int currentPlayerId);
 
-        if (candidates == null || candidates.Count == 0)
-            return null;
+    protected int ReadTargetIndex(List<UnitBase> candidates)
+        => SelectorView.ReadTargetIndex(candidates.Count);
 
-        int index = View.ReadTargetIndex(candidates);
-        return index < 0 ? null : candidates[index];
-    }
-
-    // 🔹 Método abstracto que define qué unidades se muestran
-    protected abstract List<UnitBase> GetCandidates(UnitBase caster, int currentPlayerId);
+    protected static bool WasCanceledSelection(int index)
+        => index < 0;
 }

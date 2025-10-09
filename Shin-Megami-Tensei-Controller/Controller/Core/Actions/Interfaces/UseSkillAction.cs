@@ -55,7 +55,7 @@ public sealed class UseSkillAction : CombatActionBase
     {
         var allSkills = caster is Samurai s ? s.Skills : ((Monster)caster).Skills;
         return allSkills.Where(skill => skill.Cost <= caster.Stats.MP).ToList();
-    }
+    } 
 
     private UnitBase? SelectTarget(UnitBase caster, BoardManager board, int enemyPlayerId)
     {

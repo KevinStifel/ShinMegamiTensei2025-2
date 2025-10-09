@@ -1,14 +1,24 @@
-﻿using Shin_Megami_Tensei_View;
+﻿using System.Collections.Generic;
+using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
 public sealed class AllySelector : TargetSelectorBase
 {
-    public AllySelector(View view, BoardManager board)
-        : base(view, board) { }
+    private readonly AllySelectorView _selectorView;
 
-    protected override List<UnitBase> GetCandidates(UnitBase caster, int currentPlayerId)
+    public AllySelector(BoardManager board, AllySelectorView view)
+        : base(view, board)
     {
-        return Board.GetAliveUnits(currentPlayerId);
+        _selectorView = view;
+    }
+
+    public override UnitBase? SelectTarget(UnitBase caster, int currentPlayerId)
+    {
+        List<UnitBase> allies = Board.GetAliveUnits(currentPlayerId);
+        _selectorView.ShowAvailableTargets(caster, allies);
+
+        int index = ReadTargetIndex(allies);
+        return WasCanceledSelection(index) ? null : allies[index];
     }
 }

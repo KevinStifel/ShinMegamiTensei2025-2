@@ -9,7 +9,7 @@ public abstract class EffectBase
     protected readonly View View;
 
     // 🔹 Nuevo: contador interno para multi-hits
-    private int _remainingHits = 0;
+    private int _remainingHits;
 
     protected EffectBase(AffinityBehavior behavior, View view)
     {

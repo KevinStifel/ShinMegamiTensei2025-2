@@ -17,12 +17,6 @@ public class CombatActionView : AbstractView
         }
         View.WriteLine($"{enemies.Count + 1}-Cancelar");
     }
-    
-    public void ShowAttackIntro(UnitBase attacker, UnitBase target, string actionVerb)
-    {
-        ShowSeparator();
-        View.WriteLine($"{attacker.Name} {actionVerb} a {target.Name}");
-    }
     public void ShowTurnConsumption(int consumedFull, int consumedBlinking, int gainedBlinking)
     {
         View.WriteLine("----------------------------------------");

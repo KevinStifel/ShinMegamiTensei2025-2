@@ -1,14 +1,25 @@
-﻿using Shin_Megami_Tensei_View;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
 public sealed class DeadAllySelector : TargetSelectorBase
 {
-    public DeadAllySelector(View view, BoardManager board)
-        : base(view, board) { }
+    private readonly DeadAllySelectorView _selectorView;
 
-    protected override List<UnitBase> GetCandidates(UnitBase caster, int currentPlayerId)
+    public DeadAllySelector(BoardManager board, DeadAllySelectorView view)
+        : base(view, board)
     {
-        return Board.GetDeadUnits(currentPlayerId);
+        _selectorView = view;
+    }
+
+    public override UnitBase? SelectTarget(UnitBase caster, int currentPlayerId)
+    {
+        List<UnitBase> deadAllies = Board.GetDeadUnits(currentPlayerId);
+        _selectorView.ShowAvailableTargets(caster, deadAllies);
+
+        int index = ReadTargetIndex(deadAllies);
+        return WasCanceledSelection(index) ? null : deadAllies[index];
     }
 }

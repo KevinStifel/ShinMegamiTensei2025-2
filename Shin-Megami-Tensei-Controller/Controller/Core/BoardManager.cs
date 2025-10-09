@@ -40,6 +40,25 @@
                 .Cast<UnitBase>()
                 .ToList();
         }
+        public List<UnitBase> GetDeadUnits(int playerId)
+        {
+            var deadUnits = new List<UnitBase>();
+
+            // 1️⃣ Revisar el samurái (posición A del tablero)
+            var leader = GetTeamLeaderUnit(playerId);
+            if (leader.Stats.HP == 0)
+                deadUnits.Add(leader);
+
+            // 2️⃣ Revisar los monstruos muertos de la reserva
+            var reserveUnits = GetReserveUnitsForPlayer(playerId);
+            foreach (var unit in reserveUnits)
+            {
+                if (unit.Stats.HP == 0)
+                    deadUnits.Add(unit);
+            }
+            return deadUnits;
+        }
+
 
         private IReadOnlyList<UnitBase> GetRoster(int playerId)
             => playerId == 1 ? _board.PlayerOneRoster : _board.PlayerTwoRoster;
