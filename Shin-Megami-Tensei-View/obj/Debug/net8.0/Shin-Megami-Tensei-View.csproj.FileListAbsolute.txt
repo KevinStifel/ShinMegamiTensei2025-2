@@ -66,3 +66,15 @@ C:\Users\pc\Desktop\Detallado 2025-2\Proyecto\Proyecto - Actual 2.0\ShinMegamiTe
 C:\Users\pc\Desktop\Detallado 2025-2\Proyecto\Proyecto - Actual 2.0\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\refint\Shin-Megami-Tensei-View.dll
 C:\Users\pc\Desktop\Detallado 2025-2\Proyecto\Proyecto - Actual 2.0\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\Shin-Megami-Tensei-View.pdb
 C:\Users\pc\Desktop\Detallado 2025-2\Proyecto\Proyecto - Actual 2.0\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\ref\Shin-Megami-Tensei-View.dll
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\bin\Debug\net8.0\Shin-Megami-Tensei-View.deps.json
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\bin\Debug\net8.0\Shin-Megami-Tensei-View.dll
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\bin\Debug\net8.0\Shin-Megami-Tensei-View.pdb
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\Shin-Megami-Tensei-View.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\Shin-Megami-Tensei-View.AssemblyInfoInputs.cache
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\Shin-Megami-Tensei-View.AssemblyInfo.cs
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\Shin-Megami-Tensei-View.csproj.CoreCompileInputs.cache
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\Shin-Megami-Tensei-View.sourcelink.json
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\Shin-Megami-Tensei-View.dll
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\refint\Shin-Megami-Tensei-View.dll
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\Shin-Megami-Tensei-View.pdb
+C:\Users\kstif\Escritorio\Proyecto\ShinMegamiTensei2025-2\Shin-Megami-Tensei-View\obj\Debug\net8.0\ref\Shin-Megami-Tensei-View.dll

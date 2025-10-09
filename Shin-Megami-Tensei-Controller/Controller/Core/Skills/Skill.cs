@@ -1,45 +1,68 @@
-﻿namespace Shin_Megami_Tensei;
+﻿using Shin_Megami_Tensei_View;
+
+namespace Shin_Megami_Tensei;
 
 public class Skill
 {
     private readonly SkillData _skillData;
     private readonly EffectBase _effect;
+    private readonly TargetSelectorBase _targetSelector;
 
-    public Skill(SkillData skillData, EffectBase effect)
+    public Skill(SkillData skillData, EffectBase effect, TargetSelectorBase targetSelector)
     {
         _skillData = skillData;
         _effect = effect;
+        _targetSelector = targetSelector;
     }
 
-    public void Apply(UnitBase caster, UnitBase target, int currentPlayerId)
+    public void Apply(UnitBase caster, int currentPlayerId, BoardManager board, TurnManager turnManager, View view)
     {
+        // 1️⃣ Seleccionar objetivo
+        UnitBase? target = _targetSelector.SelectTarget(caster, currentPlayerId);
+        if (target == null)
+            throw new ActionCanceledException();
+
+        // 2️⃣ Registrar jugador y calcular hits
         PlayerRegistry.RegisterPlayer(currentPlayerId);
         int k = PlayerRegistry.GetSkillCount(currentPlayerId);
         int hits = CalculateHits(_skillData.Hits, k);
-        
-        ApplySkillMultipleTimes(hits, caster, target);
-        
-        PlayerRegistry.IncrementSkillCount(currentPlayerId);
-    }
-    private void ApplySkillMultipleTimes(int hits, UnitBase caster, UnitBase target)
-    {
+
         _effect.SetRemainingHits(hits);
+
+        // 3️⃣ Aplicar todos los hits
         for (int i = 0; i < hits; i++)
         {
             _effect.ApplyEffect(caster, target, _skillData);
         }
+
+        PlayerRegistry.IncrementSkillCount(currentPlayerId);
+
+        // 4️⃣ Calcular afinidad
+        var element = AffinityMapper.Parse(_skillData.Type);
+        var reaction = target.Affinity.GetAffinityReaction(element);
+        var behavior = AffinityBehaviorFactory.Create(reaction);
+
+        // meter dentro de effect
+        var delta = turnManager.ApplyAffinityTurnEffect(behavior);
+        view.WriteLine("----------------------------------------");
+        view.WriteLine($"Se han consumido {delta.ConsumedFull} Full Turn(s) y {delta.ConsumedBlinking} Blinking Turn(s)");
+        view.WriteLine($"Se han obtenido {delta.GainedBlinking} Blinking Turn(s)");
+
+        // 6️⃣ Verificar muerte y limpiar del tablero si es necesario
+        int enemyPlayerId = currentPlayerId == 1 ? 2 : 1; 
+        HandleDeathIfNeeded(board, enemyPlayerId, target);
     }
 
-    private int CalculateHits(string hitsString, int k)
+    private static int CalculateHits(string hitsString, int k)
     {
         if (string.IsNullOrWhiteSpace(hitsString))
             return 1;
 
-        // Caso fijo: "2"
+        // Caso fijo (por ejemplo "2")
         if (!hitsString.Contains('-'))
             return int.TryParse(hitsString, out int fixedHits) ? fixedHits : 1;
 
-        // Caso variable: "1-3"
+        // Caso variable (por ejemplo "1-3")
         var parts = hitsString.Split('-');
         if (parts.Length != 2) return 1;
 
@@ -49,7 +72,13 @@ public class Skill
         int offset = k % (b - a + 1);
         int result = a + offset;
 
-        //Console.WriteLine($"[DEBUG] Hits calculados: {result} (A={a}, B={b}, K={k}, Offset={offset})");
         return result;
+    }
+    protected static void HandleDeathIfNeeded(BoardManager board, int enemyPlayerId, UnitBase target)
+    {
+        if (target.Stats.HP == 0)
+        {
+            board.HandleUnitDeath(enemyPlayerId, target);
+        }
     }
 }

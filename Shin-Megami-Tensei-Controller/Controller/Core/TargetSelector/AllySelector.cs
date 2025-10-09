@@ -5,18 +5,15 @@ namespace Shin_Megami_Tensei;
 
 public sealed class AllySelector : TargetSelectorBase
 {
-    private readonly AllySelectorView _selectorView;
-
-    public AllySelector(BoardManager board, AllySelectorView view)
-        : base(view, board)
+    public AllySelector(View view, BoardManager board)
+        : base(view, board, new AllySelectorView(view))
     {
-        _selectorView = view;
     }
 
     public override UnitBase? SelectTarget(UnitBase caster, int currentPlayerId)
     {
         List<UnitBase> allies = Board.GetAliveUnits(currentPlayerId);
-        _selectorView.ShowAvailableTargets(caster, allies);
+        SelectorView.ShowAvailableTargets(caster, allies);
 
         int index = ReadTargetIndex(allies);
         return WasCanceledSelection(index) ? null : allies[index];

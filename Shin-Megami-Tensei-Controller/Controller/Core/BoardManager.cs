@@ -30,8 +30,7 @@
                 .Where(unit => unit.Stats.HP > 0)
                 .ToList();
         }
-
-
+        
         public List<UnitBase> GetAliveUnits(int playerId)
         {
             return GetBoardForPlayer(playerId)

@@ -7,11 +7,13 @@ public abstract class TargetSelectorBase
 {
     protected readonly TargetSelectorViewBase SelectorView;
     protected readonly BoardManager Board;
+    protected readonly View View;
 
-    protected TargetSelectorBase(TargetSelectorViewBase selectorView, BoardManager board)
+    protected TargetSelectorBase(View view, BoardManager board, TargetSelectorViewBase selectorView)
     {
-        SelectorView = selectorView;
+        View = view;
         Board = board;
+        SelectorView = selectorView;
     }
 
     public abstract UnitBase? SelectTarget(UnitBase caster, int currentPlayerId);

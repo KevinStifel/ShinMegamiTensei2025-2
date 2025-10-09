@@ -20,26 +20,24 @@ public sealed class UseSkillAction : CombatActionBase
         if (caster.Stats.MP < selectedSkill.Cost)
             throw new ActionCanceledException();
 
-        int enemyPlayerId = GetEnemyPlayerId(currentPlayerId);
-        var target = SelectTarget(caster, board, enemyPlayerId);
-        if (target == null)
-            throw new ActionCanceledException();
+        //int enemyPlayerId = GetEnemyPlayerId(currentPlayerId);
+        //var target = SelectTarget(caster, board, enemyPlayerId);
+        //if (target == null)
+        //    throw new ActionCanceledException();
 
         UnitStatsManager.ConsumeMP(caster, selectedSkill.Cost);
-
-        var element = AffinityMapper.Parse(selectedSkill.Type);
-        var reaction = target.Affinity.GetAffinityReaction(element);
-        var behavior = AffinityBehaviorFactory.Create(reaction);
         
         // Llamar a una factory para devolver vista asociada a la affinity
-        var skillInstance = SkillFactory.Create(selectedSkill, behavior, View);
+        var skillInstance = SkillFactory.Create(selectedSkill, behavior, board, View);
         
         ActionView.ShowSeparator();
-        skillInstance.Apply(caster, target, currentPlayerId);
         
+        // Utilizar un try catch para la acción de cancelar dentro del selector
+        skillInstance.Apply(caster, currentPlayerId);
+        
+        // pasar las 3 siguientes lineas dentro de skill por que necesita del behavior obtenido del target
         var delta = turnManager.ApplyAffinityTurnEffect(behavior);
         ActionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
-
         HandleDeathIfNeeded(board, enemyPlayerId, target);
     }
     private SkillData? PromptSkillSelection(UnitBase caster)

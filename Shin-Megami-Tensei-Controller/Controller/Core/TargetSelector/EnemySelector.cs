@@ -5,12 +5,9 @@ namespace Shin_Megami_Tensei;
 
 public sealed class EnemySelector : TargetSelectorBase
 {
-    private readonly EnemySelectorView _selectorView;
-
-    public EnemySelector(BoardManager board, EnemySelectorView view)
-        : base(view, board)
+    public EnemySelector(View view, BoardManager board)
+        : base(view, board, new EnemySelectorView(view))
     {
-        _selectorView = view;
     }
 
     public override UnitBase? SelectTarget(UnitBase caster, int currentPlayerId)
@@ -18,7 +15,7 @@ public sealed class EnemySelector : TargetSelectorBase
         int enemyPlayerId = currentPlayerId == 1 ? 2 : 1;
         List<UnitBase> enemies = Board.GetAliveUnits(enemyPlayerId);
 
-        _selectorView.ShowAvailableTargets(caster, enemies);
+        SelectorView.ShowAvailableTargets(caster, enemies);
 
         int index = ReadTargetIndex(enemies);
         return WasCanceledSelection(index) ? null : enemies[index];
