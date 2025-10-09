@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Shin-Megami-Tensei.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1f6a1f076d1e4029ea731409e86e4604c1a6292c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+da7f554c07ecc47e196c9db477cbb3e815515e0d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Shin-Megami-Tensei.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Shin-Megami-Tensei.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

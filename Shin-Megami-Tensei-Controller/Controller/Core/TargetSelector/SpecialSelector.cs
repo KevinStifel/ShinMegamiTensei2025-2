@@ -40,6 +40,6 @@ public sealed class SpecialSelector : TargetSelectorBase
         // Guardamos temporalmente la decisión para el efecto
         Board.PrepareSummonData(currentPlayerId, monsterToSummon, chosenPosition, occupant);
 
-        return new List<UnitBase> { monsterToSummon };
+        return [monsterToSummon];
     }
 }

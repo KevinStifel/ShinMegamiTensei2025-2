@@ -15,26 +15,28 @@ public sealed class SpecialEffect : EffectBase
         int currentPlayerId,
         BoardManager board)
     {
-        var monsterToSummon = targets[0];
-        EffectView.ShowSummon(monsterToSummon);
+     // ✨ 2️⃣ Delegar la lógica de invocación al SummonEffect
+        var summonEffect = new SummonEffect(View);
 
-        // Obtener datos guardados por el selector
-        var (position, replaced) = board.GetPreparedSummonData(currentPlayerId);
+        summonEffect.ApplyEffect(
+            caster: caster,
+            targets: targets,
+            skillData: skillData,
+            turnManager: turnManager,
+            currentPlayerId: currentPlayerId,
+            board: board
+        );
 
-        var playerBoard = board.SelectMutableBoard(currentPlayerId);
-        playerBoard[position] = monsterToSummon;
-
-        // Mover reemplazado a la reserva
-        if (replaced != null)
+        // ✨ 3️⃣ (Opcional) — si Sabbatma debe hacer algo extra, puedes hacerlo aquí.
+        // Por ejemplo, si el monstruo invocado ataca inmediatamente:
+        /*
+        var summonedUnit = targets.FirstOrDefault();
+        if (summonedUnit != null)
         {
-            var reserve = board.GetReserveUnitsForPlayer(currentPlayerId);
-            reserve.Remove(monsterToSummon);
-            reserve.Insert(0, replaced);
+            var actionView = new CombatActionView(View);
+            actionView.ShowAvailableTargets(summonedUnit, board.GetAliveUnits(GetEnemyPlayerId(currentPlayerId)));
+            // ... podrías encadenar aquí un ataque automático si lo pide el flujo
         }
-        
-        // Consumir turno de invocación
-        var delta = turnManager.ConsumeSummonTurn();
-        var actionView = new CombatActionView(View);
-        actionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
+        */
     }
 }
