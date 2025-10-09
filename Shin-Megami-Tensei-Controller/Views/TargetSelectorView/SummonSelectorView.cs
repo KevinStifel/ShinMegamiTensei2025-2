@@ -15,9 +15,9 @@ public sealed class SummonSelectorView : TargetSelectorViewBase
         for (int i = 0; i < reserveMonsters.Count; i++)
         {
             var unit = reserveMonsters[i];
-            View.WriteLine($"{i + 1}- {unit.Name} HP :{unit.Stats.HP}/{unit.Stats.MaxHP} MP :{unit.Stats.MP}/{unit.Stats.MaxMP}");
+            View.WriteLine($"{i + 1}-{unit.Name} HP:{unit.Stats.HP}/{unit.Stats.MaxHP} MP:{unit.Stats.MP}/{unit.Stats.MaxMP}");
         }
 
-        View.WriteLine($"{reserveMonsters.Count + 1}- Cancelar");
+        View.WriteLine($"{reserveMonsters.Count + 1}-Cancelar");
     }
 }

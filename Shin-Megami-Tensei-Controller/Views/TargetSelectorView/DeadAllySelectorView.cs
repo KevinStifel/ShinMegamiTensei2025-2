@@ -15,9 +15,9 @@ public sealed class DeadAllySelectorView : TargetSelectorViewBase
         for (int i = 0; i < deadAllies.Count; i++)
         {
             var ally = deadAllies[i];
-            View.WriteLine($"{i + 1}- {ally.Name} HP :0/{ally.Stats.MaxHP} MP :{ally.Stats.MP}/{ally.Stats.MaxMP}");
+            View.WriteLine($"{i + 1}-{ally.Name} HP:0/{ally.Stats.MaxHP} MP:{ally.Stats.MP}/{ally.Stats.MaxMP}");
         }
 
-        View.WriteLine($"{deadAllies.Count + 1}- Cancelar");
+        View.WriteLine($"{deadAllies.Count + 1}-Cancelar");
     }
 }

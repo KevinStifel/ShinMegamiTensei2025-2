@@ -16,7 +16,8 @@ public abstract class TargetSelectorBase
         SelectorView = selectorView;
     }
 
-    public abstract UnitBase? SelectTarget(UnitBase caster, int currentPlayerId);
+    // 🔹 Ahora recibe también la SkillData
+    public abstract List<UnitBase> SelectTargets(UnitBase caster, int currentPlayerId, SkillData skillData);
 
     protected int ReadTargetIndex(List<UnitBase> candidates)
         => SelectorView.ReadTargetIndex(candidates.Count);

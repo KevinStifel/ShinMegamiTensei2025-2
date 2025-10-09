@@ -25,4 +25,6 @@ public abstract class TargetSelectorViewBase
         index -= 1;
         return index >= 0 && index < totalOptions ? index : -1;
     }
+    protected void ShowSeparator()
+        => View.WriteLine("----------------------------------------");
 }

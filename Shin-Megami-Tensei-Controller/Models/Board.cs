@@ -7,7 +7,7 @@
 
         public List<UnitBase> PlayerOneRoster { get; }
         public List<UnitBase> PlayerTwoRoster { get; }
-
+        
         public Board(List<UnitBase> playerOneUnits, List<UnitBase> playerTwoUnits)
         {
             PlayerOneRoster = new List<UnitBase>(playerOneUnits);

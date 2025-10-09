@@ -10,12 +10,13 @@ public sealed class AllySelector : TargetSelectorBase
     {
     }
 
-    public override UnitBase? SelectTarget(UnitBase caster, int currentPlayerId)
+    public override List<UnitBase> SelectTargets(UnitBase caster, int currentPlayerId, SkillData skillData)
     {
         List<UnitBase> allies = Board.GetAliveUnits(currentPlayerId);
         SelectorView.ShowAvailableTargets(caster, allies);
-
         int index = ReadTargetIndex(allies);
-        return WasCanceledSelection(index) ? null : allies[index];
+        if (WasCanceledSelection(index))
+            return [];
+        return [allies[index]];
     }
 }

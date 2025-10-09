@@ -1,15 +1,20 @@
-﻿using Shin_Megami_Tensei_View;
+﻿using System.Collections.Generic;
+using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
 public sealed class SummonEffect : EffectBase
 {
-    public SummonEffect(AffinityBehavior behavior, View baseView)
-        : base(behavior, baseView) { }
-
-    public override void ApplyEffect(UnitBase caster, UnitBase target, SkillData skillData)
+    public SummonEffect(View view)
+        : base(view)
     {
-        EffectView.ShowSummon(caster, target);
-        // La lógica de invocación se implementará en entregas futuras
+    }
+
+    public override void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillData skillData, TurnManager turnManager, int currentPlayerId, BoardManager board)
+    {
+        foreach (var target in targets)
+        {
+            EffectView.ShowSummon(target);
+        }
     }
 }

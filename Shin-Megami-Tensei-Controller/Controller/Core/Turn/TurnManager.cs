@@ -95,24 +95,37 @@ public class TurnManager
     {
         if (BlinkingTurns > 0)
         {
-            ApplyTurnDelta(0, 1, 0); // consume blinking
+            ApplyTurnDelta(0, 1, 0);
             return new TurnDelta(0, 1, 0);
         }
 
-        ApplyTurnDelta(1, 0, 1); // consume full y gana un blinking
+        ApplyTurnDelta(1, 0, 1);
         return new TurnDelta(1, 0, 1);
     }
     public TurnDelta ConsumeSummonTurn()
     {
         if (BlinkingTurns > 0)
         {
-            ApplyTurnDelta(0, 1, 0); // consume blinking
+            ApplyTurnDelta(0, 1, 0);
             return new TurnDelta(0, 1, 0);
         }
 
-        ApplyTurnDelta(1, 0, 1); // consume full (no gana blinking)
+        ApplyTurnDelta(1, 0, 1);
         return new TurnDelta(1, 0, 1);
     }
+    
+    public TurnDelta ConsumeNeutralTurn()
+    {
+        if (_blinkingTurns > 0)
+        {
+            ApplyTurnDelta(0, 1, 0); // consume un blinking
+            return new TurnDelta(0, 1, 0);
+        }
+
+        ApplyTurnDelta(1, 0, 0); // consume un full
+        return new TurnDelta(1, 0, 0);
+    }
+
     
     public TurnDelta ApplyAffinityTurnEffect(AffinityBehavior affinity)
     {

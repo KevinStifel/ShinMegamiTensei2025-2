@@ -4,7 +4,7 @@ namespace Shin_Megami_Tensei;
 
 public static class SkillFactory
 {
-    public static Skill Create(SkillData skillData, AffinityBehavior behavior, BoardManager board, View view)
+    public static Skill Create(SkillData skillData, BoardManager board, View view)
     {
         string name = skillData.Name.ToLowerInvariant();
 
@@ -12,7 +12,7 @@ public static class SkillFactory
         if (SkillCatalog.DamageSkills.Contains(name))
             return new Skill(
                 skillData,
-                new DamageEffect(behavior, view),
+                new DamageEffect(view),
                 new EnemySelector(view, board)
             );
 
@@ -20,7 +20,7 @@ public static class SkillFactory
         if (SkillCatalog.HealSkills.Contains(name))
             return new Skill(
                 skillData,
-                new HealEffect(behavior, view),
+                new HealEffect(view),
                 new AllySelector(view, board)
             );
 
@@ -28,7 +28,7 @@ public static class SkillFactory
         if (SkillCatalog.ReviveSkills.Contains(name))
             return new Skill(
                 skillData,
-                new ReviveEffect(behavior, view),
+                new ReviveEffect(view),
                 new DeadAllySelector(view, board)
             );
 
@@ -36,7 +36,7 @@ public static class SkillFactory
         if (name == "invitation")
             return new Skill(
                 skillData,
-                new SummonEffect(behavior, view),
+                new SummonEffect(view),
                 new DeadAllySelector(view, board)
             );
 
@@ -44,8 +44,8 @@ public static class SkillFactory
         if (name == "sabbatma")
             return new Skill(
                 skillData,
-                new SpecialEffect(behavior, view),
-                new AllySelector(view, board)
+                new SpecialEffect(view),
+                new SpecialSelector(view, board)
             );
 
         throw new NotImplementedException($"Skill '{skillData.Name}' no está implementada en la SkillFactory.");

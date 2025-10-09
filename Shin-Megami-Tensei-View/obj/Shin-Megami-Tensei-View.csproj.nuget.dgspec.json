@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kstif\\Escritorio\\Proyecto\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj": {}
+    "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Proyecto - Actual 2.0\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kstif\\Escritorio\\Proyecto\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj": {
+    "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Proyecto - Actual 2.0\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kstif\\Escritorio\\Proyecto\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj",
+        "projectUniqueName": "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Proyecto - Actual 2.0\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj",
         "projectName": "Shin-Megami-Tensei-View",
-        "projectPath": "C:\\Users\\kstif\\Escritorio\\Proyecto\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj",
-        "packagesPath": "C:\\Users\\kstif\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kstif\\Escritorio\\Proyecto\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\obj\\",
+        "projectPath": "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Proyecto - Actual 2.0\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj",
+        "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Proyecto - Actual 2.0\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\kstif\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -58,7 +58,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\kstif\\.dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.407/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

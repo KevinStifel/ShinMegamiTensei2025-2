@@ -10,7 +10,7 @@ public sealed class EnemySelectorView : TargetSelectorViewBase
     public override void ShowAvailableTargets(UnitBase caster, List<UnitBase> enemies)
     {
         View.WriteLine("----------------------------------------");
-        View.WriteLine($"Seleccione un enemigo para que {caster.Name} ataque");
+        View.WriteLine($"Seleccione un objetivo para {caster.Name}");
         for (int i = 0; i < enemies.Count; i++)
         {
             var target = enemies[i];

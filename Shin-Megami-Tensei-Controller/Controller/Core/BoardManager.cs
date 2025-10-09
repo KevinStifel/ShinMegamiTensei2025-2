@@ -3,10 +3,34 @@
     public class BoardManager
     {
         private readonly Board _board;
+        
+        private readonly Dictionary<int, PreparedSummonData> _preparedSummons = new();
+        private record PreparedSummonData(UnitBase Monster, string Position, UnitBase? Replaced);
 
         public BoardManager(Board board)
         {
             _board = board;
+        }
+        
+        // 🔹 Guardar datos temporales para una invocación especial
+        public void PrepareSummonData(int playerId, UnitBase monster, string position, UnitBase? replaced)
+        {
+            _preparedSummons[playerId] = new PreparedSummonData(monster, position, replaced);
+        }
+
+        // 🔹 Recuperar los datos cuando se aplica el efecto
+        public (string Position, UnitBase? Replaced) GetPreparedSummonData(int playerId)
+        {
+            if (_preparedSummons.TryGetValue(playerId, out var data))
+                return (data.Position, data.Replaced);
+
+            throw new InvalidOperationException("No hay datos preparados para la invocación.");
+        }
+
+        // 🔹 Limpiar los datos después de usarlos
+        public void ClearPreparedSummon(int playerId)
+        {
+            _preparedSummons.Remove(playerId);
         }
 
         public Dictionary<string, UnitBase?> SelectMutableBoard(int playerId)

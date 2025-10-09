@@ -98,8 +98,6 @@ public class CombatActionView : AbstractView
                                $"MP:{unitToReplace.Stats.MP}/{unitToReplace.Stats.MaxMP} (Puesto {humanSlot})");
             }
         }
-
-        // opción de cancelar
         View.WriteLine($"{summonOptions.Count + 1}-Cancelar");
     }
 
