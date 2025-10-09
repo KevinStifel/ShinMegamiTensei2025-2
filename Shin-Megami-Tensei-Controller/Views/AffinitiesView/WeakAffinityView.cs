@@ -6,10 +6,10 @@ public sealed class WeakAffinityView : AffinityViewBase
 {
     public WeakAffinityView(View view) : base(view) { }
 
-    public override void ShowAffinityReaction(UnitBase caster, UnitBase target, int damage)
+    public override void ShowAffinityReaction(UnitBase caster, UnitBase target, int damage, string verb)
     {
+        View.WriteLine($"{caster.Name} {verb} a {target.Name}");
         View.WriteLine($"{target.Name} es débil contra el ataque de {caster.Name}");
         View.WriteLine($"{target.Name} recibe {damage} de daño");
-        ShowHp(target);
     }
 }

@@ -25,15 +25,15 @@ namespace Shin_Megami_Tensei
             var affinityBehavior = AffinityBehaviorFactory.Create(affinityReaction);
             
             string verb = GetElementalMessage(AffinityElement.Physical);
-            ActionView.ShowAttackIntro(attacker, targetTeamUnit, verb, affinityReaction);
 
             int finalDamage = DamageCalculator.CalculateFinalDamage(attacker, affinityBehavior, AffinityElement.Physical);
 
             var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View);
 
-            
             affinityBehavior.ApplyEffect(attacker, targetTeamUnit, finalDamage);
-            affinityView.ShowAffinityReaction(attacker, targetTeamUnit, finalDamage);
+            ActionView.ShowSeparator();
+            affinityView.ShowAffinityReaction(attacker, targetTeamUnit, finalDamage, verb);
+            affinityView.ShowHp(attacker, targetTeamUnit);
             
             var delta = turnManager.ApplyAffinityTurnEffect(affinityBehavior);
             ActionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);

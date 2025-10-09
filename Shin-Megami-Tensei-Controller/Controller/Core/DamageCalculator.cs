@@ -11,21 +11,21 @@
         private static double CalculatePhysicalDamage(UnitBase attacker)
         {
             double dmg = CalculateBaseDamage(attacker.Stats.Str, GameConstants.PhysicalDamageModifier);
-            Console.WriteLine($"[DEBUG] Physical Damage (STR:{attacker.Stats.Str}) = {dmg}");
+            //Console.WriteLine($"[DEBUG] Physical Damage (STR:{attacker.Stats.Str}) = {dmg}");
             return dmg;
         }
 
         private static double CalculateGunDamage(UnitBase attacker)
         {
             double dmg = CalculateBaseDamage(attacker.Stats.Skl, GameConstants.GunDamageModifier);
-            Console.WriteLine($"[DEBUG] Gun Damage (SKL:{attacker.Stats.Skl}) = {dmg}");
+            //Console.WriteLine($"[DEBUG] Gun Damage (SKL:{attacker.Stats.Skl}) = {dmg}");
             return dmg;
         }
 
         private static int CalculateMagicDamage(UnitBase attacker, int skillPower)
         {
             int dmg = (int)Math.Sqrt(attacker.Stats.Mag * skillPower);
-            Console.WriteLine($"[DEBUG] Magic Damage √({attacker.Stats.Mag} * {skillPower}) = {dmg}");
+            //Console.WriteLine($"[DEBUG] Magic Damage √({attacker.Stats.Mag} * {skillPower}) = {dmg}");
             return dmg;
         }
         
@@ -35,7 +35,7 @@
             double final = affinityBehavior.ModifyDamage(baseDamage);
             int finalDamage = (int)Math.Floor(final);
 
-            Console.WriteLine($"[DEBUG] ApplyAffinityDamage: {baseDamage:F2} → {final}");
+            //Console.WriteLine($"[DEBUG] ApplyAffinityDamage: {baseDamage:F2} → {final}");
             return finalDamage;
         }
 
@@ -56,7 +56,7 @@
         public static int CalculateFinalDamageForSkill(UnitBase attacker, SkillData skillData, AffinityBehavior behavior)
         {
             var element = AffinityMapper.Parse(skillData.Type);
-            Console.WriteLine($"[DEBUG] Element parsed: {element}");
+            //Console.WriteLine($"[DEBUG] Element parsed: {element}");
 
             double baseDamage = element switch
             {
@@ -72,7 +72,7 @@
             // Aplicar afinidad sin perder precisión
             int finalDamage = ApplyAffinityDamage(baseDamage, behavior);
 
-            Console.WriteLine($"[DEBUG] BaseDamage: {baseDamage:F2} | FinalDamage: {finalDamage}");
+            //Console.WriteLine($"[DEBUG] BaseDamage: {baseDamage:F2} | FinalDamage: {finalDamage}");
             return finalDamage;
         }
     }

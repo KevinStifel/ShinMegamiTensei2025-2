@@ -33,10 +33,8 @@ public sealed class UseSkillAction : CombatActionBase
         
         // Llamar a una factory para devolver vista asociada a la affinity
         var skillInstance = SkillFactory.Create(selectedSkill, behavior, View);
-
-        string verb = GetElementalMessage(element);
-        ActionView.ShowAttackIntro(caster, target, verb, reaction);
-
+        
+        ActionView.ShowSeparator();
         skillInstance.Apply(caster, target, currentPlayerId);
         
         var delta = turnManager.ApplyAffinityTurnEffect(behavior);

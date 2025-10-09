@@ -11,8 +11,14 @@ public abstract class AffinityViewBase
         View = view;
     }
 
-    public abstract void ShowAffinityReaction(UnitBase caster, UnitBase target, int damage);
+    public abstract void ShowAffinityReaction(UnitBase caster, UnitBase target, int damage, string verb);
     
+    public virtual void ShowHp(UnitBase caster, UnitBase target)
+    {
+        ShowHp(target);
+    }
+
+    // 🔹 Método auxiliar reutilizable
     protected void ShowHp(UnitBase unit)
     {
         View.WriteLine($"{unit.Name} termina con HP:{unit.Stats.HP}/{unit.Stats.MaxHP}");

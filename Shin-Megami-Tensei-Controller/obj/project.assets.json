@@ -32,11 +32,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Entrega 0 - Actual\\Shin-Megami-Tensei-Controller\\Shin-Megami-Tensei-Controller.csproj",
+      "projectUniqueName": "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Proyecto - Actual 2.0\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-Controller\\Shin-Megami-Tensei-Controller.csproj",
       "projectName": "Shin-Megami-Tensei-Controller",
-      "projectPath": "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Entrega 0 - Actual\\Shin-Megami-Tensei-Controller\\Shin-Megami-Tensei-Controller.csproj",
+      "projectPath": "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Proyecto - Actual 2.0\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-Controller\\Shin-Megami-Tensei-Controller.csproj",
       "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Entrega 0 - Actual\\Shin-Megami-Tensei-Controller\\obj\\",
+      "outputPath": "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Proyecto - Actual 2.0\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-Controller\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -51,8 +51,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Entrega 0 - Actual\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj": {
-              "projectPath": "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Entrega 0 - Actual\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj"
+            "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Proyecto - Actual 2.0\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj": {
+              "projectPath": "C:\\Users\\pc\\Desktop\\Detallado 2025-2\\Proyecto\\Proyecto - Actual 2.0\\ShinMegamiTensei2025-2\\Shin-Megami-Tensei-View\\Shin-Megami-Tensei-View.csproj"
             }
           }
         }

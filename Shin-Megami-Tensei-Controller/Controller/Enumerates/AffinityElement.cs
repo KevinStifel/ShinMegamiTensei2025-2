@@ -14,5 +14,7 @@ public enum AffinityElement
     Sleep,
     Sick,
     Panic,
-    Poison
+    Poison,
+    Heal,
+    Special
 }

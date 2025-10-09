@@ -16,7 +16,10 @@ public static class AffinityMapper
         { "Sleep", AffinityElement.Sleep },
         { "Sick", AffinityElement.Sick },
         { "Panic", AffinityElement.Panic },
-        { "Poison", AffinityElement.Poison }
+        { "Poison", AffinityElement.Poison },
+        { "Heal", AffinityElement.Heal },
+        { "Special", AffinityElement.Special },
+        
     };
 
     public static AffinityElement Parse(string type)
