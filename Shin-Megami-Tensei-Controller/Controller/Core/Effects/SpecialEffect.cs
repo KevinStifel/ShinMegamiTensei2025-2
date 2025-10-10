@@ -9,11 +9,11 @@ public sealed class SpecialEffect : EffectBase
     public override void ApplyEffect(
         UnitBase caster,
         List<UnitBase> targets,
-        SkillExecutionContext skillContext)
+        SkillExecutionContext skillExecutionContext)
     {
-        var boardManager = skillContext.BoardManager;
-        var turnManager = skillContext.TurnManager;
-        int currentPlayerId = skillContext.CurrentPlayerId;
+        var boardManager = skillExecutionContext.BoardManager;
+        var turnManager = skillExecutionContext.TurnManager;
+        int currentPlayerId = skillExecutionContext.CurrentPlayerId;
 
         var monsterToSummon = targets.First();
         var summonEffect = new SummonEffect(View);
@@ -29,7 +29,6 @@ public sealed class SpecialEffect : EffectBase
         summonEffect.ApplySamuraiSummon(monsterToSummon, formation, placement);
         turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, replacedUnit);
 
-        var turnChange = turnManager.ConsumeNeutralTurn();
-        ActionView.ShowTurnConsumption(turnChange);
+        ApplyTurnChange(turnManager);
     }
 }

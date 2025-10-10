@@ -29,8 +29,7 @@ public sealed class SummonAction : CombatActionBase
 
         return availableReserveUnits[selectedIndex];
     }
-
-
+    
     private static PlayerBoardFormation CreateBoardFormation(BoardManager boardManager, int currentPlayerId)
     {
         var activeBoard = boardManager.SelectMutableBoard(currentPlayerId);
@@ -57,7 +56,6 @@ public sealed class SummonAction : CombatActionBase
 
         return summonEffect.ApplySamuraiSummon(summonData.MonsterToSummon, boardFormation, placement);
     }
-
     private UnitBase? SummonWithMonster(SummonData summonData, SummonEffect summonEffect, PlayerBoardFormation boardFormation)
     {
         return summonEffect.ApplyMonsterSummon(summonData, boardFormation);

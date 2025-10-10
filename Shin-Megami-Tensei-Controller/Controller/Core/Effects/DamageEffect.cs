@@ -10,12 +10,12 @@ public sealed class DamageEffect : EffectBase
     public override void ApplyEffect(
         UnitBase casterUnit,
         List<UnitBase> targetUnits,
-        SkillExecutionContext skillContext)
+        SkillExecutionContext skillExecutionContext)
     {
-        var turnManager = skillContext.TurnManager;
-        var boardManager = skillContext.BoardManager;
-        var currentPlayerId = skillContext.CurrentPlayerId;
-        var skillData = skillContext.SkillData;
+        var turnManager = skillExecutionContext.TurnManager;
+        var boardManager = skillExecutionContext.BoardManager;
+        var currentPlayerId = skillExecutionContext.CurrentPlayerId;
+        var skillData = skillExecutionContext.SkillData;
 
         int enemyPlayerId = BattleHelper.GetEnemyPlayerId(currentPlayerId);
 

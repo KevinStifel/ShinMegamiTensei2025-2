@@ -19,7 +19,7 @@ public class Skill
     public void Apply(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
         var casterUnit = turnManager.GetAttackerOnTurn();
-        var skillContext = new SkillExecutionContext(_skillData, boardManager, turnManager, currentPlayerId);
+        var skillExecutionContext = new SkillExecutionContext(_skillData, boardManager, turnManager, currentPlayerId);
         List<UnitBase> targets = _targetSelector.SelectTargets(casterUnit, currentPlayerId, _skillData);
 
         if (targets.Count == 0)
@@ -28,6 +28,6 @@ public class Skill
         boardManager.RegisterPlayerSkillCounter(currentPlayerId);
         boardManager.IncrementSkillUseCount(currentPlayerId);
 
-        _effect.ApplyEffect(casterUnit, targets, skillContext);
+        _effect.ApplyEffect(casterUnit, targets, skillExecutionContext);
     }
 }

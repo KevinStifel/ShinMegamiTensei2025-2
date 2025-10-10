@@ -9,35 +9,60 @@ public sealed class InvitationEffect : EffectBase
     public override void ApplyEffect(
         UnitBase caster,
         List<UnitBase> targets,
-        SkillExecutionContext skillContext)
+        SkillExecutionContext skillExecutionContext)
     {
-        var boardManager = skillContext.BoardManager;
-        var turnManager = skillContext.TurnManager;
-        int currentPlayerId = skillContext.CurrentPlayerId;
+        var boardManager = skillExecutionContext.BoardManager;
+        var turnManager = skillExecutionContext.TurnManager;
+        int currentPlayerId = skillExecutionContext.CurrentPlayerId;
 
         var monsterToSummon = targets[0];
-        var (chosenPosition, occupant) = boardManager.GetPreparedSummonData(currentPlayerId);
+        var (summonPosition, replacedUnit) = boardManager.GetPreparedSummonData(currentPlayerId);
+
         var playerBoard = boardManager.SelectMutableBoard(currentPlayerId);
         var reserveUnits = boardManager.GetReserveUnitsForPlayer(currentPlayerId);
 
-        playerBoard[chosenPosition] = monsterToSummon;
+        PlaceMonsterOnBoard(playerBoard, summonPosition, monsterToSummon);
+        UpdateReserveList(reserveUnits, monsterToSummon, replacedUnit);
+
+        HandleSummonResult(caster, monsterToSummon);
+
+        turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, replacedUnit);
+        ApplyTurnChange(turnManager);
+    }
+    private static void PlaceMonsterOnBoard(
+        Dictionary<string, UnitBase?> playerBoard,
+        string summonPosition,
+        UnitBase monsterToSummon)
+    {
+        playerBoard[summonPosition] = monsterToSummon;
+    }
+
+    private static void UpdateReserveList(
+        List<UnitBase> reserveUnits,
+        UnitBase monsterToSummon,
+        UnitBase? replacedUnit)
+    {
         reserveUnits.Remove(monsterToSummon);
-        if (occupant != null)
-            reserveUnits.Insert(0, occupant);
 
-        if (monsterToSummon.Stats.HP == 0)
-        {
-            int healAmount = monsterToSummon.Stats.MaxHP;
-            monsterToSummon.Stats.Heal(healAmount);
-            EffectView.ShowSummonAndReviveEffect(caster, monsterToSummon, healAmount);
-        }
+        bool hasReplacedUnit = replacedUnit != null;
+        if (hasReplacedUnit)
+            reserveUnits.Insert(0, replacedUnit!);
+    }
+
+    private void HandleSummonResult(UnitBase caster, UnitBase monsterToSummon)
+    {
+        bool isMonsterDead = monsterToSummon.Stats.HP == 0;
+
+        if (isMonsterDead)
+            ReviveAndShowResult(caster, monsterToSummon);
         else
-        {
             EffectView.ShowSummonResult(monsterToSummon);
-        }
+    }
 
-        turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, occupant);
-        var turnChange = turnManager.ConsumeNeutralTurn();
-        ActionView.ShowTurnConsumption(turnChange);
+    private void ReviveAndShowResult(UnitBase caster, UnitBase monsterToSummon)
+    {
+        int healAmount = monsterToSummon.Stats.MaxHP;
+        monsterToSummon.Stats.Heal(healAmount);
+        EffectView.ShowSummonAndReviveEffect(caster, monsterToSummon, healAmount);
     }
 }

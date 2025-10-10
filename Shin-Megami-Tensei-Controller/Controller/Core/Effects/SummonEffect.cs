@@ -30,7 +30,7 @@ public sealed class SummonEffect : EffectBase
         return summonData.Summoner;
     }
 
-    public override void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillExecutionContext skillContext)
+    public override void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillExecutionContext skillExecutionContext)
     {
         throw new NotImplementedException();
     }
