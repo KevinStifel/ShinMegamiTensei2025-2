@@ -1,17 +1,9 @@
-﻿using System.Collections.Generic;
-using Shin_Megami_Tensei_View;
+﻿using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
-/// <summary>
-/// Clase base para acciones ofensivas (físicas, de arma o mágicas).
-/// Cumple con Clean Code: funciones pequeñas, SRP y uso consistente de BattleFlowContext.
-/// </summary>
 public abstract class OffensiveActionBase : CombatActionBase
 {
-    /// <summary>
-    /// Elemento que define el tipo de ataque (Physical, Gun, Fire, etc.).
-    /// </summary>
     protected abstract AffinityElement Element { get; }
 
     protected OffensiveActionBase(View view) : base(view) { }
@@ -57,22 +49,21 @@ public abstract class OffensiveActionBase : CombatActionBase
         int inflictedDamage,
         BattleFlowContext battleFlowContext)
     {
-        string attackVerb = GetElementalMessage(Element);
-        var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, battleFlowContext.View);
+        var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, battleFlowContext.View, Element);
 
         affinityBehavior.ApplyEffect(attackerUnit, targetUnit, inflictedDamage);
-        ShowAffinityOutcome(attackerUnit, targetUnit, affinityView, inflictedDamage, attackVerb);
+        ShowAffinityOutcome(attackerUnit, targetUnit, affinityView, inflictedDamage);
     }
 
     private void ShowAffinityOutcome(
         UnitBase attackerUnit,
         UnitBase targetUnit,
         AffinityViewBase affinityView,
-        int inflictedDamage,
-        string attackVerb)
+        int inflictedDamage
+        )
     {
         ActionView.ShowSeparator();
-        affinityView.ShowAffinityReaction(attackerUnit, targetUnit, inflictedDamage, attackVerb);
+        affinityView.ShowAffinityReaction(attackerUnit, targetUnit, inflictedDamage);
         affinityView.ShowHp(attackerUnit, targetUnit);
     }
 

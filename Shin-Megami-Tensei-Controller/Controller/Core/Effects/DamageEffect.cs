@@ -26,17 +26,18 @@ public sealed class DamageEffect : EffectBase
         {
             var targetUnit = targets[targetIndex];
 
+            // ✅ El elemento se obtiene desde el SkillData
             var elementType = AffinityMapper.Parse(skillData.Type);
             var reaction = targetUnit.Affinity.GetAffinityReaction(elementType);
             var affinityBehavior = AffinityBehaviorFactory.Create(reaction);
             lastAffinityBehavior = affinityBehavior;
 
-            ApplyDamageAndShowReaction(caster, targetUnit, skillData, affinityBehavior);
+            ApplyDamageAndShowReaction(caster, targetUnit, skillData, affinityBehavior, elementType);
 
             lastTargetUnit = targetUnit;
 
             if (IsLastTarget(targetIndex, targets))
-                ShowFinalHp(caster, targetUnit, affinityBehavior);
+                ShowFinalHp(caster, targetUnit, affinityBehavior, elementType);
         }
 
         ApplyTurnChange(turnManager, lastAffinityBehavior, actionView);
@@ -46,21 +47,28 @@ public sealed class DamageEffect : EffectBase
     private static bool IsLastTarget(int targetIndex, IReadOnlyList<UnitBase> targets)
         => targetIndex == targets.Count - 1;
 
-    private void ApplyDamageAndShowReaction(UnitBase caster, UnitBase targetUnit, SkillData skillData, AffinityBehavior affinityBehavior)
+    private void ApplyDamageAndShowReaction(
+        UnitBase caster,
+        UnitBase targetUnit,
+        SkillData skillData,
+        AffinityBehavior affinityBehavior,
+        AffinityElement elementType)
     {
-        var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View);
-        var elementType = AffinityMapper.Parse(skillData.Type);
-        string attackVerb = ElementMessageHelper.GetElementalMessage(elementType);
-
+        // ✅ Se usa elementType, no Element
+        var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View, elementType);
         int inflictedDamage = DamageCalculator.CalculateFinalDamageForSkill(caster, skillData, affinityBehavior);
 
         affinityBehavior.ApplyEffect(caster, targetUnit, inflictedDamage);
-        affinityView.ShowAffinityReaction(caster, targetUnit, inflictedDamage, attackVerb);
+        affinityView.ShowAffinityReaction(caster, targetUnit, inflictedDamage);
     }
 
-    private void ShowFinalHp(UnitBase caster, UnitBase targetUnit, AffinityBehavior affinityBehavior)
+    private void ShowFinalHp(
+        UnitBase caster,
+        UnitBase targetUnit,
+        AffinityBehavior affinityBehavior,
+        AffinityElement elementType)
     {
-        var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View);
+        var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View, elementType);
         affinityView.ShowHp(caster, targetUnit);
     }
 
