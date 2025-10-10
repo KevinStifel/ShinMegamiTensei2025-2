@@ -6,9 +6,8 @@ public sealed class PassTurnAction : CombatActionBase
 {
     public PassTurnAction(View view) : base(view) { }
 
-    public override void ExecuteAction(BattleFlowContext battleFlowContext)
+    public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
-        var turnManager = battleFlowContext.TurnManager;
         TurnChange turnChange = turnManager.ConsumePassTurn();
         ActionView.ShowTurnConsumption(turnChange);
     }

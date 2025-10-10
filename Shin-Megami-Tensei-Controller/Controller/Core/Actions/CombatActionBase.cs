@@ -5,13 +5,15 @@ namespace Shin_Megami_Tensei;
 public abstract class CombatActionBase
 {
     protected readonly CombatActionView ActionView;
+    protected readonly View View;
 
     protected CombatActionBase(View view)
     {
         ActionView = new CombatActionView(view);
+        View = view;
     }
 
-    public abstract void ExecuteAction(BattleFlowContext battleFlowContext);
+    public abstract void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager);
 
     protected static bool WasCanceledSelection(int selectedIndex) => selectedIndex < 0;
 
@@ -32,7 +34,4 @@ public abstract class CombatActionBase
         if (target.Stats.HP == 0)
             boardManager.HandleUnitDeath(enemyPlayerId, target);
     }
-
-    protected static string GetElementalMessage(AffinityElement element)
-        => ElementMessageHelper.GetElementalMessage(element);
 }

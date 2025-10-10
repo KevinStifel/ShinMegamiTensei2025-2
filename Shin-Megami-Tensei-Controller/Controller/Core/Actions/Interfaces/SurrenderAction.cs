@@ -6,28 +6,22 @@ public sealed class SurrenderAction : CombatActionBase
 {
     public SurrenderAction(View view) : base(view) { }
 
-    public override void ExecuteAction(BattleFlowContext battleFlowContext)
+    public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
-        var boardManager = battleFlowContext.BoardManager;
-        var teamLeader = boardManager.GetTeamLeaderUnit(battleFlowContext.CurrentPlayerId);
+        var teamLeader = boardManager.GetTeamLeaderUnit(currentPlayerId);
+        ActionView.ShowSurrender(teamLeader, currentPlayerId);
 
-        ActionView.ShowSurrender(teamLeader, battleFlowContext.CurrentPlayerId);
-
-        foreach (var unit in boardManager.GetBoardForPlayer(battleFlowContext.CurrentPlayerId).Values)
+        foreach (var unit in boardManager.GetBoardForPlayer(currentPlayerId).Values)
         {
-            if (unit is null) continue;
+            if (unit == null) continue;
             if (unit.Stats.HP > 0)
                 unit.Stats.TakeDamage(unit.Stats.HP);
         }
 
-        if (battleFlowContext.TurnManager is { FullTurns: <= 0, BlinkingTurns: <= 0 }) return;
+        if (turnManager.FullTurns <= 0 && turnManager.BlinkingTurns <= 0)
+            return;
 
-        var turnChange = new TurnChange(
-            battleFlowContext.TurnManager.FullTurns,
-            battleFlowContext.TurnManager.BlinkingTurns,
-            0
-        );
-
-        battleFlowContext.TurnManager.ApplyTurnChange(turnChange);
+        var turnChange = new TurnChange(turnManager.FullTurns, turnManager.BlinkingTurns, 0);
+        turnManager.ApplyTurnChange(turnChange);
     }
 }

@@ -6,31 +6,31 @@ public sealed class SummonEffect : EffectBase
 {
     public SummonEffect(View view) : base(view) { }
 
-    public UnitBase? ApplySamuraiSummon(UnitBase monsterToSummon, PlayerBoardFormation boardFormation, SummonPlacement placement)
+    public UnitBase? ApplySamuraiSummon(UnitBase monsterToSummon, PlayerBoardFormation formation, SummonPlacement placement)
     {
-        boardFormation.ActiveBoard[placement.BoardPosition] = monsterToSummon;
-        boardFormation.ReserveUnits.Remove(monsterToSummon);
+        formation.ActiveBoard[placement.BoardPosition] = monsterToSummon;
+        formation.ReserveUnits.Remove(monsterToSummon);
 
         if (placement.ReplacedUnit != null)
-            boardFormation.ReserveUnits.Insert(0, placement.ReplacedUnit);
+            formation.ReserveUnits.Insert(0, placement.ReplacedUnit);
 
         EffectView.ShowSummonResult(monsterToSummon);
         return placement.ReplacedUnit;
     }
 
-    public UnitBase ApplyMonsterSummon(SummonData summonData, PlayerBoardFormation boardFormation)
+    public UnitBase ApplyMonsterSummon(SummonData summonData, PlayerBoardFormation formation)
     {
-        var summonerPosition = boardFormation.ActiveBoard.First(kvp => ReferenceEquals(kvp.Value, summonData.Summoner)).Key;
-        boardFormation.ActiveBoard[summonerPosition] = summonData.MonsterToSummon;
+        var summonerPosition = formation.ActiveBoard.First(kvp => ReferenceEquals(kvp.Value, summonData.Summoner)).Key;
+        formation.ActiveBoard[summonerPosition] = summonData.MonsterToSummon;
 
-        boardFormation.ReserveUnits.Remove(summonData.MonsterToSummon);
-        boardFormation.ReserveUnits.Insert(0, summonData.Summoner);
+        formation.ReserveUnits.Remove(summonData.MonsterToSummon);
+        formation.ReserveUnits.Insert(0, summonData.Summoner);
 
         EffectView.ShowSummonResult(summonData.MonsterToSummon);
         return summonData.Summoner;
     }
 
-    public override void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillData skillData, BattleFlowContext context)
+    public override void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillExecutionContext skillContext)
     {
         throw new NotImplementedException();
     }

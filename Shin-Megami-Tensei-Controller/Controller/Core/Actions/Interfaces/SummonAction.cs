@@ -8,15 +8,10 @@ public sealed class SummonAction : CombatActionBase
 {
     public SummonAction(View view) : base(view) { }
 
-    public override void ExecuteAction(BattleFlowContext battleFlowContext)
+    public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
-        var boardManager = battleFlowContext.BoardManager;
-        var turnManager = battleFlowContext.TurnManager;
-        var view = battleFlowContext.View;
-        var currentPlayerId = battleFlowContext.CurrentPlayerId;
-
         var summonerUnit = turnManager.GetAttackerOnTurn();
-        var summonEffect = new SummonEffect(view);
+        var summonEffect = new SummonEffect(View);
 
         var monsterToSummon = SelectMonsterToSummon(boardManager, currentPlayerId);
         if (monsterToSummon == null)
@@ -79,11 +74,7 @@ public sealed class SummonAction : CombatActionBase
 
     private void UpdateTurnAndOrder(TurnManager turnManager, SummonData summonData, UnitBase? replacedUnit)
     {
-        turnManager.UpdateOrderAfterSummon(
-            summonData.Summoner,
-            summonData.MonsterToSummon,
-            replacedUnit);
-
+        turnManager.UpdateOrderAfterSummon(summonData.Summoner, summonData.MonsterToSummon, replacedUnit);
         var turnChange = turnManager.ConsumeSummonTurn();
         ActionView.ShowTurnConsumption(turnChange);
     }

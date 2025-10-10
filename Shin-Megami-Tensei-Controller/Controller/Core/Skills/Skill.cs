@@ -16,19 +16,17 @@ public class Skill
         _targetSelector = targetSelector;
     }
 
-    public void Apply(UnitBase caster, BattleFlowContext battleFlowContext)
+    public void Apply(UnitBase caster, int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
-        List<UnitBase> targets = _targetSelector.SelectTargets(
-            caster,
-            battleFlowContext.CurrentPlayerId,
-            _skillData);
+        var skillContext = new SkillExecutionContext(_skillData, boardManager, turnManager, currentPlayerId);
+        List<UnitBase> targets = _targetSelector.SelectTargets(caster, currentPlayerId, _skillData);
 
-        if (targets == null || targets.Count == 0)
+        if (targets.Count == 0)
             throw new ActionCanceledException();
-        
-        battleFlowContext.BoardManager.RegisterPlayerSkillCounter(battleFlowContext.CurrentPlayerId);
-        battleFlowContext.BoardManager.IncrementSkillUseCount(battleFlowContext.CurrentPlayerId);
 
-        _effect.ApplyEffect(caster, targets, _skillData, battleFlowContext);
+        boardManager.RegisterPlayerSkillCounter(currentPlayerId);
+        boardManager.IncrementSkillUseCount(currentPlayerId);
+
+        _effect.ApplyEffect(caster, targets, skillContext);
     }
 }

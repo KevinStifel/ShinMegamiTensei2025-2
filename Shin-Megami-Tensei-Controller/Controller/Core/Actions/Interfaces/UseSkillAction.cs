@@ -8,21 +8,22 @@ public sealed class UseSkillAction : CombatActionBase
 {
     public UseSkillAction(View view) : base(view) { }
 
-    public override void ExecuteAction(BattleFlowContext battleFlowContext)
+    public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
-        var casterUnit = battleFlowContext.TurnManager.GetAttackerOnTurn();
-        var selectedSkill = PromptSkillSelection(casterUnit);
+        var casterUnit = turnManager.GetAttackerOnTurn();
 
-        if (selectedSkill == null)
+        var selectedSkillData = PromptSkillSelection(casterUnit);
+        if (selectedSkillData == null)
             throw new ActionCanceledException();
 
-        ValidateManaAvailability(casterUnit, selectedSkill);
+        ValidateManaAvailability(casterUnit, selectedSkillData);
 
-        var skillInstance = CreateSkillInstance(selectedSkill, battleFlowContext);
-        ApplySkill(skillInstance, casterUnit, battleFlowContext);
+        var skillInstance = CreateSkillInstance(selectedSkillData, boardManager);
+        ApplySkill(skillInstance, casterUnit, currentPlayerId, boardManager, turnManager);
 
-        ConsumeMana(casterUnit, selectedSkill);
+        ConsumeMana(casterUnit, selectedSkillData);
     }
+
     private SkillData? PromptSkillSelection(UnitBase casterUnit)
     {
         var availableSkills = GetUsableSkills(casterUnit);
@@ -31,6 +32,7 @@ public sealed class UseSkillAction : CombatActionBase
         int selectedIndex = ActionView.ReadSkillIndexFromInput(availableSkills);
         return WasCanceledSelection(selectedIndex) ? null : availableSkills[selectedIndex];
     }
+
     private static IReadOnlyList<SkillData> GetUsableSkills(UnitBase casterUnit)
     {
         var allSkills = casterUnit is Samurai samurai
@@ -39,21 +41,26 @@ public sealed class UseSkillAction : CombatActionBase
 
         return allSkills.Where(skill => skill.Cost <= casterUnit.Stats.MP).ToList();
     }
-    private static void ValidateManaAvailability(UnitBase casterUnit, SkillData selectedSkill)
+
+    private static void ValidateManaAvailability(UnitBase casterUnit, SkillData selectedSkillData)
     {
-        if (casterUnit.Stats.MP < selectedSkill.Cost)
+        if (casterUnit.Stats.MP < selectedSkillData.Cost)
             throw new ActionCanceledException();
     }
-    private static Skill CreateSkillInstance(SkillData selectedSkill, BattleFlowContext battleFlowContext)
+
+    private Skill CreateSkillInstance(SkillData selectedSkillData, BoardManager boardManager)
     {
-        return SkillFactory.Create(selectedSkill, battleFlowContext);
+        return SkillFactory.Create(selectedSkillData, boardManager, View);
     }
-    private static void ApplySkill(Skill skillInstance, UnitBase casterUnit, BattleFlowContext battleFlowContext)
+
+    private static void ApplySkill(Skill skillInstance, UnitBase casterUnit, int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
-        skillInstance.Apply(casterUnit, battleFlowContext);
+        skillInstance.Apply(casterUnit, currentPlayerId, boardManager, turnManager);
     }
-    private static void ConsumeMana(UnitBase casterUnit, SkillData selectedSkill)
+
+    // 🔹 Resta MP después de usar la habilidad
+    private static void ConsumeMana(UnitBase casterUnit, SkillData selectedSkillData)
     {
-        UnitStatsManager.ConsumeMP(casterUnit, selectedSkill.Cost);
+        UnitStatsManager.ConsumeMP(casterUnit, selectedSkillData.Cost);
     }
 }

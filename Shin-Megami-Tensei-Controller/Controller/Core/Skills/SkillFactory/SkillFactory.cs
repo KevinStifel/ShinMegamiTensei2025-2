@@ -4,12 +4,10 @@ namespace Shin_Megami_Tensei;
 
 public static class SkillFactory
 {
-    public static Skill Create(SkillData skillData, BattleFlowContext battleFlowContext)
+    public static Skill Create(SkillData skillData, BoardManager boardManager, View view)
     {
         string name = skillData.Name.ToLowerInvariant();
-        BoardManager boardManager = battleFlowContext.BoardManager;
-        View view = battleFlowContext.View;
-
+        
         if (SkillCatalog.DamageSkills.Contains(name))
             return new Skill(
                 skillData,

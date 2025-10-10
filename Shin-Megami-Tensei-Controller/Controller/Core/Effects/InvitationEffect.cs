@@ -9,12 +9,11 @@ public sealed class InvitationEffect : EffectBase
     public override void ApplyEffect(
         UnitBase caster,
         List<UnitBase> targets,
-        SkillData skillData,
-        BattleFlowContext battleFlowContext)
+        SkillExecutionContext skillContext)
     {
-        var boardManager = battleFlowContext.BoardManager;
-        var turnManager = battleFlowContext.TurnManager;
-        int currentPlayerId = battleFlowContext.CurrentPlayerId;
+        var boardManager = skillContext.BoardManager;
+        var turnManager = skillContext.TurnManager;
+        int currentPlayerId = skillContext.CurrentPlayerId;
 
         var monsterToSummon = targets[0];
         var (chosenPosition, occupant) = boardManager.GetPreparedSummonData(currentPlayerId);
@@ -38,8 +37,7 @@ public sealed class InvitationEffect : EffectBase
         }
 
         turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, occupant);
-
         var turnChange = turnManager.ConsumeNeutralTurn();
-        new CombatActionView(View).ShowTurnConsumption(turnChange);
+        ActionView.ShowTurnConsumption(turnChange);
     }
 }

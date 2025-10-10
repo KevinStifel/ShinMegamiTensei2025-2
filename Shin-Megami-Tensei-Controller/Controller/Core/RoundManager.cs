@@ -49,7 +49,6 @@ namespace Shin_Megami_Tensei
         private void ProcessPlayerAttackTurn(int currentPlayerId, BoardManager boardManager)
         {
             var turnActor = _turnManager.AttackOrder.First();
-            var battleFlowContext = new BattleFlowContext(currentPlayerId, boardManager, _turnManager, _view);
             
             while (true)
             {
@@ -59,7 +58,7 @@ namespace Shin_Megami_Tensei
 
                 try
                 {
-                    selectedAction.ExecuteAction(battleFlowContext);
+                    selectedAction.ExecuteAction(currentPlayerId, boardManager, _turnManager);
                     return;
                 }
                 catch (ActionCanceledException) { }

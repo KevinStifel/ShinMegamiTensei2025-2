@@ -9,30 +9,27 @@ public sealed class SpecialEffect : EffectBase
     public override void ApplyEffect(
         UnitBase caster,
         List<UnitBase> targets,
-        SkillData skillData,
-        BattleFlowContext battleFlowContext)
+        SkillExecutionContext skillContext)
     {
-        var boardManager = battleFlowContext.BoardManager;
-        var turnManager = battleFlowContext.TurnManager;
-        int currentPlayerId = battleFlowContext.CurrentPlayerId;
+        var boardManager = skillContext.BoardManager;
+        var turnManager = skillContext.TurnManager;
+        int currentPlayerId = skillContext.CurrentPlayerId;
 
         var monsterToSummon = targets.First();
         var summonEffect = new SummonEffect(View);
 
-        // Recupera la información preparada del tablero (posición y unidad reemplazada)
         var (boardPosition, replacedUnit) = boardManager.GetPreparedSummonData(currentPlayerId);
         var placement = new SummonPlacement(boardPosition, replacedUnit);
 
-        var playerBoardFormation = new PlayerBoardFormation(
+        var formation = new PlayerBoardFormation(
             boardManager.SelectMutableBoard(currentPlayerId),
             boardManager.GetReserveUnitsForPlayer(currentPlayerId)
         );
 
-        summonEffect.ApplySamuraiSummon(monsterToSummon, playerBoardFormation, placement);
-
+        summonEffect.ApplySamuraiSummon(monsterToSummon, formation, placement);
         turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, replacedUnit);
 
         var turnChange = turnManager.ConsumeNeutralTurn();
-        new CombatActionView(View).ShowTurnConsumption(turnChange);
+        ActionView.ShowTurnConsumption(turnChange);
     }
 }
