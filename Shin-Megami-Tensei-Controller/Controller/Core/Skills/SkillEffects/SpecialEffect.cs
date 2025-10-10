@@ -21,12 +21,10 @@ public sealed class SpecialEffect : EffectBase
         var reserveUnits = board.GetReserveUnitsForPlayer(currentPlayerId);
         var monsterToSummon = targets[0];
 
-        // 🧩 Siempre invoca como “Samurai”
         summonEffect.ApplySamuraiSummon(monsterToSummon, chosenPosition, occupant, playerBoard, reserveUnits);
 
         turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, occupant);
 
-        // ⏱️ Consumir turno neutro
         var delta = turnManager.ConsumeNeutralTurn();
         new CombatActionView(View).ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
     }

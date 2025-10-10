@@ -36,8 +36,8 @@ public static class SkillFactory
         if (name == "invitation")
             return new Skill(
                 skillData,
-                new SummonEffect(view),
-                new DeadAllySelector(view, board)
+                new InvitationEffect(view),
+                new ReserveSelectorAll(view, board)
             );
 
         // ✨ Sabbatma → invoca monstruos vivos de la reserva
