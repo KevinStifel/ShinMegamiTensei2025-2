@@ -25,9 +25,6 @@ public sealed class UseSkillAction : CombatActionBase
         
         skillInstance.Apply(caster, currentPlayerId, board, turnManager);
         UnitStatsManager.ConsumeMP(caster, selectedSkill.Cost);
-
-        
-        
     }
     private SkillData? PromptSkillSelection(UnitBase caster)
     {

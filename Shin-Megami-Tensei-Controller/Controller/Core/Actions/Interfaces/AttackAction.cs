@@ -40,6 +40,10 @@ namespace Shin_Megami_Tensei
 
             // 7️⃣ Revisar muerte
             HandleDeathIfNeeded(board, enemyPlayerId, targetTeamUnit);
+            if (attacker.Stats.HP <= 0)
+            {
+                board.HandleUnitDeath(currentPlayerId, attacker);
+            }
         }
     }
 }

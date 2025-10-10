@@ -82,8 +82,7 @@ public class TurnManager
                 _attackOrder[index] = summoned;
         }
     }
-
-
+    
     public TurnDelta ConsumePassTurn()
     {
         if (BlinkingTurns > 0)
@@ -119,7 +118,7 @@ public class TurnManager
         return new TurnDelta(1, 0, 0);
     }
 
-    
+
     public TurnDelta ApplyAffinityTurnEffect(AffinityBehavior affinity)
     {
         var delta = affinity.CalculateTurnEffect(_fullTurns, _blinkingTurns);

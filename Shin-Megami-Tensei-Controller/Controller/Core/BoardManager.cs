@@ -86,11 +86,11 @@
         {
             var board = SelectMutableBoard(playerId);
 
-            foreach (var pos in GameConstants.BoardPositions)
+            foreach (var position in GameConstants.BoardPositions)
             {
-                if (ReferenceEquals(board[pos], monster))
+                if (ReferenceEquals(board[position], monster))
                 {
-                    board[pos] = null;
+                    board[position] = null;
                     break;
                 }
             }

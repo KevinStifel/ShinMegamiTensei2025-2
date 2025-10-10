@@ -56,5 +56,10 @@ public sealed class DamageEffect : EffectBase
         {
             board.HandleUnitDeath(enemyPlayerId, lastTarget);
         }
+        
+        if (caster.Stats.HP <= 0)
+        {
+            board.HandleUnitDeath(currentPlayerId, caster);
+        }
     }
 }
