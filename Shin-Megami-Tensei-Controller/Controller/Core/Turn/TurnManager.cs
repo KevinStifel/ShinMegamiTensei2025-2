@@ -62,31 +62,24 @@ public class TurnManager
         UnitBase summoned,
         UnitBase? replacedUnit)
     {
-        if (summoner is Samurai)
+        if (summoner is Samurai || replacedUnit == null)
         {
             if (replacedUnit == null)
             {
-                // Samurai invoca en espacio vacío → lo agrega al final
                 _attackOrder.Add(summoned);
             }
             else
             {
-                // Samurai invoca reemplazando a un monstruo
                 int index = _attackOrder.IndexOf(replacedUnit);
                 if (index >= 0)
-                {
                     _attackOrder[index] = summoned;
-                }
             }
         }
         else
         {
-            // Monstruo invoca → reemplaza a sí mismo
             int index = _attackOrder.IndexOf(summoner);
             if (index >= 0)
-            {
                 _attackOrder[index] = summoned;
-            }
         }
     }
 

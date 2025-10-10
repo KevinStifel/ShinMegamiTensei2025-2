@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Shin_Megami_Tensei_View;
+﻿using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
@@ -10,26 +9,45 @@ public sealed class SummonAction : CombatActionBase
     public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
     {
         var summoner = turnManager.GetAttackerOnTurn();
-
-        var summonSkill = new SkillData(
-            name: "Summon",
-            type: "Special",
-            cost: 0,
-            power: 0,
-            target: "Self",
-            hits: "1",
-            effect: "Summon"
-        );
-
         var summonEffect = new SummonEffect(View);
 
-        summonEffect.ApplyEffect(
-            caster: summoner,
-            targets: [],
-            skillData: summonSkill,
-            turnManager: turnManager,
-            currentPlayerId: currentPlayerId,
-            board: board
-        );
+        var reserveUnits = board.GetAliveReserveUnitsForPlayer(currentPlayerId);
+        var monsterToSummon = SelectMonsterFromReserve(reserveUnits);
+        if (monsterToSummon == null)
+            throw new ActionCanceledException();
+
+        var playerBoard = board.SelectMutableBoard(currentPlayerId);
+        UnitBase? replacedUnit;
+
+        if (summoner is Samurai)
+        {
+            var summonOptions = GameConstants.BoardPositions.Skip(1)
+                .Select(pos => (Position: pos, Occupant: playerBoard[pos]))
+                .ToList();
+
+            int chosenIndex = ActionView.ReadSummonPositionIndex(summonOptions);
+            if (WasCanceledSelection(chosenIndex))
+                throw new ActionCanceledException();
+
+            var (chosenPosition, occupant) = summonOptions[chosenIndex];
+            replacedUnit = summonEffect.ApplySamuraiSummon(monsterToSummon, chosenPosition, occupant, playerBoard, reserveUnits);
+        }
+        else
+        {
+            replacedUnit = summonEffect.ApplyMonsterSummon(summoner, monsterToSummon, playerBoard, reserveUnits);
+        }
+
+        turnManager.UpdateOrderAfterSummon(summoner, monsterToSummon, replacedUnit);
+
+        var delta = turnManager.ConsumeSummonTurn();
+        ActionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
+    }
+
+    private UnitBase? SelectMonsterFromReserve(List<UnitBase> reserveUnits)
+    {
+        int selectedIndex = ActionView.ReadSummonIndex(reserveUnits);
+        if (WasCanceledSelection(selectedIndex))
+            return null;
+        return reserveUnits[selectedIndex];
     }
 }

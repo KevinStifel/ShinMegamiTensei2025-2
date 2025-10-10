@@ -15,28 +15,19 @@ public sealed class SpecialEffect : EffectBase
         int currentPlayerId,
         BoardManager board)
     {
-     // ✨ 2️⃣ Delegar la lógica de invocación al SummonEffect
         var summonEffect = new SummonEffect(View);
+        var (chosenPosition, occupant) = board.GetPreparedSummonData(currentPlayerId);
+        var playerBoard = board.SelectMutableBoard(currentPlayerId);
+        var reserveUnits = board.GetReserveUnitsForPlayer(currentPlayerId);
+        var monsterToSummon = targets[0];
 
-        summonEffect.ApplyEffect(
-            caster: caster,
-            targets: targets,
-            skillData: skillData,
-            turnManager: turnManager,
-            currentPlayerId: currentPlayerId,
-            board: board
-        );
+        // 🧩 Siempre invoca como “Samurai”
+        summonEffect.ApplySamuraiSummon(monsterToSummon, chosenPosition, occupant, playerBoard, reserveUnits);
 
-        // ✨ 3️⃣ (Opcional) — si Sabbatma debe hacer algo extra, puedes hacerlo aquí.
-        // Por ejemplo, si el monstruo invocado ataca inmediatamente:
-        /*
-        var summonedUnit = targets.FirstOrDefault();
-        if (summonedUnit != null)
-        {
-            var actionView = new CombatActionView(View);
-            actionView.ShowAvailableTargets(summonedUnit, board.GetAliveUnits(GetEnemyPlayerId(currentPlayerId)));
-            // ... podrías encadenar aquí un ataque automático si lo pide el flujo
-        }
-        */
+        turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, occupant);
+
+        // ⏱️ Consumir turno neutro
+        var delta = turnManager.ConsumeNeutralTurn();
+        new CombatActionView(View).ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
     }
 }
