@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Shin_Megami_Tensei_View;
+﻿using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
@@ -14,8 +12,6 @@ public sealed class SummonAction : CombatActionBase
         var summonEffect = new SummonEffect(View);
 
         var monsterToSummon = SelectMonsterToSummon(boardManager, currentPlayerId);
-        if (monsterToSummon == null)
-            throw new ActionCanceledException();
 
         var boardFormation = CreateBoardFormation(boardManager, currentPlayerId);
         var summonData = new SummonData(summonerUnit, monsterToSummon);
@@ -23,14 +19,17 @@ public sealed class SummonAction : CombatActionBase
         var replacedUnit = PerformSummon(summonData, summonEffect, boardFormation);
         UpdateTurnAndOrder(turnManager, summonData, replacedUnit);
     }
-
-    private UnitBase? SelectMonsterToSummon(BoardManager boardManager, int currentPlayerId)
+    private UnitBase SelectMonsterToSummon(BoardManager boardManager, int currentPlayerId)
     {
         var availableReserveUnits = boardManager.GetAliveReserveUnitsForPlayer(currentPlayerId);
         int selectedIndex = ActionView.ReadSummonIndex(availableReserveUnits);
-        if (WasCanceledSelection(selectedIndex)) return null;
+
+        if (WasCanceledSelection(selectedIndex))
+            throw new ActionCanceledException();
+
         return availableReserveUnits[selectedIndex];
     }
+
 
     private static PlayerBoardFormation CreateBoardFormation(BoardManager boardManager, int currentPlayerId)
     {

@@ -20,8 +20,8 @@ namespace Shin_Megami_Tensei
 
         public void StartNewRound(int currentPlayerId, BoardManager boardManager)
         {
-            var activeUnits = boardManager.GetAliveUnits(currentPlayerId);
-            _turnManager.StartNewRound(activeUnits);
+            var currentPlayerAliveUnits = boardManager.GetAliveUnits(currentPlayerId);
+            _turnManager.StartNewRound(currentPlayerAliveUnits);
 
             var leader = boardManager.GetTeamLeaderUnit(currentPlayerId);
             _roundView.ShowRoundHeader(currentPlayerId, leader);
@@ -29,7 +29,7 @@ namespace Shin_Megami_Tensei
             while (_turnManager.HasAvailableTurns())
             {
                 ShowRoundResume(boardManager);
-                ProcessPlayerAttackTurn(currentPlayerId, boardManager);
+                InitiatePlayerAttackTurn(currentPlayerId, boardManager);
 
                 if (boardManager.HasWinner())
                 {
@@ -46,7 +46,7 @@ namespace Shin_Megami_Tensei
             _roundView.ShowAttackOrder(_turnManager.AttackOrder);
         }
 
-        private void ProcessPlayerAttackTurn(int currentPlayerId, BoardManager boardManager)
+        private void InitiatePlayerAttackTurn(int currentPlayerId, BoardManager boardManager)
         {
             var turnActor = _turnManager.AttackOrder.First();
             
