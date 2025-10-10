@@ -11,6 +11,9 @@ public class BattleManager
     {
         _boardManager = new BoardManager(board);
         _roundManager = new RoundManager(view);
+        
+        _boardManager.ResetPlayerSkillCounter(1);
+        _boardManager.ResetPlayerSkillCounter(2);
     }
     public void StartBattle()
     {

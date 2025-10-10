@@ -21,6 +21,9 @@ public class Skill
         List<UnitBase> targets = _targetSelector.SelectTargets(caster, currentPlayerId, _skillData);
         if (targets == null || targets.Count == 0)
             throw new ActionCanceledException();
+        
+        board.RegisterPlayerSkillCounter(currentPlayerId);
+        board.IncrementSkillUseCount(currentPlayerId);
 
         _effect.ApplyEffect(caster, targets, _skillData, turnManager, currentPlayerId, board);
     }

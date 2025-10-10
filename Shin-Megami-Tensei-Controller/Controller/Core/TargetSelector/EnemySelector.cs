@@ -15,7 +15,6 @@ public sealed class EnemySelector : TargetSelectorBase
         int enemyPlayerId = currentPlayerId == 1 ? 2 : 1;
         List<UnitBase> enemies = Board.GetAliveUnits(enemyPlayerId);
         
-        // Mostrar objetivos disponibles
         SelectorView.ShowAvailableTargets(caster, enemies);
         
         int index = ReadTargetIndex(enemies);
@@ -28,11 +27,9 @@ public sealed class EnemySelector : TargetSelectorBase
 
         string hitsString = skillData.Hits;
 
-        Board.RegisterPlayerSkillCounter(currentPlayerId);
         int k = Board.GetSkillUseCount(currentPlayerId);
         int hits = CalculateHits(hitsString, k);
-        Board.IncrementSkillUseCount(currentPlayerId);
-
+        
         List<UnitBase> repeatedTargets = [];
         for (int i = 0; i < hits; i++)
             repeatedTargets.Add(target);

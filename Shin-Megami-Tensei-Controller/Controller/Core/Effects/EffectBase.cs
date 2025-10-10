@@ -17,18 +17,5 @@ public abstract class EffectBase
         EffectView = new EffectView(view);
     }
 
-    // 📊 Manejo de golpes múltiples
-    public void SetRemainingHits(int hits)
-    {
-        _remainingHits = hits;
-    }
-
-    protected bool IsLastHit() => _remainingHits == 1;
-
-    protected void DecrementHit()
-    {
-        _remainingHits = Math.Max(0, _remainingHits - 1);
-    }
-
     public abstract void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillData skillData, TurnManager turnManager, int currentPlayerId, BoardManager board);
 }
