@@ -11,7 +11,7 @@ namespace Shin_Megami_Tensei
             _view = view;
         }
 
-        public ICombatAction CreateAction(string choice)
+        public CombatActionBase CreateAction(string choice)
         {
             return choice switch
             {

@@ -12,11 +12,11 @@ public sealed class WeakAffinityBehavior : AffinityBehavior
     }
 
     // Consume 1 Full Turn y gana 1 Blinking Turn. Si no hay Fulls, consume 1 Blinking Turn.
-    public override TurnManager.TurnDelta CalculateTurnEffect(int fullTurns, int blinkingTurns)
+    public override TurnChange  CalculateTurnEffect(int fullTurns, int blinkingTurns)
     {
         if (fullTurns > 0)
-            return new TurnManager.TurnDelta(1, 0, 1);
+            return new TurnChange (1, 0, 1);
 
-        return new TurnManager.TurnDelta(0, 1, 0);
+        return new TurnChange (0, 1, 0);
     }
 }

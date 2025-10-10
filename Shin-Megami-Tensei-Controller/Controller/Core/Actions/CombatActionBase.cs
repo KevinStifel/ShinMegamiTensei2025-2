@@ -3,7 +3,7 @@ using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei
 {
-    public abstract class CombatActionBase : ICombatAction
+    public abstract class CombatActionBase
     {
         protected readonly CombatActionView ActionView;
         protected readonly View View;

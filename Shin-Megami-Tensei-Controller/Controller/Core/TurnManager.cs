@@ -2,132 +2,108 @@
 
 public class TurnManager
 {
-    private int _fullTurns;
-    private int _blinkingTurns;
+    private Turn _currentTurn = new(0, 0, new List<UnitBase>());
 
-    public int FullTurns => _fullTurns;
-    public int BlinkingTurns => _blinkingTurns;
-    private List<UnitBase> _attackOrder = [];
-    
-    public IReadOnlyList<UnitBase> AttackOrder => _attackOrder;
-    
-    public record TurnDelta(int ConsumedFull, int ConsumedBlinking, int GainedBlinking);
+    public int FullTurns => _currentTurn.FullTurns;
+    public int BlinkingTurns => _currentTurn.BlinkingTurns;
+    public IReadOnlyList<UnitBase> AttackOrder => _currentTurn.AttackOrder;
 
     public void StartNewRound(List<UnitBase> activeUnits)
     {
-        _fullTurns = CalculateInitialFullTurns(activeUnits);
-        _blinkingTurns = 0;
-        _attackOrder = GenerateAttackOrder(activeUnits);
+        _currentTurn.FullTurns = CalculateInitialFullTurns(activeUnits);
+        _currentTurn.BlinkingTurns = 0;
+        _currentTurn.AttackOrder = GenerateAttackOrder(activeUnits);
     }
 
     private static int CalculateInitialFullTurns(List<UnitBase> activeUnits)
-    {
-        return activeUnits.Count(unit => unit.Stats.HP > 0);
-    }
+        => activeUnits.Count(unit => unit.Stats.HP > 0);
 
     private static List<UnitBase> GenerateAttackOrder(List<UnitBase> activeUnits)
-    {
-        return activeUnits
-            .OrderByDescending(unit => unit.Stats.Spd)
-            .ToList();
-    }
+        => activeUnits.OrderByDescending(u => u.Stats.Spd).ToList();
+
     public bool HasAvailableTurns()
-    {
-        return _fullTurns > 0 || _blinkingTurns > 0;
-    }
-    
+        => _currentTurn.FullTurns > 0 || _currentTurn.BlinkingTurns > 0;
+
     public UnitBase GetAttackerOnTurn()
-    {
-        return _attackOrder[0];
-    }
-    
+        => _currentTurn.AttackOrder[0];
+
     private void RotateAttackOrder()
     {
-        if (_attackOrder.Count == 0) return;
-
-        var firstUnit = _attackOrder[0];
-        _attackOrder.RemoveAt(0);
-        _attackOrder.Add(firstUnit);
+        if (_currentTurn.AttackOrder.Count == 0) return;
+        var first = _currentTurn.AttackOrder[0];
+        _currentTurn.AttackOrder.RemoveAt(0);
+        _currentTurn.AttackOrder.Add(first);
     }
-    
-    public void ApplyTurnDelta(int consumeFull, int consumeBlinking, int gainBlinking)
+
+    public void ApplyTurnChange(TurnChange change)
     {
-        _fullTurns = Math.Max(0, _fullTurns - consumeFull);
-        _blinkingTurns = Math.Max(0, _blinkingTurns - consumeBlinking);
-        _blinkingTurns += gainBlinking;
+        _currentTurn.FullTurns = Math.Max(0, _currentTurn.FullTurns - change.ConsumedFull);
+        _currentTurn.BlinkingTurns = Math.Max(0, _currentTurn.BlinkingTurns - change.ConsumedBlinking);
+        _currentTurn.BlinkingTurns += change.GainedBlinking;
         RotateAttackOrder();
     }
-    public void UpdateOrderAfterSummon(
-        UnitBase summoner,
-        UnitBase summoned,
-        UnitBase? replacedUnit)
+
+    public void UpdateOrderAfterSummon(UnitBase summoner, UnitBase summoned, UnitBase? replaced)
     {
-        if (summoner is Samurai || replacedUnit == null)
+        var order = _currentTurn.AttackOrder;
+
+        if (summoner is Samurai || replaced == null)
         {
-            if (replacedUnit == null)
+            if (replaced == null)
             {
-                _attackOrder.Add(summoned);
+                order.Add(summoned);
             }
             else
             {
-                int index = _attackOrder.IndexOf(replacedUnit);
-                if (index >= 0)
-                    _attackOrder[index] = summoned;
+                int index = order.IndexOf(replaced);
+                if (index >= 0) order[index] = summoned;
             }
         }
         else
         {
-            int index = _attackOrder.IndexOf(summoner);
-            if (index >= 0)
-                _attackOrder[index] = summoned;
+            int index = order.IndexOf(summoner);
+            if (index >= 0) order[index] = summoned;
         }
     }
-    
-    public TurnDelta ConsumePassTurn()
-    {
-        if (BlinkingTurns > 0)
-        {
-            ApplyTurnDelta(0, 1, 0);
-            return new TurnDelta(0, 1, 0);
-        }
 
-        ApplyTurnDelta(1, 0, 1);
-        return new TurnDelta(1, 0, 1);
-    }
-    public TurnDelta ConsumeSummonTurn()
+    public TurnChange ConsumePassTurn()
     {
-        if (BlinkingTurns > 0)
-        {
-            ApplyTurnDelta(0, 1, 0);
-            return new TurnDelta(0, 1, 0);
-        }
+        var change = _currentTurn.BlinkingTurns > 0
+            ? new TurnChange(0, 1, 0)
+            : new TurnChange(1, 0, 1);
 
-        ApplyTurnDelta(1, 0, 1);
-        return new TurnDelta(1, 0, 1);
-    }
-    
-    public TurnDelta ConsumeNeutralTurn()
-    {
-        if (_blinkingTurns > 0)
-        {
-            ApplyTurnDelta(0, 1, 0); // consume un blinking
-            return new TurnDelta(0, 1, 0);
-        }
-
-        ApplyTurnDelta(1, 0, 0); // consume un full
-        return new TurnDelta(1, 0, 0);
+        ApplyTurnChange(change);
+        return change;
     }
 
-
-    public TurnDelta ApplyAffinityTurnEffect(AffinityBehavior affinity)
+    public TurnChange ConsumeSummonTurn()
     {
-        var delta = affinity.CalculateTurnEffect(_fullTurns, _blinkingTurns);
+        var change = _currentTurn.BlinkingTurns > 0
+            ? new TurnChange(0, 1, 0)
+            : new TurnChange(1, 0, 1);
 
-        _fullTurns = Math.Max(0, _fullTurns - delta.ConsumedFull);
-        _blinkingTurns = Math.Max(0, _blinkingTurns - delta.ConsumedBlinking);
-        _blinkingTurns += delta.GainedBlinking;
+        ApplyTurnChange(change);
+        return change;
+    }
 
-        RotateAttackOrder();
-        return delta;
+    public TurnChange ConsumeNeutralTurn()
+    {
+        var change = _currentTurn.BlinkingTurns > 0
+            ? new TurnChange(0, 1, 0)
+            : new TurnChange(1, 0, 0);
+
+        ApplyTurnChange(change);
+        return change;
+    }
+
+    public TurnChange ApplyAffinityTurnEffect(AffinityBehavior affinity)
+    {
+        var change = affinity.CalculateTurnEffect(
+            _currentTurn.FullTurns,
+            _currentTurn.BlinkingTurns
+        );
+
+        ApplyTurnChange(change);
+        return change;
     }
 }

@@ -13,8 +13,8 @@ public sealed class NeutralAffinityBehavior : AffinityBehavior
     }
 
     // Igual que Resist → Consume 1 Blinking Turn, o 1 Full Turn si no hay Blinking.
-    public override TurnManager.TurnDelta CalculateTurnEffect(int fullTurns, int blinkingTurns)
+    public override TurnChange CalculateTurnEffect(int fullTurns, int blinkingTurns)
         => blinkingTurns > 0
-            ? new(0, 1, 0)
-            : new(1, 0, 0);
+            ? new TurnChange(0, 1, 0)
+            : new TurnChange(1, 0, 0);
 }

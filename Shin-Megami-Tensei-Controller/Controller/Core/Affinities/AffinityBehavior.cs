@@ -7,5 +7,5 @@ public abstract class AffinityBehavior
     
     public abstract void ApplyEffect(UnitBase caster, UnitBase target, int damage);
 
-    public abstract TurnManager.TurnDelta CalculateTurnEffect(int fullTurns, int blinkingTurns);
+    public abstract TurnChange CalculateTurnEffect(int fullTurns, int blinkingTurns);
 }

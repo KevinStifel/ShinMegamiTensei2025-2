@@ -13,8 +13,8 @@ public sealed class RepelAffinityBehavior : AffinityBehavior
     }
 
     // Consume todos los turnos disponibles (Full + Blinking)
-    public override TurnManager.TurnDelta CalculateTurnEffect(int fullTurns, int blinkingTurns)
+    public override TurnChange CalculateTurnEffect(int fullTurns, int blinkingTurns)
     {
-        return new TurnManager.TurnDelta(fullTurns, blinkingTurns, 0);
+        return new TurnChange(fullTurns, blinkingTurns, 0);
     }
 }

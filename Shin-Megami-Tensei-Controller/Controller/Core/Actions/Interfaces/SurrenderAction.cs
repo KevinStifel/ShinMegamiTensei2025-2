@@ -17,9 +17,8 @@ public sealed class SurrenderAction : CombatActionBase
                 unit.Stats.TakeDamage(unit.Stats.HP);
         }
 
-        if (turnManager.FullTurns > 0 || turnManager.BlinkingTurns > 0)
-        {
-            turnManager.ApplyTurnDelta(turnManager.FullTurns, turnManager.BlinkingTurns, 0);
-        }
+        if (turnManager is { FullTurns: <= 0, BlinkingTurns: <= 0 }) return;
+        var change = new TurnChange(turnManager.FullTurns, turnManager.BlinkingTurns, 0);
+        turnManager.ApplyTurnChange(change);
     }
 }
