@@ -19,7 +19,7 @@ public sealed class UseSkillAction : CombatActionBase
         ValidateManaAvailability(casterUnit, selectedSkillData);
 
         var skillInstance = CreateSkillInstance(selectedSkillData, boardManager);
-        ApplySkill(skillInstance, casterUnit, currentPlayerId, boardManager, turnManager);
+        skillInstance.Apply(currentPlayerId, boardManager, turnManager);
 
         ConsumeMana(casterUnit, selectedSkillData);
     }
@@ -53,12 +53,6 @@ public sealed class UseSkillAction : CombatActionBase
         return SkillFactory.Create(selectedSkillData, boardManager, View);
     }
 
-    private static void ApplySkill(Skill skillInstance, UnitBase casterUnit, int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
-    {
-        skillInstance.Apply(casterUnit, currentPlayerId, boardManager, turnManager);
-    }
-
-    // 🔹 Resta MP después de usar la habilidad
     private static void ConsumeMana(UnitBase casterUnit, SkillData selectedSkillData)
     {
         UnitStatsManager.ConsumeMP(casterUnit, selectedSkillData.Cost);
