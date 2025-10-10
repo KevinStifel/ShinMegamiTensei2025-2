@@ -15,6 +15,7 @@ public sealed class EnemySelector : TargetSelectorBase
         int enemyPlayerId = currentPlayerId == 1 ? 2 : 1;
         List<UnitBase> enemies = Board.GetAliveUnits(enemyPlayerId);
         
+        // Mostrar objetivos disponibles
         SelectorView.ShowAvailableTargets(caster, enemies);
         
         int index = ReadTargetIndex(enemies);
@@ -23,22 +24,18 @@ public sealed class EnemySelector : TargetSelectorBase
         
         View.WriteLine("----------------------------------------");
         
-        // EMPIEZA LOGICA DE HITS
         UnitBase target = enemies[index];
 
-        // 🔹 Calcular hits según la skill
         string hitsString = skillData.Hits;
 
-        PlayerRegistry.RegisterPlayer(currentPlayerId);
-        int k = PlayerRegistry.GetSkillCount(currentPlayerId);
+        Board.RegisterPlayerSkillCounter(currentPlayerId);
+        int k = Board.GetSkillUseCount(currentPlayerId);
         int hits = CalculateHits(hitsString, k);
-        PlayerRegistry.IncrementSkillCount(currentPlayerId);
+        Board.IncrementSkillUseCount(currentPlayerId);
 
-        // 🔹 Repetir el mismo target N veces
         List<UnitBase> repeatedTargets = [];
         for (int i = 0; i < hits; i++)
             repeatedTargets.Add(target);
-
         return repeatedTargets;
     }
 
@@ -51,7 +48,8 @@ public sealed class EnemySelector : TargetSelectorBase
             return int.TryParse(hitsString, out int fixedHits) ? fixedHits : 1;
 
         var parts = hitsString.Split('-');
-        if (parts.Length != 2) return 1;
+        if (parts.Length != 2)
+            return 1;
 
         int a = int.Parse(parts[0]);
         int b = int.Parse(parts[1]);

@@ -8,6 +8,8 @@
         public List<UnitBase> PlayerOneRoster { get; }
         public List<UnitBase> PlayerTwoRoster { get; }
         
+        internal readonly Dictionary<int, int> SkillUseCounters = new();
+        
         public Board(List<UnitBase> playerOneUnits, List<UnitBase> playerTwoUnits)
         {
             PlayerOneRoster = new List<UnitBase>(playerOneUnits);

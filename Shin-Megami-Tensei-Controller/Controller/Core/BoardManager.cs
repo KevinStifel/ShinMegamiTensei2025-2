@@ -26,13 +26,7 @@
 
             throw new InvalidOperationException("No hay datos preparados para la invocación.");
         }
-
-        // 🔹 Limpiar los datos después de usarlos
-        public void ClearPreparedSummon(int playerId)
-        {
-            _preparedSummons.Remove(playerId);
-        }
-
+        
         public Dictionary<string, UnitBase?> SelectMutableBoard(int playerId)
             => playerId == 1 ? _board.PlayerOneBoard : _board.PlayerTwoBoard;
 
@@ -136,5 +130,22 @@
         {
             return GetAliveUnits(playerId).Count > 0;
         }
+        public void RegisterPlayerSkillCounter(int playerId)
+        {
+            _board.SkillUseCounters.TryAdd(playerId, 0);
+        }
+
+        public int GetSkillUseCount(int playerId)
+        {
+            _board.SkillUseCounters.TryAdd(playerId, 0);
+            return _board.SkillUseCounters[playerId];
+        }
+
+        public void IncrementSkillUseCount(int playerId)
+        {
+            _board.SkillUseCounters.TryAdd(playerId, 0);
+            _board.SkillUseCounters[playerId]++;
+        }
+
     }
 }

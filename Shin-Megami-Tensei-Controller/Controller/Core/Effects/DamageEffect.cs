@@ -17,6 +17,8 @@ public sealed class DamageEffect : EffectBase
         int currentPlayerId,
         BoardManager board)
     {
+        CombatActionView actionView = new CombatActionView(View);
+        
         int enemyPlayerId = currentPlayerId == 1 ? 2 : 1;
         AffinityBehavior? lastBehavior = null;
         UnitBase? lastTarget = null;
@@ -47,9 +49,6 @@ public sealed class DamageEffect : EffectBase
         if (lastBehavior != null)
         {
             var delta = turnManager.ApplyAffinityTurnEffect(lastBehavior);
-            
-            // Cambiar por un effect view, el problema es que quedaria repetido en el action view
-            CombatActionView actionView = new CombatActionView(View);
             actionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
         }
         

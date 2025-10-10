@@ -12,7 +12,7 @@ public sealed class UseSkillAction : CombatActionBase
     {
         var caster = turnManager.GetAttackerOnTurn();
         var selectedSkill = PromptSkillSelection(caster);
-        //Console.WriteLine(selectedSkill);
+        Console.WriteLine(selectedSkill);
 
         if (selectedSkill == null)
             throw new ActionCanceledException();
