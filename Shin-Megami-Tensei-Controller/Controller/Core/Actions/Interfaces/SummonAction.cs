@@ -8,10 +8,15 @@ public sealed class SummonAction : CombatActionBase
 {
     public SummonAction(View view) : base(view) { }
 
-    public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
+    public override void ExecuteAction(BattleFlowContext battleFlowContext)
     {
+        var boardManager = battleFlowContext.BoardManager;
+        var turnManager = battleFlowContext.TurnManager;
+        var view = battleFlowContext.View;
+        var currentPlayerId = battleFlowContext.CurrentPlayerId;
+
         var summonerUnit = turnManager.GetAttackerOnTurn();
-        var summonEffect = new SummonEffect(View);
+        var summonEffect = new SummonEffect(view);
 
         var monsterToSummon = SelectMonsterToSummon(boardManager, currentPlayerId);
         if (monsterToSummon == null)
@@ -46,11 +51,11 @@ public sealed class SummonAction : CombatActionBase
     {
         var summonOptions = GetSummonPositions(playerBoard);
 
-        int chosenIndex = ActionView.ReadSummonPositionIndex(summonOptions);
-        if (WasCanceledSelection(chosenIndex))
+        int selectedIndex = ActionView.ReadSummonPositionIndex(summonOptions);
+        if (WasCanceledSelection(selectedIndex))
             throw new ActionCanceledException();
 
-        var (chosenPosition, currentOccupant) = summonOptions[chosenIndex];
+        var (chosenPosition, currentOccupant) = summonOptions[selectedIndex];
         return summonEffect.ApplySamuraiSummon(monsterToSummon, chosenPosition, currentOccupant, playerBoard, reserveUnits);
     }
 
@@ -72,6 +77,6 @@ public sealed class SummonAction : CombatActionBase
         turnManager.UpdateOrderAfterSummon(summonerUnit, summonedUnit, replacedUnit);
 
         var turnChange = turnManager.ConsumeSummonTurn();
-        ActionView.ShowTurnConsumption(turnChange.ConsumedFull, turnChange.ConsumedBlinking, turnChange.GainedBlinking);
+        ActionView.ShowTurnConsumption(turnChange);
     }
 }

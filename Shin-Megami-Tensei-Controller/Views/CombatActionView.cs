@@ -17,11 +17,11 @@ public class CombatActionView : AbstractView
         }
         View.WriteLine($"{enemies.Count + 1}-Cancelar");
     }
-    public void ShowTurnConsumption(int consumedFull, int consumedBlinking, int gainedBlinking)
+    public void ShowTurnConsumption(TurnChange turnChange)
     {
         View.WriteLine("----------------------------------------");
-        View.WriteLine($"Se han consumido {consumedFull} Full Turn(s) y {consumedBlinking} Blinking Turn(s)");
-        View.WriteLine($"Se han obtenido {gainedBlinking} Blinking Turn(s)");
+        View.WriteLine($"Se han consumido {turnChange.ConsumedFull} Full Turn(s) y {turnChange.ConsumedBlinking} Blinking Turn(s)");
+        View.WriteLine($"Se han obtenido {turnChange.GainedBlinking} Blinking Turn(s)");
     }
     
     // Skills:

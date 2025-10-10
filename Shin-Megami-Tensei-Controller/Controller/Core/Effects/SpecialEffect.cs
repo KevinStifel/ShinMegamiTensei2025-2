@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Shin_Megami_Tensei_View;
+﻿using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
@@ -11,10 +10,12 @@ public sealed class SpecialEffect : EffectBase
         UnitBase caster,
         List<UnitBase> targets,
         SkillData skillData,
-        TurnManager turnManager,
-        int currentPlayerId,
-        BoardManager boardManager)
+        BattleFlowContext battleFlowContext)
     {
+        var boardManager = battleFlowContext.BoardManager;
+        var turnManager = battleFlowContext.TurnManager;
+        int currentPlayerId = battleFlowContext.CurrentPlayerId;
+
         var summonEffect = new SummonEffect(View);
         var (chosenPosition, occupant) = boardManager.GetPreparedSummonData(currentPlayerId);
         var playerBoard = boardManager.SelectMutableBoard(currentPlayerId);
@@ -25,7 +26,7 @@ public sealed class SpecialEffect : EffectBase
 
         turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, occupant);
 
-        var delta = turnManager.ConsumeNeutralTurn();
-        new CombatActionView(View).ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
+        var turnChange = turnManager.ConsumeNeutralTurn();
+        new CombatActionView(View).ShowTurnConsumption(turnChange);
     }
 }

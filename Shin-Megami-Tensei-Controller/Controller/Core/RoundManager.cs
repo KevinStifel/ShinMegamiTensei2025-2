@@ -49,18 +49,17 @@ namespace Shin_Megami_Tensei
         private void ProcessPlayerAttackTurn(int currentPlayerId, BoardManager boardManager)
         {
             var turnActor = _turnManager.AttackOrder.First();
-            var context = new BattleContext(currentPlayerId, boardManager, _turnManager, _view);
-
+            var battleFlowContext = new BattleFlowContext(currentPlayerId, boardManager, _turnManager, _view);
+            
             while (true)
             {
                 ShowActionsMenu(turnActor);
-
                 var selectedActionKey = ReadActionKeyFromMenu(turnActor);
                 var selectedAction = _actionFactory.CreateAction(selectedActionKey);
 
                 try
                 {
-                    selectedAction.ExecuteAction(currentPlayerId, boardManager, _turnManager);
+                    selectedAction.ExecuteAction(battleFlowContext);
                     return;
                 }
                 catch (ActionCanceledException) { }

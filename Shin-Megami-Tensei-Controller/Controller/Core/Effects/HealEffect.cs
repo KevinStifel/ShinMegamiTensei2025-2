@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Shin_Megami_Tensei_View;
+﻿using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
@@ -11,11 +10,11 @@ public sealed class HealEffect : EffectBase
         UnitBase caster,
         List<UnitBase> targets,
         SkillData skillData,
-        TurnManager turnManager,
-        int currentPlayerId,
-        BoardManager boardManager)
+        BattleFlowContext battleFlowContext)
     {
-        // 💚 Aplicar la curación
+        var turnManager = battleFlowContext.TurnManager;
+        CombatActionView actionView = new CombatActionView(View);
+
         foreach (var target in targets)
         {
             int healAmount = (int)(target.Stats.MaxHP * (skillData.Power / 100.0));
@@ -23,11 +22,7 @@ public sealed class HealEffect : EffectBase
             EffectView.ShowHealEffect(caster, target, healAmount);
         }
 
-        // ⚙️ Consumir un turno neutral (sin afinidad)
-        var delta = turnManager.ConsumeNeutralTurn();
-
-        // 🧩 Mostrar el resultado
-        CombatActionView actionView = new CombatActionView(View);
-        actionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
+        var turnChange = turnManager.ConsumeNeutralTurn();
+        actionView.ShowTurnConsumption(turnChange);
     }
 }

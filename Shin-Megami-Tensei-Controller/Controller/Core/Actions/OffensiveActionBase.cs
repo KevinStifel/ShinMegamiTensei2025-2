@@ -5,72 +5,92 @@ namespace Shin_Megami_Tensei;
 
 /// <summary>
 /// Clase base para acciones ofensivas (físicas, de arma o mágicas).
-/// Cumple con Clean Code: funciones pequeñas, nombres claros y SRP.
+/// Cumple con Clean Code: funciones pequeñas, SRP y uso consistente de BattleFlowContext.
 /// </summary>
 public abstract class OffensiveActionBase : CombatActionBase
 {
+    /// <summary>
+    /// Elemento que define el tipo de ataque (Physical, Gun, Fire, etc.).
+    /// </summary>
     protected abstract AffinityElement Element { get; }
 
     protected OffensiveActionBase(View view) : base(view) { }
 
-    public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
+    public override void ExecuteAction(BattleFlowContext battleFlowContext)
     {
-        var attackingUnit = turnManager.GetAttackerOnTurn();
-        var enemyPlayerId = GetEnemyPlayerId(currentPlayerId);
-        var targetUnit = SelectTarget(attackingUnit, boardManager.GetAliveUnits(enemyPlayerId));
+        var attackerUnit = battleFlowContext.TurnManager.GetAttackerOnTurn();
+        var enemyPlayerId = GetEnemyPlayerId(battleFlowContext.CurrentPlayerId);
 
+        var targetUnit = SelectTarget(attackerUnit, battleFlowContext.BoardManager.GetAliveUnits(enemyPlayerId));
         var affinityBehavior = CreateAffinityBehavior(targetUnit);
-        var inflictedDamage = CalculateDamage(attackingUnit, affinityBehavior);
-        ApplyAndShowAffinityEffect(attackingUnit, targetUnit, affinityBehavior, inflictedDamage);
-        ApplyAndShowTurnEffect(turnManager, affinityBehavior);
-        HandleDeaths(boardManager, currentPlayerId, enemyPlayerId, attackingUnit, targetUnit);
+        var inflictedDamage = CalculateDamage(attackerUnit, affinityBehavior);
+
+        ApplyAndShowAffinityEffect(attackerUnit, targetUnit, affinityBehavior, inflictedDamage, battleFlowContext);
+        ApplyAndShowTurnEffect(battleFlowContext.TurnManager, affinityBehavior);
+        HandleDeaths(battleFlowContext.BoardManager, battleFlowContext.CurrentPlayerId, enemyPlayerId, attackerUnit, targetUnit);
     }
 
-    private UnitBase SelectTarget(UnitBase attackingUnit, List<UnitBase> enemies)
+    private UnitBase SelectTarget(UnitBase attackerUnit, List<UnitBase> enemyUnits)
     {
-        int index = SelectEnemyTeamUnitIndex(attackingUnit, enemies);
-        if (WasCanceledSelection(index))
+        int selectedIndex = SelectEnemyTeamUnitIndex(attackerUnit, enemyUnits);
+        if (WasCanceledSelection(selectedIndex))
             throw new ActionCanceledException();
 
-        return enemies[index];
+        return enemyUnits[selectedIndex];
     }
 
     private AffinityBehavior CreateAffinityBehavior(UnitBase targetUnit)
     {
-        var affinityReaction = targetUnit.Affinity.GetAffinityReaction(Element);
-        return AffinityBehaviorFactory.Create(affinityReaction);
+        var reaction = targetUnit.Affinity.GetAffinityReaction(Element);
+        return AffinityBehaviorFactory.Create(reaction);
     }
 
-    private int CalculateDamage(UnitBase attackingUnit, AffinityBehavior affinityBehavior)
+    private int CalculateDamage(UnitBase attackerUnit, AffinityBehavior affinityBehavior)
     {
-        return DamageCalculator.CalculateFinalDamage(attackingUnit, affinityBehavior, Element);
+        return DamageCalculator.CalculateFinalDamage(attackerUnit, affinityBehavior, Element);
     }
 
-    private void ApplyAndShowAffinityEffect(UnitBase attackingUnit, UnitBase targetUnit, AffinityBehavior affinityBehavior, int inflictedDamage)
+    private void ApplyAndShowAffinityEffect(
+        UnitBase attackerUnit,
+        UnitBase targetUnit,
+        AffinityBehavior affinityBehavior,
+        int inflictedDamage,
+        BattleFlowContext battleFlowContext)
     {
-        string verb = GetElementalMessage(Element);
-        var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View);
-        affinityBehavior.ApplyEffect(attackingUnit, targetUnit, inflictedDamage);
-        ShowAffinityResult(attackingUnit, targetUnit, affinityView, inflictedDamage, verb);
+        string attackVerb = GetElementalMessage(Element);
+        var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, battleFlowContext.View);
+
+        affinityBehavior.ApplyEffect(attackerUnit, targetUnit, inflictedDamage);
+        ShowAffinityOutcome(attackerUnit, targetUnit, affinityView, inflictedDamage, attackVerb);
     }
 
-    private void ShowAffinityResult(UnitBase attackingUnit, UnitBase targetUnit, AffinityViewBase affinityView, int inflictedDamage, string verb)
+    private void ShowAffinityOutcome(
+        UnitBase attackerUnit,
+        UnitBase targetUnit,
+        AffinityViewBase affinityView,
+        int inflictedDamage,
+        string attackVerb)
     {
         ActionView.ShowSeparator();
-        affinityView.ShowAffinityReaction(attackingUnit, targetUnit, inflictedDamage, verb);
-        affinityView.ShowHp(attackingUnit, targetUnit);
+        affinityView.ShowAffinityReaction(attackerUnit, targetUnit, inflictedDamage, attackVerb);
+        affinityView.ShowHp(attackerUnit, targetUnit);
     }
 
-    private void ApplyAndShowTurnEffect(TurnManager turnManager, AffinityBehavior affinity)
+    private void ApplyAndShowTurnEffect(TurnManager turnManager, AffinityBehavior affinityBehavior)
     {
-        var turnChange = turnManager.ApplyAffinityTurnEffect(affinity);
-        ActionView.ShowTurnConsumption(turnChange.ConsumedFull, turnChange.ConsumedBlinking, turnChange.GainedBlinking);
+        var turnChange = turnManager.ApplyAffinityTurnEffect(affinityBehavior);
+        ActionView.ShowTurnConsumption(turnChange);
     }
 
-    private static void HandleDeaths(BoardManager boardManager, int currentPlayerId, int enemyPlayerId, UnitBase attackingUnit, UnitBase targetUnit)
+    private static void HandleDeaths(
+        BoardManager boardManager,
+        int currentPlayerId,
+        int enemyPlayerId,
+        UnitBase attackerUnit,
+        UnitBase targetUnit)
     {
         HandleDeathIfNeeded(boardManager, enemyPlayerId, targetUnit);
-        if (attackingUnit.Stats.HP <= 0)
-            boardManager.HandleUnitDeath(currentPlayerId, attackingUnit);
+        if (attackerUnit.Stats.HP <= 0)
+            boardManager.HandleUnitDeath(currentPlayerId, attackerUnit);
     }
 }

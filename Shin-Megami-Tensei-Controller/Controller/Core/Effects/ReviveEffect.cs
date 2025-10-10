@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Shin_Megami_Tensei_View;
+﻿using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
@@ -11,13 +10,13 @@ public sealed class ReviveEffect : EffectBase
         UnitBase caster,
         List<UnitBase> targets,
         SkillData skillData,
-        TurnManager turnManager,
-        int currentPlayerId,
-        BoardManager boardManager)
+        BattleFlowContext battleFlowContext)
     {
+        var turnManager = battleFlowContext.TurnManager;
+        CombatActionView actionView = new CombatActionView(View);
+
         foreach (var target in targets)
         {
-            // Solo revive si está muerto
             if (target.Stats.HP > 0)
                 continue;
 
@@ -27,10 +26,7 @@ public sealed class ReviveEffect : EffectBase
             EffectView.ShowReviveEffect(caster, target, healAmount);
         }
 
-        // Consumir un turno neutral
-        var delta = turnManager.ConsumeNeutralTurn();
-
-        var actionView = new CombatActionView(View);
-        actionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
+        var turnChange = turnManager.ConsumeNeutralTurn();
+        actionView.ShowTurnConsumption(turnChange);
     }
 }

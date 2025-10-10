@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Shin_Megami_Tensei_View;
+﻿using Shin_Megami_Tensei_View;
 
 namespace Shin_Megami_Tensei;
 
@@ -40,8 +38,11 @@ public sealed class SummonEffect : EffectBase
         return summoner;
     }
 
-    public override void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillData skillData, TurnManager turnManager, int currentPlayerId,
-        BoardManager boardManager)
+    public override void ApplyEffect(
+        UnitBase caster,
+        List<UnitBase> targets,
+        SkillData skillData,
+        BattleFlowContext battleFlowContext)
     {
         throw new NotImplementedException();
     }

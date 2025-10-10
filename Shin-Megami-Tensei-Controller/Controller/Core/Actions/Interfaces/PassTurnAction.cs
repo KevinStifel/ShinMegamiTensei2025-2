@@ -1,13 +1,15 @@
 ﻿using Shin_Megami_Tensei_View;
+
 namespace Shin_Megami_Tensei;
 
 public sealed class PassTurnAction : CombatActionBase
 {
     public PassTurnAction(View view) : base(view) { }
 
-    public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
+    public override void ExecuteAction(BattleFlowContext battleFlowContext)
     {
+        var turnManager = battleFlowContext.TurnManager;
         TurnChange turnChange = turnManager.ConsumePassTurn();
-        ActionView.ShowTurnConsumption(turnChange.ConsumedFull, turnChange.ConsumedBlinking, turnChange.GainedBlinking);
+        ActionView.ShowTurnConsumption(turnChange);
     }
 }
