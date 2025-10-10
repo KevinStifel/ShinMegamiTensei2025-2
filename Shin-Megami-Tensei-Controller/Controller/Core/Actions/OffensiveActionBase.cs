@@ -10,14 +10,18 @@ public abstract class OffensiveActionBase : CombatActionBase
 
     public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
-        var attackerUnit = turnManager.GetAttackerOnTurn();
+        var attacker = turnManager.GetAttackerOnTurn();
         var enemyPlayerId = BattleHelper.GetEnemyPlayerId(currentPlayerId);
 
-        var targetUnit = SelectTarget(attackerUnit, boardManager.GetAliveUnits(enemyPlayerId));
-        var affinityBehavior = CreateAffinityBehavior(targetUnit);
-        var inflictedDamage = CalculateDamage(attackerUnit, affinityBehavior);
+        var target = SelectTarget(attacker, boardManager.GetAliveUnits(enemyPlayerId));
+        var affinityBehavior = CreateAffinityBehavior(target);
+        var damage = CalculateDamage(attacker, affinityBehavior);
 
-        ApplyAndShowAffinityEffect(attackerUnit, targetUnit, affinityBehavior, inflictedDamage, boardManager, turnManager, currentPlayerId, enemyPlayerId);
+        affinityBehavior.ApplyEffect(attacker, target, damage);
+        ShowAffinityOutcome(attacker, target, damage);        
+        ApplyTurnEffect(turnManager, affinityBehavior);  
+        HandleTargetDeath(boardManager, enemyPlayerId, target);
+        HandleAttackerDeath(boardManager, currentPlayerId, attacker);
     }
 
     private UnitBase SelectTarget(UnitBase attackerUnit, List<UnitBase> enemyUnits)
@@ -39,38 +43,36 @@ public abstract class OffensiveActionBase : CombatActionBase
     {
         return DamageCalculator.CalculateFinalDamage(attackerUnit, affinityBehavior, Element);
     }
-
-    private void ApplyAndShowAffinityEffect(
-        UnitBase attackerUnit,
-        UnitBase targetUnit,
-        AffinityBehavior affinityBehavior,
-        int inflictedDamage,
-        BoardManager boardManager,
-        TurnManager turnManager,
-        int currentPlayerId,
-        int enemyPlayerId)
+    
+    private void ShowAffinityOutcome(UnitBase attacker, UnitBase target, int inflictedDamage)
     {
-        var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View, Element);
-        affinityBehavior.ApplyEffect(attackerUnit, targetUnit, inflictedDamage);
-        ShowAffinityOutcome(attackerUnit, targetUnit, affinityView, inflictedDamage);
-
-        var turnChange = turnManager.ApplyAffinityTurnEffect(affinityBehavior);
-        ActionView.ShowTurnConsumption(turnChange);
-
-        HandleDeaths(boardManager, currentPlayerId, enemyPlayerId, attackerUnit, targetUnit);
-    }
-
-    private void ShowAffinityOutcome(UnitBase attackerUnit, UnitBase targetUnit, AffinityViewBase affinityView, int inflictedDamage)
-    {
+        var affinityView = CreateViewForAffinity(target);
         ActionView.ShowSeparator();
-        affinityView.ShowAffinityReaction(attackerUnit, targetUnit, inflictedDamage);
-        affinityView.ShowHp(attackerUnit, targetUnit);
+        affinityView.ShowAffinityReaction(attacker, target, inflictedDamage);
+        affinityView.ShowHp(attacker, target);
+    }
+    private AffinityViewBase CreateViewForAffinity(UnitBase target)
+    {
+        var reaction = target.Affinity.GetAffinityReaction(Element);
+        var behaviorType = AffinityBehaviorFactory.Create(reaction).Type;
+        return AffinityViewFactory.Create(behaviorType, View, Element);
     }
 
-    private static void HandleDeaths(BoardManager boardManager, int currentPlayerId, int enemyPlayerId, UnitBase attackerUnit, UnitBase targetUnit)
+    private void ApplyTurnEffect(TurnManager turns, AffinityBehavior behavior)
     {
-        HandleDeath(boardManager, enemyPlayerId, targetUnit);
-        if (attackerUnit.Stats.HP <= 0)
-            boardManager.HandleUnitDeath(currentPlayerId, attackerUnit);
+        var turnChange = turns.ApplyAffinityTurnEffect(behavior);
+        ActionView.ShowTurnConsumption(turnChange);
+    }
+
+    private static void HandleTargetDeath(BoardManager board, int enemyPlayerId, UnitBase target)
+    {
+        if (target.Stats.HP <= 0)
+            board.HandleUnitDeath(enemyPlayerId, target);
+    }
+
+    private static void HandleAttackerDeath(BoardManager board, int currentPlayerId, UnitBase attacker)
+    {
+        if (attacker.Stats.HP <= 0)
+            board.HandleUnitDeath(currentPlayerId, attacker);
     }
 }

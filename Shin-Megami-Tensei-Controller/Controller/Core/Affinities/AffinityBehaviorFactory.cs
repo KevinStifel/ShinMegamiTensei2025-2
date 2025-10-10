@@ -14,7 +14,6 @@ public static class AffinityBehaviorFactory
             "rp" => new RepelAffinityBehavior(),
             "dr" => new DrainAffinityBehavior(),
             "-" => new NeutralAffinityBehavior(),
-
             _ => new NeutralAffinityBehavior()
         };
     }
