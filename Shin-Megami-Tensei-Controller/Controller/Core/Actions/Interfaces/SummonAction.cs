@@ -22,59 +22,67 @@ public sealed class SummonAction : CombatActionBase
         if (monsterToSummon == null)
             throw new ActionCanceledException();
 
-        var replacedUnit = PerformSummon(summonerUnit, monsterToSummon, boardManager, currentPlayerId, summonEffect);
-        UpdateTurnAndOrder(turnManager, summonerUnit, monsterToSummon, replacedUnit);
+        var boardFormation = CreateBoardFormation(boardManager, currentPlayerId);
+        var summonData = new SummonData(summonerUnit, monsterToSummon);
+
+        var replacedUnit = PerformSummon(summonData, summonEffect, boardFormation);
+        UpdateTurnAndOrder(turnManager, summonData, replacedUnit);
     }
 
     private UnitBase? SelectMonsterToSummon(BoardManager boardManager, int currentPlayerId)
     {
         var availableReserveUnits = boardManager.GetAliveReserveUnitsForPlayer(currentPlayerId);
         int selectedIndex = ActionView.ReadSummonIndex(availableReserveUnits);
-
-        if (WasCanceledSelection(selectedIndex))
-            return null;
-
+        if (WasCanceledSelection(selectedIndex)) return null;
         return availableReserveUnits[selectedIndex];
     }
 
-    private UnitBase? PerformSummon(UnitBase summonerUnit, UnitBase monsterToSummon, BoardManager boardManager, int currentPlayerId, SummonEffect summonEffect)
+    private static PlayerBoardFormation CreateBoardFormation(BoardManager boardManager, int currentPlayerId)
     {
-        var playerBoard = boardManager.SelectMutableBoard(currentPlayerId);
+        var activeBoard = boardManager.SelectMutableBoard(currentPlayerId);
         var reserveUnits = boardManager.GetAliveReserveUnitsForPlayer(currentPlayerId);
-
-        return summonerUnit is Samurai
-            ? SummonWithSamurai(monsterToSummon, summonEffect, playerBoard, reserveUnits)
-            : SummonWithMonster(summonerUnit, monsterToSummon, summonEffect, playerBoard, reserveUnits);
+        return new PlayerBoardFormation(activeBoard, reserveUnits);
     }
 
-    private UnitBase? SummonWithSamurai(UnitBase monsterToSummon, SummonEffect summonEffect, Dictionary<string, UnitBase?> playerBoard, List<UnitBase> reserveUnits)
+    private UnitBase? PerformSummon(SummonData summonData, SummonEffect summonEffect, PlayerBoardFormation boardFormation)
     {
-        var summonOptions = GetSummonPositions(playerBoard);
+        return summonData.Summoner is Samurai
+            ? SummonWithSamurai(summonData, summonEffect, boardFormation)
+            : SummonWithMonster(summonData, summonEffect, boardFormation);
+    }
 
+    private UnitBase? SummonWithSamurai(SummonData summonData, SummonEffect summonEffect, PlayerBoardFormation boardFormation)
+    {
+        var summonOptions = GetSummonPositions(boardFormation.ActiveBoard);
         int selectedIndex = ActionView.ReadSummonPositionIndex(summonOptions);
         if (WasCanceledSelection(selectedIndex))
             throw new ActionCanceledException();
 
-        var (chosenPosition, currentOccupant) = summonOptions[selectedIndex];
-        return summonEffect.ApplySamuraiSummon(monsterToSummon, chosenPosition, currentOccupant, playerBoard, reserveUnits);
+        var (boardPosition, replacedUnit) = summonOptions[selectedIndex];
+        var placement = new SummonPlacement(boardPosition, replacedUnit);
+
+        return summonEffect.ApplySamuraiSummon(summonData.MonsterToSummon, boardFormation, placement);
     }
 
-    private UnitBase? SummonWithMonster(UnitBase summonerUnit, UnitBase monsterToSummon, SummonEffect summonEffect, Dictionary<string, UnitBase?> playerBoard, List<UnitBase> reserveUnits)
+    private UnitBase? SummonWithMonster(SummonData summonData, SummonEffect summonEffect, PlayerBoardFormation boardFormation)
     {
-        return summonEffect.ApplyMonsterSummon(summonerUnit, monsterToSummon, playerBoard, reserveUnits);
+        return summonEffect.ApplyMonsterSummon(summonData, boardFormation);
     }
 
-    private static List<(string Position, UnitBase? Occupant)> GetSummonPositions(Dictionary<string, UnitBase?> playerBoard)
+    private static List<(string BoardPosition, UnitBase? ReplacedUnit)> GetSummonPositions(Dictionary<string, UnitBase?> playerBoard)
     {
         return GameConstants.BoardPositions
             .Skip(1)
-            .Select(position => (Position: position, Occupant: playerBoard[position]))
+            .Select(position => (BoardPosition: position, ReplacedUnit: playerBoard[position]))
             .ToList();
     }
 
-    private void UpdateTurnAndOrder(TurnManager turnManager, UnitBase summonerUnit, UnitBase summonedUnit, UnitBase? replacedUnit)
+    private void UpdateTurnAndOrder(TurnManager turnManager, SummonData summonData, UnitBase? replacedUnit)
     {
-        turnManager.UpdateOrderAfterSummon(summonerUnit, summonedUnit, replacedUnit);
+        turnManager.UpdateOrderAfterSummon(
+            summonData.Summoner,
+            summonData.MonsterToSummon,
+            replacedUnit);
 
         var turnChange = turnManager.ConsumeSummonTurn();
         ActionView.ShowTurnConsumption(turnChange);

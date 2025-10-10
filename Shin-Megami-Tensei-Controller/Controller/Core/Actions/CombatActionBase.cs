@@ -13,7 +13,6 @@ public abstract class CombatActionBase
 
     public abstract void ExecuteAction(BattleFlowContext battleFlowContext);
 
-    protected static int GetEnemyPlayerId(int currentPlayerId) => currentPlayerId == 1 ? 2 : 1;
     protected static bool WasCanceledSelection(int selectedIndex) => selectedIndex < 0;
 
     protected int SelectEnemyTeamUnitIndex(UnitBase attacker, List<UnitBase> enemyUnits)

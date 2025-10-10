@@ -4,11 +4,12 @@ namespace Shin_Megami_Tensei;
 
 public static class SkillFactory
 {
-    public static Skill Create(SkillData skillData, BoardManager boardManager, View view)
+    public static Skill Create(SkillData skillData, BattleFlowContext battleFlowContext)
     {
         string name = skillData.Name.ToLowerInvariant();
+        BoardManager boardManager = battleFlowContext.BoardManager;
+        View view = battleFlowContext.View;
 
-        // ⚔️ Daño → usa EnemySelector (enemigos vivos)
         if (SkillCatalog.DamageSkills.Contains(name))
             return new Skill(
                 skillData,
@@ -16,7 +17,6 @@ public static class SkillFactory
                 new EnemySelector(view, boardManager)
             );
 
-        // 💚 Curación → usa AllySelector (aliados vivos)
         if (SkillCatalog.HealSkills.Contains(name))
             return new Skill(
                 skillData,
@@ -24,7 +24,6 @@ public static class SkillFactory
                 new AllySelector(view, boardManager)
             );
 
-        // 💀 Revivir → usa DeadAllySelector (aliados muertos, incluye Samurai)
         if (SkillCatalog.ReviveSkills.Contains(name))
             return new Skill(
                 skillData,
@@ -32,7 +31,6 @@ public static class SkillFactory
                 new DeadAllySelector(view, boardManager)
             );
 
-        // 🌀 Invitation → revive o invoca monstruos (vivos o muertos de la reserva)
         if (name == "invitation")
             return new Skill(
                 skillData,
@@ -40,7 +38,6 @@ public static class SkillFactory
                 new ReserveSelectorAll(view, boardManager)
             );
 
-        // ✨ Sabbatma → invoca monstruos vivos de la reserva
         if (name == "sabbatma")
             return new Skill(
                 skillData,

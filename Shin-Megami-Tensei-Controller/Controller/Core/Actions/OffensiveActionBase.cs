@@ -19,7 +19,7 @@ public abstract class OffensiveActionBase : CombatActionBase
     public override void ExecuteAction(BattleFlowContext battleFlowContext)
     {
         var attackerUnit = battleFlowContext.TurnManager.GetAttackerOnTurn();
-        var enemyPlayerId = GetEnemyPlayerId(battleFlowContext.CurrentPlayerId);
+        var enemyPlayerId = BattleHelper.GetEnemyPlayerId(battleFlowContext.CurrentPlayerId);
 
         var targetUnit = SelectTarget(attackerUnit, battleFlowContext.BoardManager.GetAliveUnits(enemyPlayerId));
         var affinityBehavior = CreateAffinityBehavior(targetUnit);

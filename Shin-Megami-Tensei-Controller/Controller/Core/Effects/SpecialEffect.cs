@@ -16,15 +16,21 @@ public sealed class SpecialEffect : EffectBase
         var turnManager = battleFlowContext.TurnManager;
         int currentPlayerId = battleFlowContext.CurrentPlayerId;
 
+        var monsterToSummon = targets.First();
         var summonEffect = new SummonEffect(View);
-        var (chosenPosition, occupant) = boardManager.GetPreparedSummonData(currentPlayerId);
-        var playerBoard = boardManager.SelectMutableBoard(currentPlayerId);
-        var reserveUnits = boardManager.GetReserveUnitsForPlayer(currentPlayerId);
-        var monsterToSummon = targets[0];
 
-        summonEffect.ApplySamuraiSummon(monsterToSummon, chosenPosition, occupant, playerBoard, reserveUnits);
+        // Recupera la información preparada del tablero (posición y unidad reemplazada)
+        var (boardPosition, replacedUnit) = boardManager.GetPreparedSummonData(currentPlayerId);
+        var placement = new SummonPlacement(boardPosition, replacedUnit);
 
-        turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, occupant);
+        var playerBoardFormation = new PlayerBoardFormation(
+            boardManager.SelectMutableBoard(currentPlayerId),
+            boardManager.GetReserveUnitsForPlayer(currentPlayerId)
+        );
+
+        summonEffect.ApplySamuraiSummon(monsterToSummon, playerBoardFormation, placement);
+
+        turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, replacedUnit);
 
         var turnChange = turnManager.ConsumeNeutralTurn();
         new CombatActionView(View).ShowTurnConsumption(turnChange);

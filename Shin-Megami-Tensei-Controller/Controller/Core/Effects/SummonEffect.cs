@@ -6,43 +6,31 @@ public sealed class SummonEffect : EffectBase
 {
     public SummonEffect(View view) : base(view) { }
 
-    public UnitBase? ApplySamuraiSummon(
-        UnitBase monsterToSummon,
-        string chosenPosition,
-        UnitBase? occupantAtPosition,
-        Dictionary<string, UnitBase?> playerBoard,
-        List<UnitBase> reserveUnits)
+    public UnitBase? ApplySamuraiSummon(UnitBase monsterToSummon, PlayerBoardFormation boardFormation, SummonPlacement placement)
     {
-        playerBoard[chosenPosition] = monsterToSummon;
-        reserveUnits.Remove(monsterToSummon);
+        boardFormation.ActiveBoard[placement.BoardPosition] = monsterToSummon;
+        boardFormation.ReserveUnits.Remove(monsterToSummon);
 
-        if (occupantAtPosition != null)
-            reserveUnits.Insert(0, occupantAtPosition);
+        if (placement.ReplacedUnit != null)
+            boardFormation.ReserveUnits.Insert(0, placement.ReplacedUnit);
 
         EffectView.ShowSummonResult(monsterToSummon);
-        return occupantAtPosition;
+        return placement.ReplacedUnit;
     }
 
-    public UnitBase ApplyMonsterSummon(
-        UnitBase summoner,
-        UnitBase monsterToSummon,
-        Dictionary<string, UnitBase?> playerBoard,
-        List<UnitBase> reserveUnits)
+    public UnitBase ApplyMonsterSummon(SummonData summonData, PlayerBoardFormation boardFormation)
     {
-        var summonerPosition = playerBoard.First(kvp => ReferenceEquals(kvp.Value, summoner)).Key;
-        playerBoard[summonerPosition] = monsterToSummon;
-        reserveUnits.Remove(monsterToSummon);
-        reserveUnits.Insert(0, summoner);
+        var summonerPosition = boardFormation.ActiveBoard.First(kvp => ReferenceEquals(kvp.Value, summonData.Summoner)).Key;
+        boardFormation.ActiveBoard[summonerPosition] = summonData.MonsterToSummon;
 
-        EffectView.ShowSummonResult(monsterToSummon);
-        return summoner;
+        boardFormation.ReserveUnits.Remove(summonData.MonsterToSummon);
+        boardFormation.ReserveUnits.Insert(0, summonData.Summoner);
+
+        EffectView.ShowSummonResult(summonData.MonsterToSummon);
+        return summonData.Summoner;
     }
 
-    public override void ApplyEffect(
-        UnitBase caster,
-        List<UnitBase> targets,
-        SkillData skillData,
-        BattleFlowContext battleFlowContext)
+    public override void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillData skillData, BattleFlowContext context)
     {
         throw new NotImplementedException();
     }

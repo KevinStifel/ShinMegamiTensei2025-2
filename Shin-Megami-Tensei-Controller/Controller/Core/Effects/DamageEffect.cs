@@ -16,43 +16,72 @@ public sealed class DamageEffect : EffectBase
         var boardManager = battleFlowContext.BoardManager;
         var currentPlayerId = battleFlowContext.CurrentPlayerId;
 
-        CombatActionView actionView = new CombatActionView(View);
-        int enemyPlayerId = currentPlayerId == 1 ? 2 : 1;
-        AffinityBehavior? lastBehavior = null;
-        UnitBase? lastTarget = null;
+        var actionView = new CombatActionView(View);
+        int enemyPlayerId = BattleHelper.GetEnemyPlayerId(currentPlayerId);
 
-        for (int index = 0; index < targets.Count; index++)
+        AffinityBehavior? lastAffinityBehavior = null;
+        UnitBase? lastTargetUnit = null;
+
+        for (int targetIndex = 0; targetIndex < targets.Count; targetIndex++)
         {
-            var target = targets[index];
-            var element = AffinityMapper.Parse(skillData.Type);
-            var reaction = target.Affinity.GetAffinityReaction(element);
+            var targetUnit = targets[targetIndex];
+
+            var elementType = AffinityMapper.Parse(skillData.Type);
+            var reaction = targetUnit.Affinity.GetAffinityReaction(elementType);
             var affinityBehavior = AffinityBehaviorFactory.Create(reaction);
-            lastBehavior = affinityBehavior;
+            lastAffinityBehavior = affinityBehavior;
 
-            var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View);
+            ApplyDamageAndShowReaction(caster, targetUnit, skillData, affinityBehavior);
 
-            string verb = ElementMessageHelper.GetElementalMessage(element);
-            int damage = DamageCalculator.CalculateFinalDamageForSkill(caster, skillData, affinityBehavior);
+            lastTargetUnit = targetUnit;
 
-            affinityBehavior.ApplyEffect(caster, target, damage);
-            affinityView.ShowAffinityReaction(caster, target, damage, verb);
-
-            lastTarget = target;
-
-            if (index == targets.Count - 1)
-                affinityView.ShowHp(caster, target);
+            if (IsLastTarget(targetIndex, targets))
+                ShowFinalHp(caster, targetUnit, affinityBehavior);
         }
 
-        if (lastBehavior != null)
-        {
-            var turnChange = turnManager.ApplyAffinityTurnEffect(lastBehavior);
-            actionView.ShowTurnConsumption(turnChange);
-        }
+        ApplyTurnChange(turnManager, lastAffinityBehavior, actionView);
+        HandleUnitsDeath(boardManager, currentPlayerId, enemyPlayerId, caster, lastTargetUnit);
+    }
 
-        if (lastTarget != null && lastTarget.Stats.HP == 0)
-            boardManager.HandleUnitDeath(enemyPlayerId, lastTarget);
+    private static bool IsLastTarget(int targetIndex, IReadOnlyList<UnitBase> targets)
+        => targetIndex == targets.Count - 1;
 
-        if (caster.Stats.HP <= 0)
+    private void ApplyDamageAndShowReaction(UnitBase caster, UnitBase targetUnit, SkillData skillData, AffinityBehavior affinityBehavior)
+    {
+        var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View);
+        var elementType = AffinityMapper.Parse(skillData.Type);
+        string attackVerb = ElementMessageHelper.GetElementalMessage(elementType);
+
+        int inflictedDamage = DamageCalculator.CalculateFinalDamageForSkill(caster, skillData, affinityBehavior);
+
+        affinityBehavior.ApplyEffect(caster, targetUnit, inflictedDamage);
+        affinityView.ShowAffinityReaction(caster, targetUnit, inflictedDamage, attackVerb);
+    }
+
+    private void ShowFinalHp(UnitBase caster, UnitBase targetUnit, AffinityBehavior affinityBehavior)
+    {
+        var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View);
+        affinityView.ShowHp(caster, targetUnit);
+    }
+
+    private static void ApplyTurnChange(TurnManager turnManager, AffinityBehavior? lastAffinityBehavior, CombatActionView actionView)
+    {
+        if (lastAffinityBehavior == null)
+            return;
+
+        var turnChange = turnManager.ApplyAffinityTurnEffect(lastAffinityBehavior);
+        actionView.ShowTurnConsumption(turnChange);
+    }
+
+    private static void HandleUnitsDeath(BoardManager boardManager, int currentPlayerId, int enemyPlayerId, UnitBase caster, UnitBase? lastTargetUnit)
+    {
+        bool isTargetDead = lastTargetUnit is { Stats.HP: 0 };
+        bool isCasterDead = caster.Stats.HP <= 0;
+
+        if (isTargetDead)
+            boardManager.HandleUnitDeath(enemyPlayerId, lastTargetUnit!);
+
+        if (isCasterDead)
             boardManager.HandleUnitDeath(currentPlayerId, caster);
     }
 }
