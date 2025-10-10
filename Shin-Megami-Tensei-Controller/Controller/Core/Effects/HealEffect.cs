@@ -13,13 +13,10 @@ public sealed class HealEffect : EffectBase
     {
         foreach (var target in targets)
         {
-            int healAmount = (int)(target.Stats.MaxHP * (skillExecutionContext.SkillData.Power / 100.0));
+            int healAmount = HealCalculator.CalculateHealAmount(target, skillExecutionContext.SkillData);
             target.Stats.Heal(healAmount);
             EffectView.ShowHealEffect(caster, target, healAmount);
         }
-        
-        var turnManager = skillExecutionContext.TurnManager;
-        ApplyTurnChange(turnManager);
-
+        ApplyTurnChange(skillExecutionContext.TurnManager);
     }
 }
