@@ -29,7 +29,7 @@ public abstract class CombatActionBase
         return selectedIndex >= 0 && selectedIndex < enemyUnits.Count ? selectedIndex : -1;
     }
 
-    protected static void HandleDeathIfNeeded(BoardManager boardManager, int enemyPlayerId, UnitBase target)
+    protected static void HandleDeath(BoardManager boardManager, int enemyPlayerId, UnitBase target)
     {
         if (target.Stats.HP == 0)
             boardManager.HandleUnitDeath(enemyPlayerId, target);

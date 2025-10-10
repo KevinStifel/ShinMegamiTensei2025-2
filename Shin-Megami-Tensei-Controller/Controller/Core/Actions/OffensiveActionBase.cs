@@ -69,7 +69,7 @@ public abstract class OffensiveActionBase : CombatActionBase
 
     private static void HandleDeaths(BoardManager boardManager, int currentPlayerId, int enemyPlayerId, UnitBase attackerUnit, UnitBase targetUnit)
     {
-        HandleDeathIfNeeded(boardManager, enemyPlayerId, targetUnit);
+        HandleDeath(boardManager, enemyPlayerId, targetUnit);
         if (attackerUnit.Stats.HP <= 0)
             boardManager.HandleUnitDeath(currentPlayerId, attackerUnit);
     }

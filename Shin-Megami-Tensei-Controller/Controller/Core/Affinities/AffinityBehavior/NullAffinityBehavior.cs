@@ -5,19 +5,19 @@ public sealed class NullAffinityBehavior : AffinityBehavior
     public override AffinityType Type => AffinityType.Null;
 
     public override double ModifyDamage(double baseDamage) => 0;
-    
+
     public override void ApplyEffect(UnitBase caster, UnitBase target, int damage)
     {
-        // No aplica daño. Solo bloquea el ataque.
     }
 
     public override TurnChange CalculateTurnEffect(int fullTurns, int blinkingTurns)
     {
-        int need = 2;
-        int consumeBlink = Math.Min(blinkingTurns, need);
-        int remaining = need - consumeBlink;
-        int consumeFull = Math.Min(fullTurns, remaining);
+        int totalTurnsToConsume = 2;
 
-        return new TurnChange (consumeFull, consumeBlink, 0);
+        int blinkingTurnsConsumed = Math.Min(blinkingTurns, totalTurnsToConsume);
+        int turnsStillNeeded = totalTurnsToConsume - blinkingTurnsConsumed;
+        int fullTurnsConsumed = Math.Min(fullTurns, turnsStillNeeded);
+
+        return new TurnChange(fullTurnsConsumed, blinkingTurnsConsumed, 0);
     }
 }

@@ -4,19 +4,19 @@ public sealed class WeakAffinityBehavior : AffinityBehavior
 {
     public override AffinityType Type => AffinityType.Weak;
 
-    public override double ModifyDamage(double baseDamage) => (baseDamage * 1.5);
+    public override double ModifyDamage(double baseDamage) => baseDamage * 1.5;
+
     public override void ApplyEffect(UnitBase caster, UnitBase target, int damage)
     {
-        if (damage > 0)
-            target.Stats.TakeDamage(damage);
+        target.Stats.TakeDamage(damage);
     }
 
-    // Consume 1 Full Turn y gana 1 Blinking Turn. Si no hay Fulls, consume 1 Blinking Turn.
-    public override TurnChange  CalculateTurnEffect(int fullTurns, int blinkingTurns)
+    public override TurnChange CalculateTurnEffect(int fullTurns, int blinkingTurns)
     {
-        if (fullTurns > 0)
-            return new TurnChange (1, 0, 1);
+        bool hasFullTurnsAvailable = fullTurns > 0;
 
-        return new TurnChange (0, 1, 0);
+        return hasFullTurnsAvailable 
+            ? new TurnChange(1, 0, 1) 
+            : new TurnChange(0, 1, 0);
     }
 }

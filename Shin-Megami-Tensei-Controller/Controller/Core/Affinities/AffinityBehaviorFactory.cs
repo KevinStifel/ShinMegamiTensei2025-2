@@ -8,23 +8,12 @@ public static class AffinityBehaviorFactory
 
         return normalized switch
         {
-            // Weak
-            "weak" or "wk" => new WeakAffinityBehavior(),
-
-            // Resist
-            "resist" or "rs" => new ResistAffinityBehavior(),
-
-            // Null
-            "null" or "nu" => new NullAffinityBehavior(),
-
-            // Repel
-            "repel" or "rp" => new RepelAffinityBehavior(),
-
-            // Drain
-            "drain" or "dr" => new DrainAffinityBehavior(),
-
-            // Neutral or undefined
-            "-" or "neutral" => new NeutralAffinityBehavior(),
+            "wk" => new WeakAffinityBehavior(),
+            "rs" => new ResistAffinityBehavior(),
+            "nu" => new NullAffinityBehavior(),
+            "rp" => new RepelAffinityBehavior(),
+            "dr" => new DrainAffinityBehavior(),
+            "-" => new NeutralAffinityBehavior(),
 
             _ => new NeutralAffinityBehavior()
         };
