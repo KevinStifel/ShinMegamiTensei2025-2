@@ -39,7 +39,9 @@ public sealed class DamageEffect : EffectBase
         var lastAffinityBehavior = GetLastAffinityBehavior(lastTarget, skillData);
 
         ApplyTurnChange(turnManager, lastAffinityBehavior);
-        HandleDeaths(boardManager, currentPlayerId, enemyPlayerId, casterUnit, lastTarget);
+        
+        HandleDeath(boardManager, enemyPlayerId, lastTarget);
+        HandleDeath(boardManager, currentPlayerId, casterUnit);
     }
 
     private static AffinityBehavior GetLastAffinityBehavior(UnitBase targetUnit, SkillData skillData)
@@ -54,16 +56,9 @@ public sealed class DamageEffect : EffectBase
         var turnChange = turnManager.ApplyAffinityTurnEffect(affinityBehavior);
         ActionView.ShowTurnConsumption(turnChange);
     }
-
-    private static void HandleDeaths(BoardManager boardManager, int currentPlayerId, int enemyPlayerId, UnitBase caster, UnitBase lastTarget)
+    private static void HandleDeath(BoardManager boardManager, int playerId, UnitBase unit)
     {
-        bool isTargetDead = lastTarget.Stats.HP == 0;
-        bool isCasterDead = caster.Stats.HP <= 0;
-
-        if (isTargetDead)
-            boardManager.HandleUnitDeath(enemyPlayerId, lastTarget);
-
-        if (isCasterDead)
-            boardManager.HandleUnitDeath(currentPlayerId, caster);
+        if (unit.Stats.HP == 0)
+            boardManager.HandleUnitDeath(playerId, unit);
     }
 }
