@@ -21,7 +21,7 @@ public sealed class EnemySelector : TargetSelectorBase
         if (WasCanceledSelection(index))
             throw new ActionCanceledException();
         
-        View.WriteLine("----------------------------------------");
+        SelectorView.ShowSeparator();
         
         UnitBase target = enemies[index];
 

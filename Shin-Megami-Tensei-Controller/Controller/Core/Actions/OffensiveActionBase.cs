@@ -20,8 +20,8 @@ public abstract class OffensiveActionBase : CombatActionBase
         affinityBehavior.ApplyEffect(attacker, target, damage);
         ShowAffinityOutcome(attacker, target, damage);        
         ApplyTurnEffect(turnManager, affinityBehavior);  
-        HandleTargetDeath(boardManager, enemyPlayerId, target);
-        HandleAttackerDeath(boardManager, currentPlayerId, attacker);
+        HandleUnitDeath(boardManager, enemyPlayerId, target);
+        HandleUnitDeath(boardManager, currentPlayerId, attacker);
     }
 
     private UnitBase SelectTarget(UnitBase attackerUnit, List<UnitBase> enemyUnits)
@@ -46,33 +46,31 @@ public abstract class OffensiveActionBase : CombatActionBase
     
     private void ShowAffinityOutcome(UnitBase attacker, UnitBase target, int inflictedDamage)
     {
-        var affinityView = CreateViewForAffinity(target);
+        var affinityView = CreateAffinityView(target);
         ActionView.ShowSeparator();
         affinityView.ShowAffinityReaction(attacker, target, inflictedDamage);
         affinityView.ShowHp(attacker, target);
     }
-    private AffinityViewBase CreateViewForAffinity(UnitBase target)
+    private AffinityViewBase CreateAffinityView(UnitBase target)
     {
-        var reaction = target.Affinity.GetAffinityReaction(Element);
-        var behaviorType = AffinityBehaviorFactory.Create(reaction).Type;
-        return AffinityViewFactory.Create(behaviorType, View, Element);
+        var affinityReaction = target.Affinity.GetAffinityReaction(Element);
+        var affinityBehaviorType = AffinityBehaviorFactory.Create(affinityReaction).Type;
+        return AffinityViewFactory.Create(affinityBehaviorType, View, Element);
     }
 
-    private void ApplyTurnEffect(TurnManager turns, AffinityBehavior behavior)
+    private void ApplyTurnEffect(TurnManager turns, AffinityBehavior affinityBehavior)
     {
-        var turnChange = turns.ApplyAffinityTurnEffect(behavior);
+        var turnChange = turns.ApplyAffinityTurnEffect(affinityBehavior);
         ActionView.ShowTurnConsumption(turnChange);
     }
-
-    private static void HandleTargetDeath(BoardManager board, int enemyPlayerId, UnitBase target)
+    
+    private static void HandleUnitDeath(BoardManager board, int playerId, UnitBase unit)
     {
-        if (target.Stats.HP <= 0)
-            board.HandleUnitDeath(enemyPlayerId, target);
+        if (IsUnitDead(unit))
+            board.HandleUnitDeath(playerId, unit);
     }
-
-    private static void HandleAttackerDeath(BoardManager board, int currentPlayerId, UnitBase attacker)
+    private static bool IsUnitDead(UnitBase unit)
     {
-        if (attacker.Stats.HP <= 0)
-            board.HandleUnitDeath(currentPlayerId, attacker);
+        return unit.Stats.HP <= 0;
     }
 }

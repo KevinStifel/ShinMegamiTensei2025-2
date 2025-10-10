@@ -20,7 +20,7 @@ public sealed class ReserveSelectorAll : TargetSelectorBase
             throw new ActionCanceledException();
 
         var monsterToSummon = reserveUnits[monsterIndex];
-        View.WriteLine("----------------------------------------");
+        SelectorView.ShowSeparator();
 
         var playerBoard = Board.SelectMutableBoard(currentPlayerId);
         var summonOptions = GameConstants.BoardPositions

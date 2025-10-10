@@ -108,20 +108,12 @@ public class CombatActionView : AbstractView
         var index = int.Parse(selection) - 1;
         return IsCancelOption(index, reserveUnits.Count) ? -1 : index;
     }
-
-
-
+    
     public int ReadSummonPositionIndex(List<(string position, UnitBase? unit)> options)
     {
         ShowSummonPositionMenu(options);
         var selection = ReadUserSelection();
         var index = int.Parse(selection) - 1;
         return IsCancelOption(index, options.Count) ? -1 : index;
-    }
-
-    public void ShowSummonResult(UnitBase summonedUnit)
-    {
-        View.WriteLine("----------------------------------------");
-        View.WriteLine($"{summonedUnit.Name} ha sido invocado");
     }
 }
