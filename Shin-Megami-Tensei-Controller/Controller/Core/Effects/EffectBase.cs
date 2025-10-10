@@ -17,5 +17,5 @@ public abstract class EffectBase
         EffectView = new EffectView(view);
     }
 
-    public abstract void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillData skillData, TurnManager turnManager, int currentPlayerId, BoardManager board);
+    public abstract void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillData skillData, TurnManager turnManager, int currentPlayerId, BoardManager boardManager);
 }

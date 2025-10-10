@@ -5,8 +5,8 @@ namespace Shin_Megami_Tensei;
 
 public sealed class AllySelector : TargetSelectorBase
 {
-    public AllySelector(View view, BoardManager board)
-        : base(view, board, new AllySelectorView(view))
+    public AllySelector(View view, BoardManager boardManager)
+        : base(view, boardManager, new AllySelectorView(view))
     {
     }
 

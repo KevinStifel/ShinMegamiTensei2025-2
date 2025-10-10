@@ -9,10 +9,10 @@ public abstract class TargetSelectorBase
     protected readonly BoardManager Board;
     protected readonly View View;
 
-    protected TargetSelectorBase(View view, BoardManager board, TargetSelectorViewBase selectorView)
+    protected TargetSelectorBase(View view, BoardManager boardManager, TargetSelectorViewBase selectorView)
     {
         View = view;
-        Board = board;
+        Board = boardManager;
         SelectorView = selectorView;
     }
 

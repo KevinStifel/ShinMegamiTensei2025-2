@@ -13,12 +13,12 @@ public sealed class SpecialEffect : EffectBase
         SkillData skillData,
         TurnManager turnManager,
         int currentPlayerId,
-        BoardManager board)
+        BoardManager boardManager)
     {
         var summonEffect = new SummonEffect(View);
-        var (chosenPosition, occupant) = board.GetPreparedSummonData(currentPlayerId);
-        var playerBoard = board.SelectMutableBoard(currentPlayerId);
-        var reserveUnits = board.GetReserveUnitsForPlayer(currentPlayerId);
+        var (chosenPosition, occupant) = boardManager.GetPreparedSummonData(currentPlayerId);
+        var playerBoard = boardManager.SelectMutableBoard(currentPlayerId);
+        var reserveUnits = boardManager.GetReserveUnitsForPlayer(currentPlayerId);
         var monsterToSummon = targets[0];
 
         summonEffect.ApplySamuraiSummon(monsterToSummon, chosenPosition, occupant, playerBoard, reserveUnits);

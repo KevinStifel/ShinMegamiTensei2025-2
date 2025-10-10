@@ -6,17 +6,17 @@ public sealed class SummonAction : CombatActionBase
 {
     public SummonAction(View view) : base(view) { }
 
-    public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
+    public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
         var summoner = turnManager.GetAttackerOnTurn();
         var summonEffect = new SummonEffect(View);
 
-        var reserveUnits = board.GetAliveReserveUnitsForPlayer(currentPlayerId);
+        var reserveUnits = boardManager.GetAliveReserveUnitsForPlayer(currentPlayerId);
         var monsterToSummon = SelectMonsterFromReserve(reserveUnits);
         if (monsterToSummon == null)
             throw new ActionCanceledException();
 
-        var playerBoard = board.SelectMutableBoard(currentPlayerId);
+        var playerBoard = boardManager.SelectMutableBoard(currentPlayerId);
         UnitBase? replacedUnit;
 
         if (summoner is Samurai)

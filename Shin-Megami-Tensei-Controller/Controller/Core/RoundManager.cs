@@ -18,37 +18,38 @@ namespace Shin_Megami_Tensei
             _actionFactory = new CombatActionFactory(_view);
         }
 
-        public void StartNewRound(int currentPlayerId, BoardManager board)
+        public void StartNewRound(int currentPlayerId, BoardManager boardManager)
         {
-            var activeUnits = board.GetAliveUnits(currentPlayerId);
+            var activeUnits = boardManager.GetAliveUnits(currentPlayerId);
             _turnManager.StartNewRound(activeUnits);
 
-            var leader = board.GetTeamLeaderUnit(currentPlayerId);
+            var leader = boardManager.GetTeamLeaderUnit(currentPlayerId);
             _roundView.ShowRoundHeader(currentPlayerId, leader);
 
             while (_turnManager.HasAvailableTurns())
             {
-                ShowRoundResume(board);
-                ProcessPlayerAttackTurn(currentPlayerId, board);
+                ShowRoundResume(boardManager);
+                ProcessPlayerAttackTurn(currentPlayerId, boardManager);
 
-                if (board.HasWinner())
+                if (boardManager.HasWinner())
                 {
-                    _roundView.ShowWinner(board.GetWinner(), board);
+                    _roundView.ShowWinner(boardManager.GetWinner(), boardManager);
                     EndBattle();
                 }
             }
         }
 
-        private void ShowRoundResume(BoardManager board)
+        private void ShowRoundResume(BoardManager boardManager)
         {
-            _roundView.ShowBothTeams(board);
+            _roundView.ShowBothTeams(boardManager);
             _roundView.ShowTurnStatus(_turnManager.FullTurns, _turnManager.BlinkingTurns);
             _roundView.ShowAttackOrder(_turnManager.AttackOrder);
         }
 
-        private void ProcessPlayerAttackTurn(int currentPlayerId, BoardManager board)
+        private void ProcessPlayerAttackTurn(int currentPlayerId, BoardManager boardManager)
         {
             var turnActor = _turnManager.AttackOrder.First();
+            var context = new BattleContext(currentPlayerId, boardManager, _turnManager, _view);
 
             while (true)
             {
@@ -59,7 +60,7 @@ namespace Shin_Megami_Tensei
 
                 try
                 {
-                    selectedAction.ExecuteAction(currentPlayerId, board, _turnManager);
+                    selectedAction.ExecuteAction(currentPlayerId, boardManager, _turnManager);
                     return;
                 }
                 catch (ActionCanceledException) { }

@@ -15,8 +15,8 @@ namespace Shin_Megami_Tensei
         {
             return choice switch
             {
-                "attack" => new AttackAction(_view),
-                "shoot"  => new ShootAction(_view),
+                "attack" => new PhysicalAttackAction(_view),
+                "shoot"  => new GunAttackAction(_view),
                 "skill"  => new UseSkillAction(_view),
                 "surrender" => new SurrenderAction(_view),
                 "pass" => new PassTurnAction(_view),

@@ -15,7 +15,7 @@ public sealed class DamageEffect : EffectBase
         SkillData skillData,
         TurnManager turnManager,
         int currentPlayerId,
-        BoardManager board)
+        BoardManager boardManager)
     {
         CombatActionView actionView = new CombatActionView(View);
         
@@ -54,12 +54,12 @@ public sealed class DamageEffect : EffectBase
         
         if (lastTarget != null && lastTarget.Stats.HP == 0)
         {
-            board.HandleUnitDeath(enemyPlayerId, lastTarget);
+            boardManager.HandleUnitDeath(enemyPlayerId, lastTarget);
         }
         
         if (caster.Stats.HP <= 0)
         {
-            board.HandleUnitDeath(currentPlayerId, caster);
+            boardManager.HandleUnitDeath(currentPlayerId, caster);
         }
     }
 }

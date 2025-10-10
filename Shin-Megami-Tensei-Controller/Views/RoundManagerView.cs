@@ -12,26 +12,26 @@ public class RoundManagerView : AbstractView
         View.WriteLine($"Ronda de {teamLeaderUnit.Name} (J{playerId})");
     }
 
-    public void ShowBothTeams(BoardManager board)
+    public void ShowBothTeams(BoardManager boardManager)
     {
         ShowSeparator();
-        PrintPlayerBoard(board, 1, GetLeaderName(board, 1));
-        PrintPlayerBoard(board, 2, GetLeaderName(board, 2));
+        PrintPlayerBoard(boardManager, 1, GetLeaderName(boardManager, 1));
+        PrintPlayerBoard(boardManager, 2, GetLeaderName(boardManager, 2));
     }
 
-    private void PrintPlayerBoard(BoardManager board, int playerId, string samuraiName)
+    private void PrintPlayerBoard(BoardManager boardManager, int playerId, string samuraiName)
     {
         View.WriteLine($"Equipo de {samuraiName} (J{playerId})");
         foreach (var position in GameConstants.BoardPositions)
         {
-            var unit = board.GetBoardForPlayer(playerId)[position];
+            var unit = boardManager.GetBoardForPlayer(playerId)[position];
             PrintUnitAtPosition(position, unit);
         }
     }
 
-    private string GetLeaderName(BoardManager board, int playerId)
+    private string GetLeaderName(BoardManager boardManager, int playerId)
     {
-        var playerBoard = board.GetBoardForPlayer(playerId);
+        var playerBoard = boardManager.GetBoardForPlayer(playerId);
         var leaderPosition = GameConstants.BoardPositions[0]; // "A"
         var leader = playerBoard[leaderPosition];
         return leader!.Name;
@@ -86,11 +86,11 @@ public class RoundManagerView : AbstractView
         View.WriteLine("4: Pasar Turno");
     }
     
-    public void ShowWinner(BattleOutcome outcome, BoardManager board)
+    public void ShowWinner(BattleOutcome outcome, BoardManager boardManager)
     {
         ShowSeparator();
         int winnerId = (int)outcome;
-        var leader = board.GetTeamLeaderUnit(winnerId);
+        var leader = boardManager.GetTeamLeaderUnit(winnerId);
         View.WriteLine($"Ganador: {leader.Name} (J{winnerId})");
     }
 

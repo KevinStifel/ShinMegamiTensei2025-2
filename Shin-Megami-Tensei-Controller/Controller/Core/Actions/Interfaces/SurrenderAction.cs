@@ -5,12 +5,12 @@ public sealed class SurrenderAction : CombatActionBase
 {
     public SurrenderAction(View view) : base(view) { }
 
-    public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
+    public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
-        var teamLeader = board.GetTeamLeaderUnit(currentPlayerId);
+        var teamLeader = boardManager.GetTeamLeaderUnit(currentPlayerId);
         ActionView.ShowSurrender(teamLeader, currentPlayerId);
 
-        foreach (var unit in board.GetBoardForPlayer(currentPlayerId).Values)
+        foreach (var unit in boardManager.GetBoardForPlayer(currentPlayerId).Values)
         {
             if (unit is null) continue;
             if (unit.Stats.HP > 0)

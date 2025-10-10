@@ -6,8 +6,8 @@ namespace Shin_Megami_Tensei;
 
 public sealed class ReserveSelectorAll : TargetSelectorBase
 {
-    public ReserveSelectorAll(View view, BoardManager board)
-        : base(view, board, new SpecialSelectorView(view)) { }
+    public ReserveSelectorAll(View view, BoardManager boardManager)
+        : base(view, boardManager, new SpecialSelectorView(view)) { }
 
     public override List<UnitBase> SelectTargets(UnitBase caster, int currentPlayerId, SkillData skillData)
     {

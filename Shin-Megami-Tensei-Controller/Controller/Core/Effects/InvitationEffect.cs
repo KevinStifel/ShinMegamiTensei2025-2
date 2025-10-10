@@ -13,12 +13,12 @@ public sealed class InvitationEffect : EffectBase
         SkillData skillData,
         TurnManager turnManager,
         int currentPlayerId,
-        BoardManager board)
+        BoardManager boardManager)
     {
         var monsterToSummon = targets[0];
-        var (chosenPosition, occupant) = board.GetPreparedSummonData(currentPlayerId);
-        var playerBoard = board.SelectMutableBoard(currentPlayerId);
-        var reserveUnits = board.GetReserveUnitsForPlayer(currentPlayerId);
+        var (chosenPosition, occupant) = boardManager.GetPreparedSummonData(currentPlayerId);
+        var playerBoard = boardManager.SelectMutableBoard(currentPlayerId);
+        var reserveUnits = boardManager.GetReserveUnitsForPlayer(currentPlayerId);
 
         // Colocar al monstruo
         playerBoard[chosenPosition] = monsterToSummon;

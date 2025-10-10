@@ -13,7 +13,7 @@ public sealed class ReviveEffect : EffectBase
         SkillData skillData,
         TurnManager turnManager,
         int currentPlayerId,
-        BoardManager board)
+        BoardManager boardManager)
     {
         foreach (var target in targets)
         {

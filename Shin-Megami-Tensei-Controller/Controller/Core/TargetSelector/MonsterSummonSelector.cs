@@ -5,8 +5,8 @@ namespace Shin_Megami_Tensei;
 
 public sealed class MonsterSummonSelector : TargetSelectorBase
 {
-    public MonsterSummonSelector(View view, BoardManager board)
-        : base(view, board, new SpecialSelectorView(view)) { }
+    public MonsterSummonSelector(View view, BoardManager boardManager)
+        : base(view, boardManager, new SpecialSelectorView(view)) { }
 
     public override List<UnitBase> SelectTargets(UnitBase caster, int currentPlayerId, SkillData skillData)
     {

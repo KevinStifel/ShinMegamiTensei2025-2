@@ -5,8 +5,8 @@ namespace Shin_Megami_Tensei;
 
 public sealed class EnemySelector : TargetSelectorBase
 {
-    public EnemySelector(View view, BoardManager board)
-        : base(view, board, new EnemySelectorView(view))
+    public EnemySelector(View view, BoardManager boardManager)
+        : base(view, boardManager, new EnemySelectorView(view))
     {
     }
 

@@ -13,7 +13,7 @@ public sealed class HealEffect : EffectBase
         SkillData skillData,
         TurnManager turnManager,
         int currentPlayerId,
-        BoardManager board)
+        BoardManager boardManager)
     {
         // 💚 Aplicar la curación
         foreach (var target in targets)

@@ -5,8 +5,8 @@ namespace Shin_Megami_Tensei;
 
 public sealed class DeadAllySelector : TargetSelectorBase
 {
-    public DeadAllySelector(View view, BoardManager board)
-        : base(view, board, new DeadAllySelectorView(view))
+    public DeadAllySelector(View view, BoardManager boardManager)
+        : base(view, boardManager, new DeadAllySelectorView(view))
     {
     }
 

@@ -8,7 +8,7 @@ public sealed class UseSkillAction : CombatActionBase
 {
     public UseSkillAction(View view) : base(view) { }
 
-    public override void ExecuteAction(int currentPlayerId, BoardManager board, TurnManager turnManager)
+    public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
         var caster = turnManager.GetAttackerOnTurn();
         var selectedSkill = PromptSkillSelection(caster);
@@ -21,9 +21,9 @@ public sealed class UseSkillAction : CombatActionBase
             throw new ActionCanceledException();
         
         // Crear la skill
-        var skillInstance = SkillFactory.Create(selectedSkill, board, View);
+        var skillInstance = SkillFactory.Create(selectedSkill, boardManager, View);
         
-        skillInstance.Apply(caster, currentPlayerId, board, turnManager);
+        skillInstance.Apply(caster, currentPlayerId, boardManager, turnManager);
         UnitStatsManager.ConsumeMP(caster, selectedSkill.Cost);
     }
     private SkillData? PromptSkillSelection(UnitBase caster)

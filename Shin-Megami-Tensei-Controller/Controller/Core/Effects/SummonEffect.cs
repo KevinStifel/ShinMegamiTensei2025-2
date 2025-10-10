@@ -41,7 +41,7 @@ public sealed class SummonEffect : EffectBase
     }
 
     public override void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillData skillData, TurnManager turnManager, int currentPlayerId,
-        BoardManager board)
+        BoardManager boardManager)
     {
         throw new NotImplementedException();
     }
