@@ -57,7 +57,7 @@
                 .Cast<UnitBase>()
                 .ToList();
         }
-        public List<UnitBase> GetDeadUnits(int playerId)
+        public List<UnitBase> GetAllDeadUnits(int playerId)
         {
             var deadUnits = new List<UnitBase>();
             var leader = GetTeamLeaderUnit(playerId);

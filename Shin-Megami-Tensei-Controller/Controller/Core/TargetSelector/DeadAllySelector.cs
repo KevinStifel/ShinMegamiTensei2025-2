@@ -12,11 +12,11 @@ public sealed class DeadAllySelector : TargetSelectorBase
 
     public override List<UnitBase> SelectTargets(UnitBase caster, int currentPlayerId, SkillData skillData)
     {
-        List<UnitBase> deadAllies = Board.GetDeadUnits(currentPlayerId);
+        List<UnitBase> deadAllies = Board.GetAllDeadUnits(currentPlayerId);
         SelectorView.ShowAvailableTargets(caster, deadAllies);
-        int index = ReadTargetIndex(deadAllies);
-        if (WasCanceledSelection(index))
+        int targetIndex = ReadTargetIndex(deadAllies);
+        if (WasCanceledSelection(targetIndex))
             return [];
-        return [deadAllies[index]];
+        return [deadAllies[targetIndex]];
     }
 }

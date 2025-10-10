@@ -32,7 +32,7 @@ public class RoundManagerView : AbstractView
     private string GetLeaderName(BoardManager boardManager, int playerId)
     {
         var playerBoard = boardManager.GetBoardForPlayer(playerId);
-        var leaderPosition = GameConstants.BoardPositions[0]; // "A"
+        var leaderPosition = GameConstants.BoardPositions[0];
         var leader = playerBoard[leaderPosition];
         return leader!.Name;
     }

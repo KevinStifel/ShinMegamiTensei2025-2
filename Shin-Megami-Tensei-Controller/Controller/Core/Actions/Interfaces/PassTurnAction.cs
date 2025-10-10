@@ -7,7 +7,7 @@ public sealed class PassTurnAction : CombatActionBase
 
     public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
-        var delta = turnManager.ConsumePassTurn();
-        ActionView.ShowTurnConsumption(delta.ConsumedFull, delta.ConsumedBlinking, delta.GainedBlinking);
+        TurnChange turnChange = turnManager.ConsumePassTurn();
+        ActionView.ShowTurnConsumption(turnChange.ConsumedFull, turnChange.ConsumedBlinking, turnChange.GainedBlinking);
     }
 }

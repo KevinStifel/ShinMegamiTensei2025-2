@@ -2,9 +2,6 @@
 
 namespace Shin_Megami_Tensei;
 
-/// <summary>
-/// Acción ofensiva de tipo Gun (arma de fuego).
-/// </summary>
 public sealed class GunAttackAction : OffensiveActionBase
 {
     protected override AffinityElement Element => AffinityElement.Gun;
