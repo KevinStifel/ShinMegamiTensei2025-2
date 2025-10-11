@@ -11,56 +11,56 @@ public class TeamValidator
         _teamValidatorView = new TeamValidatorView(view);
     }
 
-    public bool ValidateRawTeams(List<TeamUnitRaw> playerOneRawTeam, List<TeamUnitRaw> playerTwoRawTeam)
+    public bool AreRawTeamsValid(List<TeamUnitRaw> playerOneRawTeam, List<TeamUnitRaw> playerTwoRawTeam)
     {
-        if (ValidateTeam(playerOneRawTeam) && ValidateTeam(playerTwoRawTeam))
+        if (IsTeamValid(playerOneRawTeam) && IsTeamValid(playerTwoRawTeam))
             return true;
 
         _teamValidatorView.ShowInvalidTeams();
         return false;
     }
 
-    private bool ValidateTeam(List<TeamUnitRaw> units) =>
-        HasSamurai(units) &&
-        OnlyOneSamurai(units) &&
-        MaxUnits(units) &&
-        NoDuplicateUnits(units) &&
-        SamuraiMaxSkills(units) &&
-        NoDuplicateSamuraiSkills(units);
+    private bool IsTeamValid(List<TeamUnitRaw> teamUnits) =>
+        HasSamuraiUnit(teamUnits) &&
+        HasExactlyOneSamurai(teamUnits) &&
+        IsWithinMaxUnitLimit(teamUnits) &&
+        HasUniqueUnitNames(teamUnits) &&
+        IsWithinSamuraiSkillLimit(teamUnits) &&
+        HasUniqueSamuraiSkills(teamUnits);
 
-    private bool HasSamurai(List<TeamUnitRaw> units)
+    private bool HasSamuraiUnit(List<TeamUnitRaw> teamUnits)
     {
-        return units.Any(unit => unit.IsSamurai);
+        return teamUnits.Any(unit => unit.IsSamurai);
     }
 
-    private bool OnlyOneSamurai(List<TeamUnitRaw> units)
+    private bool HasExactlyOneSamurai(List<TeamUnitRaw> teamUnits)
     {
-        return units.Count(unit => unit.IsSamurai) == 1;
+        return teamUnits.Count(unit => unit.IsSamurai) == 1;
     }
 
-    private bool MaxUnits(List<TeamUnitRaw> units)
+    private bool IsWithinMaxUnitLimit(List<TeamUnitRaw> teamUnits)
     {
-        return units.Count <= GameConstants.MaxUnitsPerTeam;
+        return teamUnits.Count <= GameConstants.MaxUnitsPerTeam;
     }
 
-    private bool NoDuplicateUnits(List<TeamUnitRaw> units)
+    private bool HasUniqueUnitNames(List<TeamUnitRaw> teamUnits)
     {
-        return units
+        return teamUnits
             .Select(unit => unit.Name)
             .Distinct()
-            .Count() == units.Count;
+            .Count() == teamUnits.Count;
     }
 
-    private bool SamuraiMaxSkills(List<TeamUnitRaw> units)
+    private bool IsWithinSamuraiSkillLimit(List<TeamUnitRaw> teamUnits)
     {
-        return units
+        return teamUnits
             .Where(unit => unit.IsSamurai)
             .All(samurai => samurai.SkillNames.Count <= GameConstants.MaxSkillsPerSamurai);
     }
 
-    private bool NoDuplicateSamuraiSkills(List<TeamUnitRaw> units)
+    private bool HasUniqueSamuraiSkills(List<TeamUnitRaw> teamUnits)
     {
-        return units
+        return teamUnits
             .Where(unit => unit.IsSamurai)
             .All(samurai => samurai.SkillNames.Distinct().Count() == samurai.SkillNames.Count);
     }

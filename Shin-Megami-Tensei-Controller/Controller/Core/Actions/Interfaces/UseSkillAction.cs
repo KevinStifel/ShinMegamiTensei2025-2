@@ -30,7 +30,7 @@ public sealed class UseSkillAction : CombatActionBase
         ActionView.ShowAvailableSkills(attackerUnit, availableSkills);
 
         int selectedIndex = ActionView.ReadSkillIndexFromInput(availableSkills);
-        return WasCanceledSelection(selectedIndex) ? null : availableSkills[selectedIndex];
+        return IsSelectionCanceled(selectedIndex) ? null : availableSkills[selectedIndex];
     }
 
     private static IReadOnlyList<SkillData> GetUsableSkills(UnitBase attackerUnit)

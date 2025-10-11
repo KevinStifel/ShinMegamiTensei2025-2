@@ -18,7 +18,7 @@ public sealed class EnemySelector : TargetSelectorBase
         SelectorView.ShowAvailableTargets(activeUnit, enemies);
         
         int selectedIndex = ReadTargetIndex(enemies);
-        if (WasCanceledSelection(selectedIndex))
+        if (IsSelectionCanceled(selectedIndex))
             throw new ActionCanceledException();
         
         SelectorView.ShowSeparator();

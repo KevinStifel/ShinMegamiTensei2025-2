@@ -15,7 +15,7 @@ public sealed class AllySelector : TargetSelectorBase
         List<UnitBase> allies = Board.GetAliveUnits(currentPlayerId);
         SelectorView.ShowAvailableTargets(activeUnit, allies);
         int index = ReadTargetIndex(allies);
-        if (WasCanceledSelection(index))
+        if (IsSelectionCanceled(index))
             return [];
         return [allies[index]];
     }

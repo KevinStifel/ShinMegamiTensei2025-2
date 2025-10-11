@@ -21,6 +21,6 @@ public abstract class TargetSelectorBase
     protected int ReadTargetIndex(List<UnitBase> candidates)
         => SelectorView.ReadTargetIndex(candidates.Count);
 
-    protected static bool WasCanceledSelection(int index)
+    protected static bool IsSelectionCanceled(int index)
         => index < 0;
 }

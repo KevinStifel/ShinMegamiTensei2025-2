@@ -24,7 +24,7 @@ public sealed class SummonAction : CombatActionBase
         var availableReserveUnits = boardManager.GetAliveReserveUnitsForPlayer(currentPlayerId);
         int selectedIndex = ActionView.ReadSummonIndex(availableReserveUnits);
 
-        if (WasCanceledSelection(selectedIndex))
+        if (IsSelectionCanceled(selectedIndex))
             throw new ActionCanceledException();
 
         return availableReserveUnits[selectedIndex];
@@ -48,7 +48,7 @@ public sealed class SummonAction : CombatActionBase
     {
         var summonOptions = GetSummonPositions(boardFormation.ActiveBoard);
         int selectedIndex = ActionView.ReadSummonPositionIndex(summonOptions);
-        if (WasCanceledSelection(selectedIndex))
+        if (IsSelectionCanceled(selectedIndex))
             throw new ActionCanceledException();
 
         var (boardPosition, displacedUnit) = summonOptions[selectedIndex];

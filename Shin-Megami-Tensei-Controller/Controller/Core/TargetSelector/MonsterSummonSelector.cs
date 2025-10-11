@@ -33,7 +33,7 @@ public sealed class MonsterSummonSelector : TargetSelectorBase
     private UnitBase GetSelectedMonster(List<UnitBase> monsters)
     {
         int selectedIndex = ReadTargetIndex(monsters);
-        bool selectionWasCanceled = WasCanceledSelection(selectedIndex);
+        bool selectionWasCanceled = IsSelectionCanceled(selectedIndex);
 
         if (selectionWasCanceled)
             throw new ActionCanceledException();

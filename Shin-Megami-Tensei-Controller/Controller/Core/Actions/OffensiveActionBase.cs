@@ -27,7 +27,7 @@ public abstract class OffensiveActionBase : CombatActionBase
     private UnitBase SelectTarget(UnitBase attackerUnit, List<UnitBase> enemyUnits)
     {
         int selectedIndex = SelectEnemyTeamUnitIndex(attackerUnit, enemyUnits);
-        if (WasCanceledSelection(selectedIndex))
+        if (IsSelectionCanceled(selectedIndex))
             throw new ActionCanceledException();
 
         return enemyUnits[selectedIndex];

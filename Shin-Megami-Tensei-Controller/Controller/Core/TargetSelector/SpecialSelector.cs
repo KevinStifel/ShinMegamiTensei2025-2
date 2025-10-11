@@ -15,7 +15,7 @@ public sealed class SpecialSelector : TargetSelectorBase
         SelectorView.ShowAvailableTargets(activeUnit, reserveUnits);
 
         int monsterIndex = ReadTargetIndex(reserveUnits);
-        if (WasCanceledSelection(monsterIndex))
+        if (IsSelectionCanceled(monsterIndex))
             throw new ActionCanceledException();
 
         var monsterToSummon = reserveUnits[monsterIndex];
@@ -30,7 +30,7 @@ public sealed class SpecialSelector : TargetSelectorBase
         ((SpecialSelectorView)SelectorView).ShowSummonPositions(summonOptions);
 
         int positionIndex = ((SpecialSelectorView)SelectorView).ReadPositionIndex(summonOptions.Count);
-        if (WasCanceledSelection(positionIndex))
+        if (IsSelectionCanceled(positionIndex))
             throw new ActionCanceledException();
 
         var (chosenPosition, occupant) = summonOptions[positionIndex];

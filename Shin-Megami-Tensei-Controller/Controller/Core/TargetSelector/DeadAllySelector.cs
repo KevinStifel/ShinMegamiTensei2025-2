@@ -15,7 +15,7 @@ public sealed class DeadAllySelector : TargetSelectorBase
         List<UnitBase> deadAllies = Board.GetAllDeadUnits(currentPlayerId);
         SelectorView.ShowAvailableTargets(activeUnit, deadAllies);
         int targetIndex = ReadTargetIndex(deadAllies);
-        if (WasCanceledSelection(targetIndex))
+        if (IsSelectionCanceled(targetIndex))
             return [];
         return [deadAllies[targetIndex]];
     }

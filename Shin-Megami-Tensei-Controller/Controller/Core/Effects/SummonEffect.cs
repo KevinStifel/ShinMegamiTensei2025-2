@@ -15,7 +15,7 @@ public sealed class SummonEffect : EffectBase
 
         bool hasReplacedUnit = summonPlacement.ReplacedUnit != null;
         if (hasReplacedUnit)
-            formation.ReserveUnits.Insert(0, summonPlacement.ReplacedUnit);
+            formation.ReserveUnits.Insert(0, summonPlacement.ReplacedUnit!);
 
         EffectView.ShowSummonResult(monsterToSummon);
         return summonPlacement.ReplacedUnit;

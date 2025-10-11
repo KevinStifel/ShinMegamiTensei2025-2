@@ -15,7 +15,7 @@ public abstract class CombatActionBase
 
     public abstract void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager);
 
-    protected static bool WasCanceledSelection(int selectedIndex) => selectedIndex < 0;
+    protected static bool IsSelectionCanceled(int selectedIndex) => selectedIndex < 0;
 
     protected int SelectEnemyTeamUnitIndex(UnitBase attacker, List<UnitBase> enemyUnits)
     {
