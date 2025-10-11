@@ -13,11 +13,11 @@ public abstract class AffinityViewBase
         AttackElementalVerb = ElementMessageHelper.GetElementalMessage(element);
     }
 
-    public abstract void ShowAffinityReaction(UnitBase caster, UnitBase target, int damage);
+    public abstract void ShowAffinityReaction(UnitBase casterUnit, UnitBase targetUnit, int damage);
     
-    public virtual void ShowHp(UnitBase caster, UnitBase target)
+    public virtual void ShowHp(UnitBase casterUnit, UnitBase targetUnit)
     {
-        ShowHp(target);
+        ShowHp(targetUnit);
     }
 
     // 🔹 Método auxiliar reutilizable

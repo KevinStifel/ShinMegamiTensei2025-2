@@ -9,10 +9,10 @@ public sealed class SpecialSelector : TargetSelectorBase
     public SpecialSelector(View view, BoardManager boardManager)
         : base(view, boardManager, new SpecialSelectorView(view)) { }
 
-    public override List<UnitBase> SelectTargets(UnitBase caster, int currentPlayerId, SkillData skillData)
+    public override List<UnitBase> SelectTargets(UnitBase activeUnit, int currentPlayerId, SkillData skillData)
     {
         List<UnitBase> reserveUnits = Board.GetAliveReserveUnitsForPlayer(currentPlayerId);
-        SelectorView.ShowAvailableTargets(caster, reserveUnits);
+        SelectorView.ShowAvailableTargets(activeUnit, reserveUnits);
 
         int monsterIndex = ReadTargetIndex(reserveUnits);
         if (WasCanceledSelection(monsterIndex))

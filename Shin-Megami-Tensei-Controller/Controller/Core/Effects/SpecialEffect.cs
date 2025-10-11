@@ -7,7 +7,7 @@ public sealed class SpecialEffect : EffectBase
     public SpecialEffect(View view) : base(view) { }
 
     public override void ApplyEffect(
-        UnitBase caster,
+        UnitBase casterUnit,
         List<UnitBase> targets,
         SkillExecutionContext skillExecutionContext)
     {
@@ -27,7 +27,7 @@ public sealed class SpecialEffect : EffectBase
         );
 
         summonEffect.ApplySamuraiSummon(monsterToSummon, formation, placement);
-        turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, replacedUnit);
+        turnManager.UpdateOrderAfterSummon(casterUnit, monsterToSummon, replacedUnit);
 
         ApplyTurnChange(turnManager);
     }

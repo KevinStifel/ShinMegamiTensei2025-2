@@ -36,11 +36,11 @@ public sealed class EnemySelector : TargetSelectorBase
         return HitCalculator.CalculateHits(hitsPattern, skillUseCount);
     }
 
-    private static List<UnitBase> BuildRepeatedTargetList(UnitBase target, int hitCount)
+    private static List<UnitBase> BuildRepeatedTargetList(UnitBase targetUnit, int hitCount)
     {
         List<UnitBase> repeatedTargets = [];
         for (int hitIndex = 0; hitIndex < hitCount; hitIndex++)
-            repeatedTargets.Add(target);
+            repeatedTargets.Add(targetUnit);
         return repeatedTargets;
     }
     

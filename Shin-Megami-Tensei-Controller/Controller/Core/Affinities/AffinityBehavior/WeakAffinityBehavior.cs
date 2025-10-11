@@ -6,9 +6,9 @@ public sealed class WeakAffinityBehavior : AffinityBehavior
 
     public override double ModifyDamage(double baseDamage) => baseDamage * 1.5;
 
-    public override void ApplyEffect(UnitBase caster, UnitBase target, int damage)
+    public override void ApplyEffect(UnitBase casterUnit, UnitBase targetUnit, int damage)
     {
-        target.Stats.TakeDamage(damage);
+        targetUnit.Stats.TakeDamage(damage);
     }
 
     public override TurnChange CalculateTurnEffect(int fullTurns, int blinkingTurns)

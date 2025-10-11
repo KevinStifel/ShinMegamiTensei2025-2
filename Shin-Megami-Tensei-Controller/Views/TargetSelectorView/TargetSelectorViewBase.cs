@@ -12,7 +12,7 @@ public abstract class TargetSelectorViewBase
         View = view;
     }
 
-    public abstract void ShowAvailableTargets(UnitBase caster, List<UnitBase> candidates);
+    public abstract void ShowAvailableTargets(UnitBase casterUnit, List<UnitBase> candidates);
 
     public int ReadTargetIndex(int totalOptions)
     {

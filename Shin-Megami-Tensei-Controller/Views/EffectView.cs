@@ -7,32 +7,32 @@ public class EffectView : AbstractView
     public EffectView(View view) : base(view) { }
     
     // Curación
-    public void ShowHealEffect(UnitBase caster, UnitBase target, int healAmount)
+    public void ShowHealEffect(UnitBase casterUnit, UnitBase targetUnit, int healAmount)
     {
         View.WriteLine("----------------------------------------");
-        View.WriteLine($"{caster.Name} cura a {target.Name}");
-        View.WriteLine($"{target.Name} recibe {healAmount} de HP");
-        View.WriteLine($"{target.Name} termina con HP:{target.Stats.HP}/{target.Stats.MaxHP}");
+        View.WriteLine($"{casterUnit.Name} cura a {targetUnit.Name}");
+        View.WriteLine($"{targetUnit.Name} recibe {healAmount} de HP");
+        View.WriteLine($"{targetUnit.Name} termina con HP:{targetUnit.Stats.HP}/{targetUnit.Stats.MaxHP}");
     }
 
-    public void ShowReviveEffect(UnitBase caster, UnitBase target, int healAmount)
+    public void ShowReviveEffect(UnitBase casterUnit, UnitBase targetUnit, int healAmount)
     {
         View.WriteLine("----------------------------------------");
-        View.WriteLine($"{caster.Name} revive a {target.Name}");
-        View.WriteLine($"{target.Name} recibe {healAmount} de HP");
-        View.WriteLine($"{target.Name} termina con HP:{target.Stats.HP}/{target.Stats.MaxHP}");
+        View.WriteLine($"{casterUnit.Name} revive a {targetUnit.Name}");
+        View.WriteLine($"{targetUnit.Name} recibe {healAmount} de HP");
+        View.WriteLine($"{targetUnit.Name} termina con HP:{targetUnit.Stats.HP}/{targetUnit.Stats.MaxHP}");
     }
-    public void ShowSummonResult(UnitBase target)
+    public void ShowSummonResult(UnitBase targetUnit)
     {
         View.WriteLine("----------------------------------------");
-        View.WriteLine($"{target.Name} ha sido invocado");
+        View.WriteLine($"{targetUnit.Name} ha sido invocado");
     }
-    public void ShowSummonAndReviveEffect(UnitBase caster, UnitBase target, int healAmount)
+    public void ShowSummonAndReviveEffect(UnitBase casterUnit, UnitBase targetUnit, int healAmount)
     {
         View.WriteLine("----------------------------------------");
-        View.WriteLine($"{target.Name} ha sido invocado");
-        View.WriteLine($"{caster.Name} revive a {target.Name}");
-        View.WriteLine($"{target.Name} recibe {healAmount} de HP");
-        View.WriteLine($"{target.Name} termina con HP:{target.Stats.HP}/{target.Stats.MaxHP}");
+        View.WriteLine($"{targetUnit.Name} ha sido invocado");
+        View.WriteLine($"{casterUnit.Name} revive a {targetUnit.Name}");
+        View.WriteLine($"{targetUnit.Name} recibe {healAmount} de HP");
+        View.WriteLine($"{targetUnit.Name} termina con HP:{targetUnit.Stats.HP}/{targetUnit.Stats.MaxHP}");
     }
 }

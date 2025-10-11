@@ -13,8 +13,8 @@ public sealed class EnemySelectorView : TargetSelectorViewBase
         View.WriteLine($"Seleccione un objetivo para {attackerUnit.Name}");
         for (int index = 0; index < enemies.Count; index++)
         {
-            var target = enemies[index];
-            View.WriteLine($"{index + 1}-{target.Name} HP:{target.Stats.HP}/{target.Stats.MaxHP} MP:{target.Stats.MP}/{target.Stats.MaxMP}");
+            var targetUnit = enemies[index];
+            View.WriteLine($"{index + 1}-{targetUnit.Name} HP:{targetUnit.Stats.HP}/{targetUnit.Stats.MaxHP} MP:{targetUnit.Stats.MP}/{targetUnit.Stats.MaxMP}");
         }
         View.WriteLine($"{enemies.Count + 1}-Cancelar");
     }

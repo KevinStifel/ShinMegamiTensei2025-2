@@ -6,7 +6,7 @@ public sealed class NullAffinityBehavior : AffinityBehavior
 
     public override double ModifyDamage(double baseDamage) => 0;
 
-    public override void ApplyEffect(UnitBase caster, UnitBase target, int damage)
+    public override void ApplyEffect(UnitBase casterUnit, UnitBase targetUnit, int damage)
     {
     }
 

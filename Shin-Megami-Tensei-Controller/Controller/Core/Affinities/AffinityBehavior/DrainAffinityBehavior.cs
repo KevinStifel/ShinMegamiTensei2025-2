@@ -6,10 +6,10 @@ public sealed class DrainAffinityBehavior : AffinityBehavior
 
     public override double ModifyDamage(double baseDamage) => baseDamage;
     
-    public override void ApplyEffect(UnitBase caster, UnitBase target, int damage)
+    public override void ApplyEffect(UnitBase casterUnit, UnitBase targetUnit, int damage)
     {
         int healAmount = Math.Abs(damage);
-        target.Stats.Heal(healAmount);
+        targetUnit.Stats.Heal(healAmount);
     }
     public override TurnChange CalculateTurnEffect(int fullTurns, int blinkingTurns)
     {

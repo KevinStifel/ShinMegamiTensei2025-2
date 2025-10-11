@@ -6,9 +6,9 @@ public sealed class DrainAffinityView : AffinityViewBase
 {
     public DrainAffinityView(View view, AffinityElement element) : base(view, element) { }
 
-    public override void ShowAffinityReaction(UnitBase caster, UnitBase target, int damage)
+    public override void ShowAffinityReaction(UnitBase casterUnit, UnitBase targetUnit, int damage)
     {
-        View.WriteLine($"{caster.Name} {AttackElementalVerb} a {target.Name}");
-        View.WriteLine($"{target.Name} absorbe {damage} daño");
+        View.WriteLine($"{casterUnit.Name} {AttackElementalVerb} a {targetUnit.Name}");
+        View.WriteLine($"{targetUnit.Name} absorbe {damage} daño");
     }
 }

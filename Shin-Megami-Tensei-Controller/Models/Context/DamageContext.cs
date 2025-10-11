@@ -4,20 +4,20 @@ namespace Shin_Megami_Tensei;
 
 public sealed class DamageContext
 {
-    public UnitBase Caster { get; }
-    public UnitBase Target { get; }
+    public UnitBase AttackerUnit { get; }
+    public UnitBase TargetUnit { get; }
     public AffinityBehavior AffinityBehavior { get; }
     public AffinityViewBase AffinityView { get; }
 
     public DamageContext(
-        UnitBase caster,
-        UnitBase target,
+        UnitBase attackerUnit,
+        UnitBase targetUnit,
         AffinityBehavior affinityBehavior,
         AffinityViewBase affinityView
         )
     {
-        Caster = caster;
-        Target = target;
+        AttackerUnit = attackerUnit;
+        TargetUnit = targetUnit;
         AffinityBehavior = affinityBehavior;
         AffinityView = affinityView;
     }

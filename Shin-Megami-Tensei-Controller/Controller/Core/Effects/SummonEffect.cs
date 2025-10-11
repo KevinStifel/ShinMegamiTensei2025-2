@@ -40,7 +40,7 @@ public sealed class SummonEffect : EffectBase
         return positionKey;
     }
 
-    public override void ApplyEffect(UnitBase caster, List<UnitBase> targets, SkillExecutionContext skillExecutionContext)
+    public override void ApplyEffect(UnitBase casterUnit, List<UnitBase> targets, SkillExecutionContext skillExecutionContext)
     {
     }
 }

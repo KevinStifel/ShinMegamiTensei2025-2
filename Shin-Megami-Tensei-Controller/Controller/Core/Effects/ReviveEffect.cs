@@ -11,22 +11,22 @@ public sealed class ReviveEffect : EffectBase
         List<UnitBase> targets,
         SkillExecutionContext skillExecutionContext)
     {
-        foreach (var target in targets)
+        foreach (var targetUnit in targets)
         {
-            if (IsTargetAlive(target))
+            if (IsTargetAlive(targetUnit))
                 continue;
 
-            int healAmount = HealCalculator.CalculateHealAmount(target, skillExecutionContext.SkillData);
+            int healAmount = HealCalculator.CalculateHealAmount(targetUnit, skillExecutionContext.SkillData);
 
-            target.Stats.Heal(healAmount);
-            EffectView.ShowReviveEffect(casterUnit, target, healAmount);
+            targetUnit.Stats.Heal(healAmount);
+            EffectView.ShowReviveEffect(casterUnit, targetUnit, healAmount);
         }
 
         ApplyTurnChange(skillExecutionContext.TurnManager);
     }
 
-    private static bool IsTargetAlive(UnitBase target)
+    private static bool IsTargetAlive(UnitBase targetUnit)
     {
-        return target.Stats.HP > 0;
+        return targetUnit.Stats.HP > 0;
     }
 }
