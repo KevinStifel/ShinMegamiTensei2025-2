@@ -7,10 +7,10 @@ public sealed class AllySelectorView : TargetSelectorViewBase
 {
     public AllySelectorView(View view) : base(view) { }
 
-    public override void ShowAvailableTargets(UnitBase caster, List<UnitBase> allies)
+    public override void ShowAvailableTargets(UnitBase attackerUnit, List<UnitBase> allies)
     {
         View.WriteLine("----------------------------------------");
-        View.WriteLine($"Seleccione un objetivo para {caster.Name}");
+        View.WriteLine($"Seleccione un objetivo para {attackerUnit.Name}");
 
         for (int i = 0; i < allies.Count; i++)
         {

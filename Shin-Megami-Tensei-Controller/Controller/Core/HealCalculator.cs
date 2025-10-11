@@ -2,10 +2,14 @@
 
 public static class HealCalculator
 {
+
     public static int CalculateHealAmount(UnitBase target, SkillData skillData)
     {
-        double healPercentage = skillData.Power / 100.0;
-        int healAmount = (int)(target.Stats.MaxHP * healPercentage);
+        const double percentageBase = 100.0;
+        double healPercentage = skillData.Power / percentageBase;
+        double healValue = target.Stats.MaxHP * healPercentage;
+        int healAmount = (int)healValue;
+
         return healAmount;
     }
 }

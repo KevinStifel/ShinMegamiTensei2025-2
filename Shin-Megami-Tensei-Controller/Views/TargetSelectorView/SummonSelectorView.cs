@@ -7,15 +7,15 @@ public sealed class SummonSelectorView : TargetSelectorViewBase
 {
     public SummonSelectorView(View view) : base(view) { }
 
-    public override void ShowAvailableTargets(UnitBase caster, List<UnitBase> reserveMonsters)
+    public override void ShowAvailableTargets(UnitBase summonerUnit, List<UnitBase> reserveMonsters)
     {
         View.WriteLine("----------------------------------------");
         View.WriteLine("Seleccione un monstruo para invocar");
 
-        for (int i = 0; i < reserveMonsters.Count; i++)
+        for (int index = 0; index < reserveMonsters.Count; index++)
         {
-            var unit = reserveMonsters[i];
-            View.WriteLine($"{i + 1}-{unit.Name} HP:{unit.Stats.HP}/{unit.Stats.MaxHP} MP:{unit.Stats.MP}/{unit.Stats.MaxMP}");
+            var monster = reserveMonsters[index];
+            View.WriteLine($"{index + 1}-{monster.Name} HP:{monster.Stats.HP}/{monster.Stats.MaxHP} MP:{monster.Stats.MP}/{monster.Stats.MaxMP}");
         }
 
         View.WriteLine($"{reserveMonsters.Count + 1}-Cancelar");

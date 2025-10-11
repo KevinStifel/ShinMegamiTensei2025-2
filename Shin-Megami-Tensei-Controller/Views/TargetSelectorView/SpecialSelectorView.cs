@@ -6,44 +6,48 @@ public sealed class SpecialSelectorView : TargetSelectorViewBase
 {
     public SpecialSelectorView(View view) : base(view) { }
 
-    public override void ShowAvailableTargets(UnitBase caster, List<UnitBase> candidates)
+    public override void ShowAvailableTargets(UnitBase summonerUnit, List<UnitBase> summonableMonsters)
     {
         View.WriteLine("----------------------------------------");
         View.WriteLine("Seleccione un monstruo para invocar");
-        for (int i = 0; i < candidates.Count; i++)
+
+        for (int index = 0; index < summonableMonsters.Count; index++)
         {
-            var m = candidates[i];
-            View.WriteLine($"{i + 1}-{m.Name} HP:{m.Stats.HP}/{m.Stats.MaxHP} MP:{m.Stats.MP}/{m.Stats.MaxMP}");
+            var monster = summonableMonsters[index];
+            View.WriteLine($"{index + 1}-{monster.Name} HP:{monster.Stats.HP}/{monster.Stats.MaxHP} MP:{monster.Stats.MP}/{monster.Stats.MaxMP}");
         }
-        View.WriteLine($"{candidates.Count + 1}-Cancelar");
+
+        View.WriteLine($"{summonableMonsters.Count + 1}-Cancelar");
     }
 
-    public void ShowSummonPositions(List<(string Position, UnitBase? Occupant)> summonOptions)
+    public void ShowSummonPositions(List<(string Position, UnitBase? currentUnitAtPosition)> summonOptions)
     {
         View.WriteLine("Seleccione una posición para invocar");
-        for (int i = 0; i < summonOptions.Count; i++)
+
+        for (int index = 0; index < summonOptions.Count; index++)
         {
-            var (pos, occ) = summonOptions[i];
+            var (position, currentUnitAtPosition) = summonOptions[index];
+            int slotNumber = Array.IndexOf(GameConstants.BoardPositions, position) + 1;
 
-            // ✅ Buscar el número de puesto (A → 1, B → 2, etc.)
-            int puesto = Array.IndexOf(GameConstants.BoardPositions, pos) + 1;
+            string positionInfo = currentUnitAtPosition == null
+                ? $"{index + 1}-Vacío (Puesto {slotNumber})"
+                : $"{index + 1}-{currentUnitAtPosition.Name} HP:{currentUnitAtPosition.Stats.HP}/{currentUnitAtPosition.Stats.MaxHP} MP:{currentUnitAtPosition.Stats.MP}/{currentUnitAtPosition.Stats.MaxMP} (Puesto {slotNumber})";
 
-            string info = occ == null
-                ? $"{i + 1}-Vacío (Puesto {puesto})"
-                : $"{i + 1}-{occ.Name} HP:{occ.Stats.HP}/{occ.Stats.MaxHP} MP:{occ.Stats.MP}/{occ.Stats.MaxMP} (Puesto {puesto})";
-
-            View.WriteLine(info);
+            View.WriteLine(positionInfo);
         }
+
         View.WriteLine($"{summonOptions.Count + 1}-Cancelar");
     }
 
-
-
-    public int ReadPositionIndex(int total)
+    public int ReadPositionIndex(int totalPositions)
     {
         string input = View.ReadLine();
-        if (!int.TryParse(input, out int idx)) return -1;
-        idx -= 1;
-        return idx >= 0 && idx < total ? idx : -1;
+        if (!int.TryParse(input, out int index))
+            return -1;
+
+        index -= 1;
+        bool isValidIndex = index >= 0 && index < totalPositions;
+
+        return isValidIndex ? index : -1;
     }
 }
