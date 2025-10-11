@@ -4,9 +4,6 @@ namespace Shin_Megami_Tensei;
 
 public class Stats
 {
-    // ----------------------------
-    // Propiedades principales
-    // ----------------------------
     public int HP { get; private set; }
     public int MP { get; private set; }
 
@@ -18,10 +15,7 @@ public class Stats
     public int Mag { get; }
     public int Spd { get; }
     public int Lck { get; }
-
-    // ----------------------------
-    // Constructor
-    // ----------------------------
+    
     [JsonConstructor]
     public Stats(int hp, int mp, int str, int skl, int mag, int spd, int lck)
     {
@@ -35,10 +29,6 @@ public class Stats
         Spd = spd;
         Lck = lck;
     }
-
-    // ----------------------------
-    // Métodos de dominio
-    // ----------------------------
 
     public bool HasEnoughMP(int cost)
     {

@@ -23,8 +23,6 @@ public class CombatActionView : AbstractView
         View.WriteLine($"Se han consumido {turnChange.ConsumedFull} Full Turn(s) y {turnChange.ConsumedBlinking} Blinking Turn(s)");
         View.WriteLine($"Se han obtenido {turnChange.GainedBlinking} Blinking Turn(s)");
     }
-    
-    // Skills:
     public void ShowAvailableSkills(UnitBase casterUnit, IReadOnlyList<SkillData> skills)
     {
         View.WriteLine("----------------------------------------");
@@ -48,15 +46,11 @@ public class CombatActionView : AbstractView
 
         return selectedOptionIndex;
     }
-    
-    // Surrender:
     public void ShowSurrender(UnitBase teamLeader, int playerId)
     {
         View.WriteLine("----------------------------------------");
         View.WriteLine($"{teamLeader.Name} (J{playerId}) se rinde");
     }
-    
-    // Summon
     private void ShowSummonMenu(List<UnitBase> reserveUnits)
     {
         View.WriteLine("----------------------------------------");
@@ -85,8 +79,8 @@ public class CombatActionView : AbstractView
         for (int index = 0; index < summonOptions.Count; index++)
         {
             var (boardPosition, unitToReplace) = summonOptions[index];
-            int optionIndex = index + 1; // se imprime desde 1, no desde 0
-            int humanSlot = index + 2;   // el "puesto" comienza desde 2 (porque A es el samurái fijo en 1)
+            int optionIndex = index + 1;
+            int humanSlot = index + 2;
 
             if (unitToReplace == null )
             {

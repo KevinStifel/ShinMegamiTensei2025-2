@@ -12,13 +12,11 @@
             _board = board;
         }
         
-        // 🔹 Guardar datos temporales para una invocación especial
         public void PrepareSummonData(int playerId, UnitBase monster, string position, UnitBase? replaced)
         {
             _preparedSummons[playerId] = new PreparedSummonData(monster, position, replaced);
         }
 
-        // 🔹 Recuperar los datos cuando se aplica el efecto
         public (string Position, UnitBase? Replaced) GetPreparedSummonData(int playerId)
         {
             if (_preparedSummons.TryGetValue(playerId, out var data))

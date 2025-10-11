@@ -1,5 +1,4 @@
-﻿// Utils/BattleHelper.cs
-namespace Shin_Megami_Tensei;
+﻿namespace Shin_Megami_Tensei;
 
 public static class BattleHelper
 {

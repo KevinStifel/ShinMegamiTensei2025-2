@@ -37,16 +37,16 @@ public class TeamFactory
     }
     public List<UnitBase> BuildTeam(List<TeamUnitRaw> rawTeam)
     {
-        var team = new List<UnitBase>();
+        var assembledTeamUnits = new List<UnitBase>();
 
         foreach (var rawUnit in rawTeam)
         {
             if (rawUnit.IsSamurai)
-                team.Add(BuildSamurai(rawUnit));
+                assembledTeamUnits.Add(BuildSamurai(rawUnit));
             else
-                team.Add(BuildMonster(rawUnit));
+                assembledTeamUnits.Add(BuildMonster(rawUnit));
         }
-        return team;
+        return assembledTeamUnits;
     }
 
     private Stats MapStats(StatsJsonDto dtoStats)

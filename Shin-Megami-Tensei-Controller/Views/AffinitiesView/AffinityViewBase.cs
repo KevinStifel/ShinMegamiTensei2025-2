@@ -19,8 +19,6 @@ public abstract class AffinityViewBase
     {
         ShowHp(targetUnit);
     }
-
-    // 🔹 Método auxiliar reutilizable
     protected void ShowHp(UnitBase unit)
     {
         View.WriteLine($"{unit.Name} termina con HP:{unit.Stats.HP}/{unit.Stats.MaxHP}");
