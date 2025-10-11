@@ -6,14 +6,14 @@ public sealed class RepelAffinityView : AffinityViewBase
 {
     public RepelAffinityView(View view, AffinityElement element) : base(view, element) { }
 
-    public override void ShowAffinityReaction(UnitBase caster, UnitBase target, int damage)
+    public override void ShowAffinityReaction(UnitBase attackerUnit, UnitBase targetEnemyUnit, int damage)
     {
-        View.WriteLine($"{caster.Name} {AttackElementalVerb} a {target.Name}");
-        View.WriteLine($"{target.Name} devuelve {damage} daño a {caster.Name}");
+        View.WriteLine($"{attackerUnit.Name} {AttackElementalVerb} a {targetEnemyUnit.Name}");
+        View.WriteLine($"{targetEnemyUnit.Name} devuelve {damage} daño a {attackerUnit.Name}");
     }
 
-    public override void ShowHp(UnitBase caster, UnitBase target)
+    public override void ShowHp(UnitBase attackerUnit, UnitBase target)
     {
-        ShowHp(caster);
+        ShowHp(attackerUnit);
     }
 }

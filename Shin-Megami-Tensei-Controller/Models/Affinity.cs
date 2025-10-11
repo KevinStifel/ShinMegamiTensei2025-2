@@ -37,6 +37,5 @@ public class Affinity
         return string.Join(", ", _affinities.Select(pair => $"{pair.Key}:{pair.Value}"));
     }
     
-    // Utilizado solo para el DebugPrinter
     public IReadOnlyDictionary<string, string> All => _affinities;
 }

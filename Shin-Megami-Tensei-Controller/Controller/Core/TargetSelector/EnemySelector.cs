@@ -10,12 +10,12 @@ public sealed class EnemySelector : TargetSelectorBase
     {
     }
 
-    public override List<UnitBase> SelectTargets(UnitBase caster, int currentPlayerId, SkillData skillData)
+    public override List<UnitBase> SelectTargets(UnitBase activeUnit, int currentPlayerId, SkillData skillData)
     {
         int enemyPlayerId = currentPlayerId == 1 ? 2 : 1;
         List<UnitBase> enemies = Board.GetAliveUnits(enemyPlayerId);
         
-        SelectorView.ShowAvailableTargets(caster, enemies);
+        SelectorView.ShowAvailableTargets(activeUnit, enemies);
         
         int selectedIndex = ReadTargetIndex(enemies);
         if (WasCanceledSelection(selectedIndex))

@@ -7,7 +7,7 @@ public sealed class HealEffect : EffectBase
     public HealEffect(View view) : base(view) { }
 
     public override void ApplyEffect(
-        UnitBase caster,
+        UnitBase casterUnit,
         List<UnitBase> targets,
         SkillExecutionContext skillExecutionContext)
     {
@@ -15,7 +15,7 @@ public sealed class HealEffect : EffectBase
         {
             int healAmount = HealCalculator.CalculateHealAmount(target, skillExecutionContext.SkillData);
             target.Stats.Heal(healAmount);
-            EffectView.ShowHealEffect(caster, target, healAmount);
+            EffectView.ShowHealEffect(casterUnit, target, healAmount);
         }
         ApplyTurnChange(skillExecutionContext.TurnManager);
     }

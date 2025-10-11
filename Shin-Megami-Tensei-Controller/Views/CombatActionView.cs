@@ -82,19 +82,19 @@ public class CombatActionView : AbstractView
         View.WriteLine("----------------------------------------");
         View.WriteLine("Seleccione una posición para invocar");
 
-        for (int optionIndex = 0; optionIndex < summonOptions.Count; optionIndex++)
+        for (int index = 0; index < summonOptions.Count; index++)
         {
-            var (boardPosition, unitToReplace) = summonOptions[optionIndex];
-            int displayIndex = optionIndex + 1; // se imprime desde 1, no desde 0
-            int humanSlot = optionIndex + 2;   // el "puesto" comienza desde 2 (porque A es el samurái fijo en 1)
+            var (boardPosition, unitToReplace) = summonOptions[index];
+            int optionIndex = index + 1; // se imprime desde 1, no desde 0
+            int humanSlot = index + 2;   // el "puesto" comienza desde 2 (porque A es el samurái fijo en 1)
 
             if (unitToReplace == null )
             {
-                View.WriteLine($"{displayIndex}-Vacío (Puesto {humanSlot})");
+                View.WriteLine($"{optionIndex}-Vacío (Puesto {humanSlot})");
             }
             else
             {
-                View.WriteLine($"{displayIndex}-{unitToReplace.Name} HP:{unitToReplace.Stats.HP}/{unitToReplace.Stats.MaxHP} " +
+                View.WriteLine($"{optionIndex}-{unitToReplace.Name} HP:{unitToReplace.Stats.HP}/{unitToReplace.Stats.MaxHP} " +
                                $"MP:{unitToReplace.Stats.MP}/{unitToReplace.Stats.MaxMP} (Puesto {humanSlot})");
             }
         }

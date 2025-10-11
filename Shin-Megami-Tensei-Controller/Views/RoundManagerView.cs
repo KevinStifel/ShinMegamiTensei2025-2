@@ -15,17 +15,17 @@ public class RoundManagerView : AbstractView
     public void ShowBothTeams(BoardManager boardManager)
     {
         ShowSeparator();
-        PrintPlayerBoard(boardManager, 1, GetLeaderName(boardManager, 1));
-        PrintPlayerBoard(boardManager, 2, GetLeaderName(boardManager, 2));
+        ShowPlayerBoard(boardManager, 1, GetLeaderName(boardManager, 1));
+        ShowPlayerBoard(boardManager, 2, GetLeaderName(boardManager, 2));
     }
 
-    private void PrintPlayerBoard(BoardManager boardManager, int playerId, string samuraiName)
+    private void ShowPlayerBoard(BoardManager boardManager, int playerId, string samuraiName)
     {
         View.WriteLine($"Equipo de {samuraiName} (J{playerId})");
         foreach (var position in GameConstants.BoardPositions)
         {
             var unit = boardManager.GetBoardForPlayer(playerId)[position];
-            PrintUnitAtPosition(position, unit);
+            ShowUnitAtPosition(position, unit);
         }
     }
 
@@ -37,18 +37,18 @@ public class RoundManagerView : AbstractView
         return leader!.Name;
     }
 
-    private void PrintUnitAtPosition(string position, UnitBase? unit)
+    private void ShowUnitAtPosition(string position, UnitBase? unit)
     {
         if (unit == null)
-            PrintEmptyPosition(position);
+            ShowEmptyPosition(position);
         else
-            PrintOccupiedPosition(position, unit);
+            ShowOccupiedPosition(position, unit);
     }
 
-    private void PrintEmptyPosition(string position)
+    private void ShowEmptyPosition(string position)
         => View.WriteLine($"{position}-");
 
-    private void PrintOccupiedPosition(string position, UnitBase unit)
+    private void ShowOccupiedPosition(string position, UnitBase unit)
         => View.WriteLine($"{position}-{unit.Name} HP:{unit.Stats.HP}/{unit.Stats.MaxHP} MP:{unit.Stats.MP}/{unit.Stats.MaxMP}");
 
     public void ShowTurnStatus(int full, int blinking)

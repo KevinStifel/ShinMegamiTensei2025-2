@@ -7,7 +7,7 @@ public sealed class InvitationEffect : EffectBase
     public InvitationEffect(View view) : base(view) { }
 
     public override void ApplyEffect(
-        UnitBase caster,
+        UnitBase casterUnit,
         List<UnitBase> targets,
         SkillExecutionContext skillExecutionContext)
     {
@@ -24,9 +24,9 @@ public sealed class InvitationEffect : EffectBase
         PlaceMonsterOnBoard(playerBoard, summonPosition, monsterToSummon);
         UpdateReserveList(reserveUnits, monsterToSummon, replacedUnit);
 
-        HandleSummonResult(caster, monsterToSummon);
+        HandleSummonResult(casterUnit, monsterToSummon);
 
-        turnManager.UpdateOrderAfterSummon(caster, monsterToSummon, replacedUnit);
+        turnManager.UpdateOrderAfterSummon(casterUnit, monsterToSummon, replacedUnit);
         ApplyTurnChange(turnManager);
     }
     private static void PlaceMonsterOnBoard(
@@ -49,20 +49,20 @@ public sealed class InvitationEffect : EffectBase
             reserveUnits.Insert(0, replacedUnit!);
     }
 
-    private void HandleSummonResult(UnitBase caster, UnitBase monsterToSummon)
+    private void HandleSummonResult(UnitBase casterUnit, UnitBase monsterToSummon)
     {
         bool isMonsterDead = monsterToSummon.Stats.HP == 0;
 
         if (isMonsterDead)
-            ReviveAndShowResult(caster, monsterToSummon);
+            ReviveAndShowResult(casterUnit, monsterToSummon);
         else
             EffectView.ShowSummonResult(monsterToSummon);
     }
 
-    private void ReviveAndShowResult(UnitBase caster, UnitBase monsterToSummon)
+    private void ReviveAndShowResult(UnitBase casterUnit, UnitBase monsterToSummon)
     {
         int healAmount = monsterToSummon.Stats.MaxHP;
         monsterToSummon.Stats.Heal(healAmount);
-        EffectView.ShowSummonAndReviveEffect(caster, monsterToSummon, healAmount);
+        EffectView.ShowSummonAndReviveEffect(casterUnit, monsterToSummon, healAmount);
     }
 }

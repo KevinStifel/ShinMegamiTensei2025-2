@@ -10,41 +10,41 @@ public sealed class UseSkillAction : CombatActionBase
 
     public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
-        var casterUnit = turnManager.GetAttackerOnTurn();
+        var attackerUnit = turnManager.GetAttackerOnTurn();
 
-        var selectedSkillData = PromptSkillSelection(casterUnit);
+        var selectedSkillData = PromptSkillSelection(attackerUnit);
         if (selectedSkillData == null)
             throw new ActionCanceledException();
 
-        ValidateManaAvailability(casterUnit, selectedSkillData);
+        ValidateManaAvailability(attackerUnit, selectedSkillData);
 
         var skillInstance = CreateSkillInstance(selectedSkillData, boardManager);
         skillInstance.Apply(currentPlayerId, boardManager, turnManager);
 
-        ConsumeMana(casterUnit, selectedSkillData);
+        ConsumeMana(attackerUnit, selectedSkillData);
     }
 
-    private SkillData? PromptSkillSelection(UnitBase casterUnit)
+    private SkillData? PromptSkillSelection(UnitBase attackerUnit)
     {
-        var availableSkills = GetUsableSkills(casterUnit);
-        ActionView.ShowAvailableSkills(casterUnit, availableSkills);
+        var availableSkills = GetUsableSkills(attackerUnit);
+        ActionView.ShowAvailableSkills(attackerUnit, availableSkills);
 
         int selectedIndex = ActionView.ReadSkillIndexFromInput(availableSkills);
         return WasCanceledSelection(selectedIndex) ? null : availableSkills[selectedIndex];
     }
 
-    private static IReadOnlyList<SkillData> GetUsableSkills(UnitBase casterUnit)
+    private static IReadOnlyList<SkillData> GetUsableSkills(UnitBase attackerUnit)
     {
-        var allSkills = casterUnit is Samurai samurai
+        var allSkills = attackerUnit is Samurai samurai
             ? samurai.Skills
-            : ((Monster)casterUnit).Skills;
+            : ((Monster)attackerUnit).Skills;
 
-        return allSkills.Where(skill => skill.Cost <= casterUnit.Stats.MP).ToList();
+        return allSkills.Where(skill => skill.Cost <= attackerUnit.Stats.MP).ToList();
     }
 
-    private static void ValidateManaAvailability(UnitBase casterUnit, SkillData selectedSkillData)
+    private static void ValidateManaAvailability(UnitBase attackerUnit, SkillData selectedSkillData)
     {
-        if (casterUnit.Stats.MP < selectedSkillData.Cost)
+        if (attackerUnit.Stats.MP < selectedSkillData.Cost)
             throw new ActionCanceledException();
     }
 
@@ -53,8 +53,8 @@ public sealed class UseSkillAction : CombatActionBase
         return SkillFactory.Create(selectedSkillData, boardManager, View);
     }
 
-    private static void ConsumeMana(UnitBase casterUnit, SkillData selectedSkillData)
+    private static void ConsumeMana(UnitBase attackerUnit, SkillData selectedSkillData)
     {
-        UnitStatsManager.ConsumeMP(casterUnit, selectedSkillData.Cost);
+        UnitStatsManager.ConsumeMP(attackerUnit, selectedSkillData.Cost);
     }
 }

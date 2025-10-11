@@ -48,12 +48,12 @@ namespace Shin_Megami_Tensei
 
         private void InitiatePlayerAttackTurn(int currentPlayerId, BoardManager boardManager)
         {
-            var turnActor = _turnManager.AttackOrder.First();
+            var activeAttackerUnit = _turnManager.AttackOrder.First();
             
             while (true)
             {
-                ShowActionsMenu(turnActor);
-                var selectedActionKey = ReadActionKeyFromMenu(turnActor);
+                ShowActionsMenu(activeAttackerUnit);
+                var selectedActionKey = ReadActionKeyFromMenu(activeAttackerUnit);
                 var selectedAction = _actionFactory.CreateAction(selectedActionKey);
 
                 try

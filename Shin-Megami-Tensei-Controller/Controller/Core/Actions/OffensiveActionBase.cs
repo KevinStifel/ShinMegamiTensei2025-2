@@ -10,18 +10,18 @@ public abstract class OffensiveActionBase : CombatActionBase
 
     public override void ExecuteAction(int currentPlayerId, BoardManager boardManager, TurnManager turnManager)
     {
-        var attacker = turnManager.GetAttackerOnTurn();
+        var attackerUnit = turnManager.GetAttackerOnTurn();
         var enemyPlayerId = BattleHelper.GetEnemyPlayerId(currentPlayerId);
 
-        var target = SelectTarget(attacker, boardManager.GetAliveUnits(enemyPlayerId));
-        var affinityBehavior = CreateAffinityBehavior(target);
-        var damage = CalculateDamage(attacker, affinityBehavior);
+        var targetEnemyUnit = SelectTarget(attackerUnit, boardManager.GetAliveUnits(enemyPlayerId));
+        var affinityBehavior = CreateAffinityBehavior(targetEnemyUnit);
+        var damage = CalculateDamage(attackerUnit, affinityBehavior);
 
-        affinityBehavior.ApplyEffect(attacker, target, damage);
-        ShowAffinityOutcome(attacker, target, damage);        
+        affinityBehavior.ApplyEffect(attackerUnit, targetEnemyUnit, damage);
+        ShowAffinityOutcome(attackerUnit, targetEnemyUnit, damage);        
         ApplyTurnEffect(turnManager, affinityBehavior);  
-        HandleUnitDeath(boardManager, enemyPlayerId, target);
-        HandleUnitDeath(boardManager, currentPlayerId, attacker);
+        HandleUnitDeath(boardManager, enemyPlayerId, targetEnemyUnit);
+        HandleUnitDeath(boardManager, currentPlayerId, attackerUnit);
     }
 
     private UnitBase SelectTarget(UnitBase attackerUnit, List<UnitBase> enemyUnits)
@@ -33,9 +33,9 @@ public abstract class OffensiveActionBase : CombatActionBase
         return enemyUnits[selectedIndex];
     }
 
-    private AffinityBehavior CreateAffinityBehavior(UnitBase targetUnit)
+    private AffinityBehavior CreateAffinityBehavior(UnitBase targetEnemyUnit)
     {
-        var reaction = targetUnit.Affinity.GetAffinityReaction(Element);
+        var reaction = targetEnemyUnit.Affinity.GetAffinityReaction(Element);
         return AffinityBehaviorFactory.Create(reaction);
     }
 
@@ -44,16 +44,16 @@ public abstract class OffensiveActionBase : CombatActionBase
         return DamageCalculator.CalculateFinalDamage(attackerUnit, affinityBehavior, Element);
     }
     
-    private void ShowAffinityOutcome(UnitBase attacker, UnitBase target, int inflictedDamage)
+    private void ShowAffinityOutcome(UnitBase attackerUnit, UnitBase targetEnemyUnit, int inflictedDamage)
     {
-        var affinityView = CreateAffinityView(target);
+        var affinityView = CreateAffinityView(targetEnemyUnit);
         ActionView.ShowSeparator();
-        affinityView.ShowAffinityReaction(attacker, target, inflictedDamage);
-        affinityView.ShowHp(attacker, target);
+        affinityView.ShowAffinityReaction(attackerUnit, targetEnemyUnit, inflictedDamage);
+        affinityView.ShowHp(attackerUnit, targetEnemyUnit);
     }
-    private AffinityViewBase CreateAffinityView(UnitBase target)
+    private AffinityViewBase CreateAffinityView(UnitBase targetEnemyUnit)
     {
-        var affinityReaction = target.Affinity.GetAffinityReaction(Element);
+        var affinityReaction = targetEnemyUnit.Affinity.GetAffinityReaction(Element);
         var affinityBehaviorType = AffinityBehaviorFactory.Create(affinityReaction).Type;
         return AffinityViewFactory.Create(affinityBehaviorType, View, Element);
     }

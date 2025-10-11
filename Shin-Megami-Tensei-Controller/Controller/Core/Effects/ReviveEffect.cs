@@ -7,7 +7,7 @@ public sealed class ReviveEffect : EffectBase
     public ReviveEffect(View view) : base(view) { }
 
     public override void ApplyEffect(
-        UnitBase caster,
+        UnitBase casterUnit,
         List<UnitBase> targets,
         SkillExecutionContext skillExecutionContext)
     {
@@ -18,7 +18,7 @@ public sealed class ReviveEffect : EffectBase
 
             int healAmount = (int)(target.Stats.MaxHP * (skillExecutionContext.SkillData.Power / 100.0));
             target.Stats.Heal(healAmount);
-            EffectView.ShowReviveEffect(caster, target, healAmount);
+            EffectView.ShowReviveEffect(casterUnit, target, healAmount);
         }
 
         var turnManager = skillExecutionContext.TurnManager;

@@ -8,7 +8,7 @@ public sealed class DamageEffect : EffectBase
 
     public override void ApplyEffect(
         UnitBase casterUnit,
-        List<UnitBase> targetUnits,
+        List<UnitBase> targetEnemyUnits,
         SkillExecutionContext skillExecutionContext)
     {
         var turnManager = skillExecutionContext.TurnManager;
@@ -18,23 +18,23 @@ public sealed class DamageEffect : EffectBase
 
         int enemyPlayerId = BattleHelper.GetEnemyPlayerId(currentPlayerId);
 
-        foreach (var (targetUnit, index) in targetUnits.Select((unit, index) => (unit, index)))
+        foreach (var (targetEnemyUnit, index) in targetEnemyUnits.Select((unit, index) => (unit, index)))
         {
             var elementType = AffinityMapper.Parse(skillData.Type);
-            var affinityReaction = targetUnit.Affinity.GetAffinityReaction(elementType);
+            var affinityReaction = targetEnemyUnit.Affinity.GetAffinityReaction(elementType);
             var affinityBehavior = AffinityBehaviorFactory.Create(affinityReaction);
             var affinityView = AffinityViewFactory.Create(affinityBehavior.Type, View, elementType);
 
             int inflictedDamage = DamageCalculator.CalculateFinalDamageForSkill(casterUnit, skillData, affinityBehavior);
-            affinityBehavior.ApplyEffect(casterUnit, targetUnit, inflictedDamage);
-            affinityView.ShowAffinityReaction(casterUnit, targetUnit, inflictedDamage);
+            affinityBehavior.ApplyEffect(casterUnit, targetEnemyUnit, inflictedDamage);
+            affinityView.ShowAffinityReaction(casterUnit, targetEnemyUnit, inflictedDamage);
 
-            bool isLastTarget = (index == targetUnits.Count - 1);
+            bool isLastTarget = IsLastTarget(index, targetEnemyUnits.Count);
             if (isLastTarget)
-                affinityView.ShowHp(casterUnit, targetUnit);
+                affinityView.ShowHp(casterUnit, targetEnemyUnit);
         }
 
-        var lastTarget = targetUnits.Last();
+        var lastTarget = targetEnemyUnits.Last();
         var lastAffinityBehavior = GetLastAffinityBehavior(lastTarget, skillData);
 
         ApplyTurnChange(turnManager, lastAffinityBehavior);
@@ -43,10 +43,10 @@ public sealed class DamageEffect : EffectBase
         HandleDeath(boardManager, currentPlayerId, casterUnit);
     }
 
-    private static AffinityBehavior GetLastAffinityBehavior(UnitBase targetUnit, SkillData skillData)
+    private static AffinityBehavior GetLastAffinityBehavior(UnitBase targetEnemyUnit, SkillData skillData)
     {
         var elementType = AffinityMapper.Parse(skillData.Type);
-        var affinityReaction = targetUnit.Affinity.GetAffinityReaction(elementType);
+        var affinityReaction = targetEnemyUnit.Affinity.GetAffinityReaction(elementType);
         return AffinityBehaviorFactory.Create(affinityReaction);
     }
 
@@ -59,5 +59,9 @@ public sealed class DamageEffect : EffectBase
     {
         if (unit.Stats.HP == 0)
             boardManager.HandleUnitDeath(playerId, unit);
+    }
+    private static bool IsLastTarget(int currentIndex, int totalTargets)
+    {
+        return currentIndex == totalTargets - 1;
     }
 }

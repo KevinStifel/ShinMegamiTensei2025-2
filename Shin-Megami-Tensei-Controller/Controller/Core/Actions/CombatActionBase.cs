@@ -28,10 +28,4 @@ public abstract class CombatActionBase
         selectedIndex -= 1;
         return selectedIndex >= 0 && selectedIndex < enemyUnits.Count ? selectedIndex : -1;
     }
-
-    protected static void HandleDeath(BoardManager boardManager, int enemyPlayerId, UnitBase target)
-    {
-        if (target.Stats.HP == 0)
-            boardManager.HandleUnitDeath(enemyPlayerId, target);
-    }
 }
