@@ -13,15 +13,20 @@ public sealed class ReviveEffect : EffectBase
     {
         foreach (var target in targets)
         {
-            if (target.Stats.HP > 0)
+            if (IsTargetAlive(target))
                 continue;
 
-            int healAmount = (int)(target.Stats.MaxHP * (skillExecutionContext.SkillData.Power / 100.0));
+            int healAmount = HealCalculator.CalculateHealAmount(target, skillExecutionContext.SkillData);
+
             target.Stats.Heal(healAmount);
             EffectView.ShowReviveEffect(casterUnit, target, healAmount);
         }
 
-        var turnManager = skillExecutionContext.TurnManager;
-        ApplyTurnChange(turnManager);
+        ApplyTurnChange(skillExecutionContext.TurnManager);
+    }
+
+    private static bool IsTargetAlive(UnitBase target)
+    {
+        return target.Stats.HP > 0;
     }
 }
