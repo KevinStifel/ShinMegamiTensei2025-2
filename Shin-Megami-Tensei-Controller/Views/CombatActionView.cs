@@ -10,10 +10,10 @@ public class CombatActionView : AbstractView
     {
         View.WriteLine("----------------------------------------");
         View.WriteLine($"Seleccione un objetivo para {attacker.Name}");
-        for (int i = 0; i < enemies.Count; i++)
+        for (int index = 0; index < enemies.Count; index++)
         {
-            var target = enemies[i];
-            View.WriteLine($"{i + 1}-{target.Name} HP:{target.Stats.HP}/{target.Stats.MaxHP} MP:{target.Stats.MP}/{target.Stats.MaxMP}");
+            var target = enemies[index];
+            View.WriteLine($"{index + 1}-{target.Name} HP:{target.Stats.HP}/{target.Stats.MaxHP} MP:{target.Stats.MP}/{target.Stats.MaxMP}");
         }
         View.WriteLine($"{enemies.Count + 1}-Cancelar");
     }
@@ -29,10 +29,10 @@ public class CombatActionView : AbstractView
     {
         View.WriteLine("----------------------------------------");
         View.WriteLine($"Seleccione una habilidad para que {caster.Name} use");
-        for (var i = 0; i < skills.Count; i++)
+        for (var index = 0; index < skills.Count; index++)
         {
-            var s = skills[i];
-            View.WriteLine($"{i + 1}-{s.Name} MP:{s.Cost}");
+            var selectedSkill = skills[index];
+            View.WriteLine($"{index + 1}-{selectedSkill.Name} MP:{selectedSkill.Cost}");
         }
         View.WriteLine($"{skills.Count + 1}-Cancelar");
     }
@@ -66,11 +66,11 @@ public class CombatActionView : AbstractView
             .Where(unit => unit.Stats.HP > 0)
             .ToList();
 
-        for (int i = 0; i < aliveUnits.Count; i++)
+        for (int index = 0; index < aliveUnits.Count; index++)
         {
-            var unit = aliveUnits[i];
+            var unit = aliveUnits[index];
             View.WriteLine(
-                $"{i + 1}-{unit.Name} " +
+                $"{index + 1}-{unit.Name} " +
                 $"HP:{unit.Stats.HP}/{unit.Stats.MaxHP} " +
                 $"MP:{unit.Stats.MP}/{unit.Stats.MaxMP}");
         }

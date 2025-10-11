@@ -22,10 +22,10 @@
         private static Dictionary<string, UnitBase?> InitializeBoard(List<UnitBase> teamUnits)
         {
             var board = new Dictionary<string, UnitBase?>(GameConstants.BoardPositions.Length);
-            for (var i = 0; i < GameConstants.BoardPositions.Length; i++)
+            for (var index = 0; index < GameConstants.BoardPositions.Length; index++)
             {
-                var position = GameConstants.BoardPositions[i];
-                board[position] = i < teamUnits.Count ? teamUnits[i] : null;
+                var position = GameConstants.BoardPositions[index];
+                board[position] = index < teamUnits.Count ? teamUnits[index] : null;
             }
             return board;
         }

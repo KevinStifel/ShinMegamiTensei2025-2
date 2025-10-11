@@ -62,8 +62,8 @@ public class RoundManagerView : AbstractView
     {
         ShowSeparator();
         View.WriteLine("Orden:");
-        for (int i = 0; i < attackOrder.Count; i++)
-            View.WriteLine($"{i + 1}-{attackOrder[i].Name}");
+        for (int index = 0; index < attackOrder.Count; index++)
+            View.WriteLine($"{index + 1}-{attackOrder[index].Name}");
     }
     public void ShowAvailableActionsForSamurai(UnitBase unit)
     {

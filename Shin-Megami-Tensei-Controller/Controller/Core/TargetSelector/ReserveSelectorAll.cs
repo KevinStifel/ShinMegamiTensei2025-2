@@ -11,7 +11,6 @@ public sealed class ReserveSelectorAll : TargetSelectorBase
 
     public override List<UnitBase> SelectTargets(UnitBase caster, int currentPlayerId, SkillData skillData)
     {
-        // ✅ Mostrar todas las unidades de la reserva (vivas y muertas)
         var reserveUnits = Board.GetReserveUnitsForPlayer(currentPlayerId);
         SelectorView.ShowAvailableTargets(caster, reserveUnits);
 
@@ -25,18 +24,17 @@ public sealed class ReserveSelectorAll : TargetSelectorBase
         var playerBoard = Board.SelectMutableBoard(currentPlayerId);
         var summonOptions = GameConstants.BoardPositions
             .Skip(1) 
-            .Select(pos => (Position: pos, Occupant: playerBoard[pos]))
+            .Select(position => (Position: position, Occupant: playerBoard[position]))
             .ToList();
 
         ((SpecialSelectorView)SelectorView).ShowSummonPositions(summonOptions);
 
-        int posIndex = ((SpecialSelectorView)SelectorView).ReadPositionIndex(summonOptions.Count);
-        if (WasCanceledSelection(posIndex))
+        int positionIndex = ((SpecialSelectorView)SelectorView).ReadPositionIndex(summonOptions.Count);
+        if (WasCanceledSelection(positionIndex))
             throw new ActionCanceledException();
 
-        var (chosenPosition, occupant) = summonOptions[posIndex];
+        var (chosenPosition, occupant) = summonOptions[positionIndex];
 
-        // ✅ Guardar decisión para el efecto
         Board.PrepareSummonData(currentPlayerId, monsterToSummon, chosenPosition, occupant);
 
         return new List<UnitBase> { monsterToSummon };

@@ -19,10 +19,10 @@ public class FileSelector
 
         var teamFiles = Directory.GetFiles(_teamsFolder, "*.txt");
 
-        for (int i = 0; i < teamFiles.Length; i++)
+        for (int index = 0; index < teamFiles.Length; index++)
         {
-            string fileName = Path.GetFileName(teamFiles[i]);
-            _fileSelectorView.ShowFileOption(i, fileName);
+            string fileName = Path.GetFileName(teamFiles[index]);
+            _fileSelectorView.ShowFileOption(index, fileName);
         }
 
         string input = _fileSelectorView.ReadUserSelection();

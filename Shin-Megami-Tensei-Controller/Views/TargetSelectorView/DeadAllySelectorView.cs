@@ -12,10 +12,10 @@ public sealed class DeadAllySelectorView : TargetSelectorViewBase
         View.WriteLine("----------------------------------------");
         View.WriteLine($"Seleccione un objetivo para {attackerUnit.Name}");
 
-        for (int i = 0; i < deadAllies.Count; i++)
+        for (int index = 0; index < deadAllies.Count; index++)
         {
-            var ally = deadAllies[i];
-            View.WriteLine($"{i + 1}-{ally.Name} HP:0/{ally.Stats.MaxHP} MP:{ally.Stats.MP}/{ally.Stats.MaxMP}");
+            var ally = deadAllies[index];
+            View.WriteLine($"{index + 1}-{ally.Name} HP:0/{ally.Stats.MaxHP} MP:{ally.Stats.MP}/{ally.Stats.MaxMP}");
         }
 
         View.WriteLine($"{deadAllies.Count + 1}-Cancelar");
