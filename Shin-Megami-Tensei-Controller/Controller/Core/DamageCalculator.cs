@@ -1,79 +1,69 @@
-﻿namespace Shin_Megami_Tensei
+﻿namespace Shin_Megami_Tensei;
+
+public static class DamageCalculator
 {
-    public static class DamageCalculator
+    public static int CalculateFinalDamage(UnitBase attacker, AffinityBehavior affinityBehavior, AffinityElement element)
     {
-        private static double CalculateBaseDamage(int statValue, int modifier)
+        double baseDamage = CalculateBaseDamageForElement(attacker, element);
+        int finalDamage = ApplyAffinityModifier(baseDamage, affinityBehavior);
+        return finalDamage;
+    }
+
+    public static int CalculateFinalDamageForSkill(UnitBase attacker, SkillData skillData, AffinityBehavior affinityBehavior)
+    {
+        var elementType = AffinityMapper.Parse(skillData.Type);
+        double baseDamage = CalculateBaseDamageForSkill(attacker, skillData, elementType);
+        int finalDamage = ApplyAffinityModifier(baseDamage, affinityBehavior);
+        return finalDamage;
+    }
+
+    private static double CalculateBaseDamageForElement(UnitBase attacker, AffinityElement affinityElement)
+    {
+        return affinityElement switch
         {
-            double baseDmg = statValue * modifier * GameConstants.BaseDamageModifier;
-            return baseDmg;
-        }
+            AffinityElement.Physical => CalculatePhysicalBaseDamage(attacker),
+            AffinityElement.Gun => CalculateGunBaseDamage(attacker),
+            _ => CalculatePhysicalBaseDamage(attacker)
+        };
+    }
 
-        private static double CalculatePhysicalDamage(UnitBase attacker)
+    private static double CalculateBaseDamageForSkill(UnitBase attacker, SkillData skillData, AffinityElement affinityElement)
+    {
+        return affinityElement switch
         {
-            double dmg = CalculateBaseDamage(attacker.Stats.Str, GameConstants.PhysicalDamageModifier);
-            //Console.WriteLine($"[DEBUG] Physical Damage (STR:{attacker.Stats.Str}) = {dmg}");
-            return dmg;
-        }
+            AffinityElement.Physical => CalculateSquareRootDamage(attacker.Stats.Str, skillData.Power),
+            AffinityElement.Gun => CalculateSquareRootDamage(attacker.Stats.Skl, skillData.Power),
+            AffinityElement.Fire or
+            AffinityElement.Ice or
+            AffinityElement.Elec or
+            AffinityElement.Force => CalculateSquareRootDamage(attacker.Stats.Mag, skillData.Power),
+            _ => CalculateSquareRootDamage(attacker.Stats.Str, skillData.Power)
+        };
+    }
 
-        private static double CalculateGunDamage(UnitBase attacker)
-        {
-            double dmg = CalculateBaseDamage(attacker.Stats.Skl, GameConstants.GunDamageModifier);
-            //Console.WriteLine($"[DEBUG] Gun Damage (SKL:{attacker.Stats.Skl}) = {dmg}");
-            return dmg;
-        }
+    private static double CalculatePhysicalBaseDamage(UnitBase attacker)
+    {
+        return CalculateStatBasedDamage(attacker.Stats.Str, GameConstants.PhysicalDamageModifier);
+    }
 
-        private static int CalculateMagicDamage(UnitBase attacker, int skillPower)
-        {
-            int dmg = (int)Math.Sqrt(attacker.Stats.Mag * skillPower);
-            //Console.WriteLine($"[DEBUG] Magic Damage √({attacker.Stats.Mag} * {skillPower}) = {dmg}");
-            return dmg;
-        }
-        
-        private static int ApplyAffinityDamage(double baseDamage, AffinityBehavior affinityBehavior)
-        {
-            // Delega la modificación del daño a la clase de afinidad correspondiente
-            double final = affinityBehavior.ModifyDamage(baseDamage);
-            int finalDamage = (int)Math.Floor(final);
+    private static double CalculateGunBaseDamage(UnitBase attacker)
+    {
+        return CalculateStatBasedDamage(attacker.Stats.Skl, GameConstants.GunDamageModifier);
+    }
 
-            //Console.WriteLine($"[DEBUG] ApplyAffinityDamage: {baseDamage:F2} → {final}");
-            return finalDamage;
-        }
+    private static double CalculateStatBasedDamage(int statValue, int damageModifier)
+    {
+        return statValue * damageModifier * GameConstants.BaseDamageModifier;
+    }
 
-        public static int CalculateFinalDamage(UnitBase attacker, AffinityBehavior affinityBehavior, AffinityElement element)
-        {
-            double baseDamage = element switch
-            {
-                AffinityElement.Physical => CalculatePhysicalDamage(attacker),
-                AffinityElement.Gun => CalculateGunDamage(attacker),
-                _ => CalculatePhysicalDamage(attacker)
-            };
-            
-            int finalDamage = ApplyAffinityDamage(baseDamage, affinityBehavior);
+    private static double CalculateSquareRootDamage(int statValue, int skillPower)
+    {
+        return Math.Sqrt(statValue * skillPower);
+    }
 
-            return finalDamage;
-        }
-
-        public static int CalculateFinalDamageForSkill(UnitBase attacker, SkillData skillData, AffinityBehavior behavior)
-        {
-            var element = AffinityMapper.Parse(skillData.Type);
-            //Console.WriteLine($"[DEBUG] Element parsed: {element}");
-
-            double baseDamage = element switch
-            {
-                AffinityElement.Physical => Math.Sqrt(attacker.Stats.Str * skillData.Power),
-                AffinityElement.Gun => Math.Sqrt(attacker.Stats.Skl * skillData.Power),
-                AffinityElement.Fire or
-                AffinityElement.Ice or
-                AffinityElement.Elec or
-                AffinityElement.Force => Math.Sqrt(attacker.Stats.Mag * skillData.Power),
-                _ => Math.Sqrt(attacker.Stats.Str * skillData.Power)
-            };
-
-            // Aplicar afinidad sin perder precisión
-            int finalDamage = ApplyAffinityDamage(baseDamage, behavior);
-
-            //Console.WriteLine($"[DEBUG] BaseDamage: {baseDamage:F2} | FinalDamage: {finalDamage}");
-            return finalDamage;
-        }
+    private static int ApplyAffinityModifier(double baseDamage, AffinityBehavior affinityBehavior)
+    {
+        double modifiedDamage = affinityBehavior.ModifyDamage(baseDamage);
+        return (int)Math.Floor(modifiedDamage);
     }
 }
