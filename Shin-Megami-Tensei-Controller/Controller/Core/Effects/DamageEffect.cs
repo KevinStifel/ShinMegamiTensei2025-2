@@ -18,7 +18,7 @@ public sealed class DamageEffect : EffectBase
 
         int enemyPlayerId = BattleHelper.GetEnemyPlayerId(currentPlayerId);
 
-        foreach (var (targetUnit, index) in targetUnits.Select((unit, i) => (unit, i)))
+        foreach (var (targetUnit, index) in targetUnits.Select((unit, index) => (unit, index)))
         {
             var elementType = AffinityMapper.Parse(skillData.Type);
             var affinityReaction = targetUnit.Affinity.GetAffinityReaction(elementType);

@@ -17,41 +17,45 @@ public sealed class EnemySelector : TargetSelectorBase
         
         SelectorView.ShowAvailableTargets(caster, enemies);
         
-        int index = ReadTargetIndex(enemies);
-        if (WasCanceledSelection(index))
+        int selectedIndex  = ReadTargetIndex(enemies);
+        if (WasCanceledSelection(selectedIndex))
             throw new ActionCanceledException();
         
         SelectorView.ShowSeparator();
         
-        UnitBase target = enemies[index];
+        UnitBase selectedTarget  = enemies[selectedIndex];
 
-        string hitsString = skillData.Hits;
+        string hitsPattern = skillData.Hits;
 
-        int k = Board.GetSkillUseCount(currentPlayerId);
-        int hits = CalculateHits(hitsString, k);
+        int skillUsageCount = Board.GetSkillUseCount(currentPlayerId);
+        int totalHits = CalculateHits(hitsPattern, skillUsageCount);
         
         List<UnitBase> repeatedTargets = [];
-        for (int i = 0; i < hits; i++)
-            repeatedTargets.Add(target);
+        for (int hitIndex = 0; hitIndex < totalHits; hitIndex++)
+            repeatedTargets.Add(selectedTarget);
+        
         return repeatedTargets;
     }
 
-    private static int CalculateHits(string hitsString, int k)
+    private static int CalculateHits(string hitsPattern, int skillUsageCount)
     {
-        if (string.IsNullOrWhiteSpace(hitsString))
+        if (string.IsNullOrWhiteSpace(hitsPattern))
             return 1;
 
-        if (!hitsString.Contains('-'))
-            return int.TryParse(hitsString, out int fixedHits) ? fixedHits : 1;
+        bool isFixedHitValue = !hitsPattern.Contains('-');
+        if (isFixedHitValue)
+            return int.TryParse(hitsPattern, out int fixedHitCount) ? fixedHitCount : 1;
 
-        var parts = hitsString.Split('-');
-        if (parts.Length != 2)
+        string[] rangeParts = hitsPattern.Split('-');
+        bool isInvalidRangeFormat = rangeParts.Length != 2;
+        if (isInvalidRangeFormat)
             return 1;
 
-        int a = int.Parse(parts[0]);
-        int b = int.Parse(parts[1]);
+        int minHits = int.Parse(rangeParts[0]);
+        int maxHits = int.Parse(rangeParts[1]);
+        int rangeWidth = maxHits - minHits + 1;
 
-        int offset = k % (b - a + 1);
-        return a + offset;
+        int offset = skillUsageCount % rangeWidth;
+        return minHits + offset;
     }
 }
